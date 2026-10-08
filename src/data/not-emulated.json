@@ -1,0 +1,118 @@
+{
+  "meta": {
+    "purpose": "Records, as data, everything the CLI emulator deliberately does not implement. docs/NOT-EMULATED.md is generated from this file by scripts/generate-docs.mjs, and scripts/validate-docs.mjs fails if the two ever disagree.",
+    "principle": "The emulator is a bounded state machine sized to the shipped hands-on task set, not an IOS clone. Anything absent is declared here rather than silently unavailable, so no question can ever assume behaviour that does not exist.",
+    "adoptVsBuild": "Real Cisco IOS cannot run in a browser. containerlab, CML and GNS3 require Docker, which defeats a local-first browser tool. Build is correct for the bounded subset."
+  },
+  "gaps": [
+    {
+      "feature": "DHCP snooping",
+      "objectiveId": "5.7",
+      "reason": "Not required by any of the 15 shipped hands-on tasks; port security is emulated but snooping is not.",
+      "assessedVia": "show-output",
+      "partial": true
+    },
+    {
+      "feature": "Dynamic ARP inspection",
+      "objectiveId": "5.7",
+      "reason": "Not required by any of the 15 shipped hands-on tasks.",
+      "assessedVia": "show-output",
+      "partial": true
+    },
+    {
+      "feature": "TFTP and FTP file transfer",
+      "objectiveId": "4.9",
+      "reason": "Objective 4.9 is a describe-level objective; no hands-on task requires transferring an image.",
+      "assessedVia": "show-output",
+      "partial": false
+    },
+    {
+      "feature": "Syslog transport and facilities",
+      "objectiveId": "4.5",
+      "reason": "Describe-level objective; the emulator can set a logging level but does not emit or transport syslog messages.",
+      "assessedVia": "show-output",
+      "partial": true
+    },
+    {
+      "feature": "SNMP agents and MIB operations",
+      "objectiveId": "4.4",
+      "reason": "Describe-level objective; no agent, community strings or traps are modelled.",
+      "assessedVia": "show-output",
+      "partial": false
+    },
+    {
+      "feature": "QoS per-hop behaviour",
+      "objectiveId": "4.7",
+      "reason": "Classification, marking, queuing, policing and shaping are not modelled; the objective is describe-level.",
+      "assessedVia": "show-output",
+      "partial": false
+    },
+    {
+      "feature": "Dedicated verification output for EtherChannel",
+      "objectiveId": "2.4",
+      "reason": "Configuration is emulated and graded through expectedState, but no dedicated show command renders EtherChannel state. Students verify via show running-config.",
+      "assessedVia": "show-running-config",
+      "partial": true
+    },
+    {
+      "feature": "Dedicated verification output for spanning tree",
+      "objectiveId": "2.5",
+      "reason": "Configuration is emulated and graded through expectedState, but no dedicated show command renders spanning tree state.",
+      "assessedVia": "show-running-config",
+      "partial": true
+    },
+    {
+      "feature": "Dedicated verification output for DHCP client and relay",
+      "objectiveId": "4.6",
+      "reason": "Configuration is emulated and graded through expectedState, but no dedicated show command renders DHCP bindings.",
+      "assessedVia": "show-running-config",
+      "partial": true
+    },
+    {
+      "feature": "Dedicated verification output for access control lists",
+      "objectiveId": "5.6",
+      "reason": "Configuration is emulated and graded through expectedState, but no dedicated show command renders ACL entries.",
+      "assessedVia": "show-running-config",
+      "partial": true
+    },
+    {
+      "feature": "Dedicated verification output for port security",
+      "objectiveId": "5.7",
+      "reason": "Configuration is emulated and graded through expectedState, but no dedicated show command renders port security state.",
+      "assessedVia": "show-running-config",
+      "partial": true
+    },
+    {
+      "feature": "Wireless RF behaviour",
+      "objectiveId": "2.6",
+      "reason": "The WLC module covers WLAN creation only. Channel planning, power, roaming and client tracking are out of scope by design.",
+      "assessedVia": "show-output",
+      "partial": false
+    }
+  ],
+  "renderedShowCommands": [
+    "show running-config",
+    "show ip interface brief",
+    "show ip route",
+    "show vlan brief"
+  ],
+  "wlcScope": {
+    "inScope": [
+      "profile name",
+      "SSID",
+      "status",
+      "VLAN ID",
+      "WPA2 Personal with PSK",
+      "QoS class",
+      "802.11ax and DTIM advanced settings"
+    ],
+    "outOfScope": [
+      "RF and channel planning",
+      "transmit power",
+      "roaming",
+      "client tracking"
+    ],
+    "navigation": "Cisco AireOS Configuration Guide: WLANs -> New, with General, Security, QoS and Advanced as tabs inside the WLAN editor. Security is a child of a WLAN, not its parent.",
+    "interfaceNote": "Every question stem must name the interface, AireOS or Catalyst 9800-CL, because the two differ."
+  }
+}

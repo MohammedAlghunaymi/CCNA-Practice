@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The allocation table in docs/PROJECT.md and the frozen numbers in
+      # src/config/bank.config.json are generated. If they drift from the
+      # formula, every downstream number is quietly wrong.
+      - name: Check generated docs are current
+        run: npm run docs:generate -- --check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Validate question bank
+        run: npm run validate:bank
+
+      - name: Validate batch review records
+        run: npm run validate:review
+
+      - name: Validate documentation
+        run: npm run validate:docs
+
+      - name: Check licences and provenance
+        run: npm run license:check
+
+  milestone:
+    name: Question bank milestone (${{ matrix.milestone }})
+    runs-on: ubuntu-latest
+    # Only meaningful while the bank is being authored; the milestone target is
+    # enforced with --close-total so an in-progress milestone cannot go red.
+    if: github.event_name == 'workflow_dispatch'
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        milestone: [pilot, v1, later]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/allocate-bank.mjs --check
+      - run: node scripts/validate-bank.mjs --milestone ${{ matrix.milestone }}
