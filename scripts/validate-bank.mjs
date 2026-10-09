@@ -39,7 +39,18 @@ for (const file of files) {
   for (const q of list) questions.push(q)
 }
 
-const { results, stats } = validateBank({ questions, objectives, config, milestone, checkTotal })
+// Adopted questions must be listed in docs/ADOPTED.md. Parsed rather than
+// hardcoded so the registry and the content cannot disagree silently: adding a
+// question without a row here fails the gate.
+const adoptedPath = join(root, 'docs/ADOPTED.md')
+const adoptionRegistry = existsSync(adoptedPath)
+  ? [...readFileSync(adoptedPath, 'utf8').matchAll(/^\| `([a-z0-9-]+)` \| \d+\.\d+\/\d+\.\d/gm)]
+      .map((m) => ({ upstreamId: m[1] }))
+  : null
+
+const { results, stats } = validateBank({
+  questions, objectives, config, milestone, checkTotal, adoptionRegistry,
+})
 
 const pad = Math.max(...results.map((r) => r.name.length))
 let failures = 0

@@ -1,0 +1,1054 @@
+{
+  "provenance": "Questions in this file were adopted from the MIT-licensed project Onesayi/ccna-simulator at commit 6efca4f15e8ccf01fb44973b46bb26922797965a (Alistair Nhiwatiwa, 2026-10-04), originally authored against the CCNA v1.0 blueprint and re-keyed here to the v1.1 leaf objective IDs in src/data/objectives.json. The full per-question mapping, including every item dropped as out of scope and the reason, is in docs/ADOPTED.md. Each question records its origin in its `upstream` field. Distractor rationales are marked TODO and are written during Phase 2; no question ships without them.",
+  "domain": "SEC",
+  "questions": [
+    {
+      "id": "up-acl-delete-entry",
+      "objectiveId": "5.6",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How do you remove just the entry with sequence number 30 from ACL 101?",
+      "options": {
+        "A": {
+          "text": "You must delete and rebuild the whole list",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "In ip access-list extended 101 mode, enter no 30",
+          "correct": true
+        },
+        "C": {
+          "text": "no access-list 101 deny tcp any any eq 80 in global configuration",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "no access-list 101 30",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Named-ACL configuration mode works for numbered lists too and edits by sequence number. no access-list 101 ... in global configuration deletes the entire ACL.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "acl-delete-entry",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "acl-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-acl-extended-http",
+      "objectiveId": "5.6",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which entry blocks web traffic to server 10.0.0.10 but not other traffic to it?",
+      "options": {
+        "A": {
+          "text": "deny udp any host 10.0.0.10 eq 80",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "deny tcp any host 10.0.0.10 eq 80",
+          "correct": true
+        },
+        "C": {
+          "text": "deny ip any host 10.0.0.10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "deny tcp host 10.0.0.10 any eq 80",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Extended entries read protocol, source, destination, then the port. HTTP is TCP 80 to the server.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "acl-extended-http",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "acl-extended"
+      ]
+    },
+    {
+      "id": "up-acl-implicit-deny",
+      "objectiveId": "5.6",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "An ACL contains only \"deny 10.1.1.0 0.0.0.255\" and is applied inbound. What happens to traffic from 10.2.2.5?",
+      "options": {
+        "A": {
+          "text": "It is permitted because no line matches",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "It is permitted because the ACL only names 10.1.1.0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "It is logged but forwarded",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "It is dropped by the implicit deny at the end of the list",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Every ACL ends with an invisible deny any. A list with only deny entries blocks everything; add permit any if that was intended.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "acl-implicit-deny",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "acl-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-acl-numbered-ranges",
+      "objectiveId": "5.6",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "access-list 150 permit ip any any creates which kind of ACL?",
+      "options": {
+        "A": {
+          "text": "An extended ACL",
+          "correct": true
+        },
+        "B": {
+          "text": "A standard ACL",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "An IPv6 ACL",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "An ARP ACL",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Numbers 1 to 99 and 1300 to 1999 are standard; 100 to 199 and 2000 to 2699 are extended.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "acl-numbered-ranges",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-acl-per-interface",
+      "objectiveId": "5.6",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How many IPv4 ACLs can be applied to one interface?",
+      "options": {
+        "A": {
+          "text": "Unlimited, processed in order",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Two per direction",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "One per direction: one inbound and one outbound",
+          "correct": true
+        },
+        "D": {
+          "text": "One in total",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Applying a second ACL in the same direction replaces the first.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "acl-per-interface",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "acl-extended"
+      ]
+    },
+    {
+      "id": "up-acl-standard-match",
+      "objectiveId": "5.6",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What can a standard IPv4 ACL match on?",
+      "options": {
+        "A": {
+          "text": "Only the source IP address",
+          "correct": true
+        },
+        "B": {
+          "text": "Source and destination addresses",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Source address and destination port",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Protocol and destination address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Standard ACLs (1 to 99, 1300 to 1999, or named standard) see only the source. Extended ACLs add protocol, destination and ports.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "acl-standard-match",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "acl-standard"
+      ]
+    },
+    {
+      "id": "up-acl-standard-placement",
+      "objectiveId": "5.6",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Where should a standard ACL usually be applied?",
+      "options": {
+        "A": {
+          "text": "As close to the destination as possible",
+          "correct": true
+        },
+        "B": {
+          "text": "As close to the source as possible",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "On every interface",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Only on VTY lines",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Because it only checks the source, a standard ACL near the source would block that host from everything. Extended ACLs go near the source to drop traffic early.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "acl-standard-placement",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "acl-standard"
+      ]
+    },
+    {
+      "id": "up-acl-wildcard",
+      "objectiveId": "5.6",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which wildcard mask matches every address in 172.16.32.0/20?",
+      "options": {
+        "A": {
+          "text": "0.0.16.255",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "0.0.15.255",
+          "correct": true
+        },
+        "C": {
+          "text": "0.0.31.255",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "255.255.240.0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "The wildcard is the inverse of the mask: 255.255.255.255 minus 255.255.240.0 = 0.0.15.255.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "acl-wildcard",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "acl-standard"
+      ]
+    },
+    {
+      "id": "up-dai-binding",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does Dynamic ARP Inspection check ARP packets on untrusted ports against?",
+      "options": {
+        "A": {
+          "text": "The routing table",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The CDP neighbor table",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The DHCP snooping binding table (and any ARP ACLs)",
+          "correct": true
+        },
+        "D": {
+          "text": "The MAC address table",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "DAI drops ARP messages whose IP-to-MAC pairing is not in the snooping bindings, which stops ARP poisoning.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dai-binding",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "dynamic-arp-inspection"
+      ]
+    },
+    {
+      "id": "up-dai-static-host",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "After DAI is enabled, a server with a static IP address loses connectivity while DHCP clients are fine. What should you add?",
+      "options": {
+        "A": {
+          "text": "A static MAC address table entry",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "ip arp inspection validate src-mac",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "An ARP ACL permitting the server’s IP and MAC, applied with ip arp inspection filter",
+          "correct": true
+        },
+        "D": {
+          "text": "ip dhcp snooping trust on the server’s port and nothing else",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "A static host never appears in the snooping table, so DAI has no binding for it. An ARP ACL (or trusting the port) lets it through.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dai-static-host",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "dai-arp-acl"
+      ]
+    },
+    {
+      "id": "up-dhcp-snooping-option82",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "After enabling DHCP snooping on an access switch, clients behind it stop getting leases from an IOS DHCP server reached through a relay. What is a common cause?",
+      "options": {
+        "A": {
+          "text": "DHCP snooping blocks all DISCOVER messages",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The relay must be configured as an untrusted port",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Snooping requires a static binding for every client",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The switch inserts option 82 and the server rejects it; use no ip dhcp snooping information option",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "By default the switch adds option 82 with a zero giaddr, which many servers drop.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dhcp-snooping-option82",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "dhcp-snooping-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-dhcp-snooping-untrusted",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "DHCP snooping is enabled. Which message arriving on an untrusted port is dropped?",
+      "options": {
+        "A": {
+          "text": "DHCPOFFER",
+          "correct": true
+        },
+        "B": {
+          "text": "DHCPDISCOVER",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "DHCPREQUEST",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "DHCPRELEASE from the client that holds the lease",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Server messages (OFFER, ACK, NAK) are only accepted on trusted ports, which stops rogue DHCP servers. Trust the uplink toward the real server.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dhcp-snooping-untrusted",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "dhcp-snooping"
+      ]
+    },
+    {
+      "id": "up-errdisable-recover",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A port is err-disabled after a port security violation. You have removed the rogue device. How do you bring the port back by hand?",
+      "options": {
+        "A": {
+          "text": "shutdown, then no shutdown on the interface",
+          "correct": true
+        },
+        "B": {
+          "text": "clear port-security on the interface only",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "no switchport port-security violation",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Reload the switch; nothing else works",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Bouncing the port clears err-disabled. errdisable recovery cause psecure-violation can do it automatically after an interval.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "errdisable-recover",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "port-security-errdisable"
+      ]
+    },
+    {
+      "id": "up-ipsec-esp-ah",
+      "objectiveId": "5.5",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which IPsec protocol provides encryption?",
+      "options": {
+        "A": {
+          "text": "GRE",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "ESP",
+          "correct": true
+        },
+        "C": {
+          "text": "AH",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "IKE",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "ESP gives confidentiality, integrity and authentication. AH gives integrity and authentication only. IKE negotiates the keys; GRE is unencrypted tunneling.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipsec-esp-ah",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ipsec-tunnel-mode",
+      "objectiveId": "5.5",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "In IPsec tunnel mode, what is protected?",
+      "options": {
+        "A": {
+          "text": "Only the payload, keeping the original IP header",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Only the outer IP header",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Nothing; tunnel mode only adds routing",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The whole original IP packet, which gets a new outer IP header",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Site-to-site VPNs use tunnel mode between gateways. Transport mode keeps the original header and protects only the payload, typically between two end hosts.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipsec-tunnel-mode",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-local-user-secret",
+      "objectiveId": "5.3",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which command creates a local user whose password is stored as a strong hash?",
+      "options": {
+        "A": {
+          "text": "enable password Str0ng!",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "line vty 0 15 password Str0ng!",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "username admin secret Str0ng!",
+          "correct": true
+        },
+        "D": {
+          "text": "username admin password Str0ng!",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "secret stores a hash (type 5, 8 or 9). password stores plain text, or reversible type 7 with service password-encryption.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "local-user-secret",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ssh-remote-access"
+      ]
+    },
+    {
+      "id": "up-password-encryption",
+      "objectiveId": "5.3",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does service password-encryption do?",
+      "options": {
+        "A": {
+          "text": "Forces SSH instead of Telnet",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Obscures plain-text passwords in the configuration with weak, reversible type 7 encoding",
+          "correct": true
+        },
+        "C": {
+          "text": "Hashes every password with SHA-256",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Encrypts the startup-config file",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "It only stops shoulder-surfing; type 7 is trivially reversed. Use secret for real protection.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "password-encryption",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ssh-remote-access"
+      ]
+    },
+    {
+      "id": "up-port-security-defaults",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You enter switchport port-security on an access port and nothing else. What are the defaults?",
+      "options": {
+        "A": {
+          "text": "Two MAC addresses allowed, violation mode shutdown",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "One MAC address allowed, violation mode shutdown",
+          "correct": true
+        },
+        "C": {
+          "text": "Unlimited MAC addresses, violation mode protect",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "One MAC address allowed, violation mode restrict",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "A second MAC on the port err-disables it. Raise the limit with switchport port-security maximum.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "port-security-defaults",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "port-security"
+      ]
+    },
+    {
+      "id": "up-port-security-dynamic",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "switchport port-security is rejected on a port left at its default dynamic DTP mode. Why?",
+      "options": {
+        "A": {
+          "text": "Port security needs the port statically set to access (or trunk)",
+          "correct": true
+        },
+        "B": {
+          "text": "Port security only works on routed ports",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The port must first be shut down",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Port security needs DHCP snooping",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Set switchport mode access first. A port that might negotiate a trunk cannot have port security.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "port-security-dynamic",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "port-security"
+      ]
+    },
+    {
+      "id": "up-port-security-restrict",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What is the difference between the restrict and protect violation modes?",
+      "options": {
+        "A": {
+          "text": "Restrict allows the frames but logs them",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Both drop offending frames, but restrict also logs and counts violations",
+          "correct": true
+        },
+        "C": {
+          "text": "Restrict err-disables the port; protect does not",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Protect logs violations; restrict silently drops",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Shutdown err-disables the port; restrict drops and records; protect drops silently.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "port-security-restrict",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "port-security"
+      ]
+    },
+    {
+      "id": "up-ra-guard",
+      "objectiveId": "5.7",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A user’s laptop starts sending IPv6 Router Advertisements and hosts pick it as their gateway. Which switch feature stops this?",
+      "options": {
+        "A": {
+          "text": "Dynamic ARP Inspection",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "RA guard on host-facing ports",
+          "correct": true
+        },
+        "C": {
+          "text": "DHCP snooping",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "BPDU guard",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "RA guard drops Router Advertisements arriving on ports whose policy says the attached device is a host.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ra-guard",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ra-guard"
+      ]
+    },
+    {
+      "id": "up-vpn-remote-access",
+      "objectiveId": "5.5",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which describes a remote-access VPN?",
+      "options": {
+        "A": {
+          "text": "Client software on one device builds a tunnel to the company’s VPN gateway, often with TLS or IPsec",
+          "correct": true
+        },
+        "B": {
+          "text": "Two routers keep a permanent tunnel between two offices",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "An MPLS provider separates customers with labels",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Branch users reach the internet through a proxy",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Remote-access VPNs connect one end device on demand; site-to-site VPNs connect whole networks through their gateways, usually with IPsec.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "vpn-remote-access",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-wifi-enterprise",
+      "objectiveId": "5.9",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does WPA2-Enterprise use to authenticate each user?",
+      "options": {
+        "A": {
+          "text": "One passphrase shared by every user",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The client’s MAC address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A web portal with no encryption",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "802.1X with an authentication server such as RADIUS",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Enterprise mode authenticates each user with EAP over 802.1X, checked by a RADIUS server, so users can be revoked individually.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "wifi-enterprise",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "wlan-enterprise-guest"
+      ]
+    },
+    {
+      "id": "up-wifi-wpa3",
+      "objectiveId": "5.9",
+      "domain": "SEC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which security mode replaces the pre-shared key handshake with SAE (Simultaneous Authentication of Equals)?",
+      "options": {
+        "A": {
+          "text": "WEP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "WPA3-Personal",
+          "correct": true
+        },
+        "C": {
+          "text": "WPA2-Personal",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "WPA2-Enterprise",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "WPA3-Personal uses SAE, which resists offline dictionary attacks on the passphrase. WPA2-Personal uses a PSK four-way handshake.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "wifi-wpa3",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "wlan-enterprise-guest"
+      ]
+    }
+  ]
+}

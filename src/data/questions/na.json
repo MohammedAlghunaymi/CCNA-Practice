@@ -1,0 +1,1616 @@
+{
+  "provenance": "Questions in this file were adopted from the MIT-licensed project Onesayi/ccna-simulator at commit 6efca4f15e8ccf01fb44973b46bb26922797965a (Alistair Nhiwatiwa, 2026-10-04), originally authored against the CCNA v1.0 blueprint and re-keyed here to the v1.1 leaf objective IDs in src/data/objectives.json. The full per-question mapping, including every item dropped as out of scope and the reason, is in docs/ADOPTED.md. Each question records its origin in its `upstream` field. Distractor rationales are marked TODO and are written during Phase 2; no question ships without them.",
+  "domain": "NA",
+  "questions": [
+    {
+      "id": "up-aaa-local-fallback",
+      "objectiveId": "2.8",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "VTY logins use aaa authentication login default group radius local. The RADIUS server is up but rejects the user. What happens?",
+      "options": {
+        "A": {
+          "text": "The login fails; the local database is used only if the server does not answer",
+          "correct": true
+        },
+        "B": {
+          "text": "The router tries the local user database next",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The user gets privilege 1 access",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The router retries RADIUS forever",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Methods are tried in order only on an error (no response). An explicit reject is final.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "aaa-local-fallback",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "aaa-radius-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-aaa-new-model",
+      "objectiveId": "2.8",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which command must come first before you can define AAA method lists on IOS?",
+      "options": {
+        "A": {
+          "text": "aaa new-model",
+          "correct": true
+        },
+        "B": {
+          "text": "aaa authentication enable",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "tacacs server",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "login local",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "aaa new-model switches the device from line passwords to AAA; it also immediately applies the default method list to all lines, so add a local user first.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "aaa-new-model",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "aaa-tacacs"
+      ]
+    },
+    {
+      "id": "up-ap-flexconnect",
+      "objectiveId": "2.6",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Branch APs must keep serving clients locally even if the WAN link to the central WLC fails. Which AP mode fits?",
+      "options": {
+        "A": {
+          "text": "Monitor",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "FlexConnect",
+          "correct": true
+        },
+        "C": {
+          "text": "Local",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Sniffer",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "FlexConnect APs can switch traffic locally and keep working when the controller is unreachable. Local mode tunnels everything to the WLC.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ap-flexconnect",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ap-option43",
+      "objectiveId": "2.7",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Lightweight APs are in a different subnet from the WLC and cannot find it. What can the DHCP server give them?",
+      "options": {
+        "A": {
+          "text": "Option 82 with the switch port",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Option 150 with a call manager",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Option 43 with the controller’s management address",
+          "correct": true
+        },
+        "D": {
+          "text": "Option 66 with a TFTP server",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "DHCP option 43 carries WLC addresses to APs. A DNS entry for CISCO-CAPWAP-CONTROLLER is the other common method.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ap-option43",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ap-join-option43"
+      ]
+    },
+    {
+      "id": "up-ap-switchport",
+      "objectiveId": "2.7",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How should the switch port for a lightweight AP in local mode normally be configured?",
+      "options": {
+        "A": {
+          "text": "As a trunk carrying every WLAN’s VLAN",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "As a routed port",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "As an EtherChannel member",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "As an access port in the AP management VLAN",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "In local mode all client traffic goes through the CAPWAP tunnel to the WLC, so the AP only needs one VLAN. Autonomous and FlexConnect APs bridging several VLANs need trunks.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ap-switchport",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "wlan-wpa2-psk"
+      ]
+    },
+    {
+      "id": "up-bpdu-guard",
+      "objectiveId": "2.5.d",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Someone plugs a switch into a port with BPDU guard enabled. What happens?",
+      "options": {
+        "A": {
+          "text": "The port moves to the root-inconsistent state",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The port is err-disabled as soon as it receives a BPDU",
+          "correct": true
+        },
+        "C": {
+          "text": "The port keeps forwarding but ignores BPDUs",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The new switch becomes root for that port only",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "BPDU guard protects PortFast edge ports. Root-inconsistent is what root guard does.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "bpdu-guard",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "stp-portfast-bpduguard"
+      ]
+    },
+    {
+      "id": "up-capwap",
+      "objectiveId": "2.7",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which protocol do lightweight APs use to talk to their wireless LAN controller?",
+      "options": {
+        "A": {
+          "text": "CAPWAP, with separate control and data tunnels",
+          "correct": true
+        },
+        "B": {
+          "text": "LWAPP over TCP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "GRE with no control channel",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "IPsec tunnel mode",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "CAPWAP uses UDP 5246 for control (always DTLS-encrypted) and UDP 5247 for client data.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "capwap",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ap-join-option43"
+      ]
+    },
+    {
+      "id": "up-cdp-detail",
+      "objectiveId": "2.3",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which command shows a CDP neighbor’s management IP address and software version?",
+      "options": {
+        "A": {
+          "text": "show lldp",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "show cdp neighbors detail",
+          "correct": true
+        },
+        "C": {
+          "text": "show cdp neighbors",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "show cdp interface",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "The summary table lists device ID, ports, platform and capabilities. The detail view adds addresses and the IOS version.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "cdp-detail",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "cdp-lldp-map"
+      ]
+    },
+    {
+      "id": "up-cdp-timers",
+      "objectiveId": "2.3",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What are the default CDP advertisement interval and holdtime?",
+      "options": {
+        "A": {
+          "text": "60 seconds and 180 seconds",
+          "correct": true
+        },
+        "B": {
+          "text": "30 seconds and 120 seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "10 seconds and 40 seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "2 seconds and 6 seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "CDP sends every 60 s and forgets a neighbor after 180 s of silence. show cdp displays both timers. LLDP defaults to 30 s and 120 s.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "cdp-timers",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-cdp-vs-lldp",
+      "objectiveId": "2.3",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You need to discover neighbors in a network that mixes Cisco and other vendors. Which protocol should you use?",
+      "options": {
+        "A": {
+          "text": "STP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "VTP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "LLDP, the IEEE 802.1AB standard",
+          "correct": true
+        },
+        "D": {
+          "text": "CDP, because every vendor supports it",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "CDP is Cisco proprietary. LLDP is the open standard; on Cisco IOS it is off by default and enabled with lldp run.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "cdp-vs-lldp",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "cdp-lldp-map"
+      ]
+    },
+    {
+      "id": "up-dot1q-tag",
+      "objectiveId": "2.2.b",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does an 802.1Q trunk add to a frame, and how large is the VLAN ID field?",
+      "options": {
+        "A": {
+          "text": "A 4-byte tag with a 16-bit VLAN ID",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "A 2-byte tag with an 8-bit VLAN ID",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A 4-byte tag with a 12-bit VLAN ID",
+          "correct": true
+        },
+        "D": {
+          "text": "A 26-byte header with a 10-bit VLAN ID",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "The 802.1Q tag is 4 bytes: TPID 0x8100, then 3 PCP bits, 1 DEI bit and a 12-bit VID (0 to 4095, with 0 and 4095 reserved). The 26-byte header is ISL.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dot1q-tag",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "trunk-two-switches"
+      ]
+    },
+    {
+      "id": "up-dtp-auto-auto",
+      "objectiveId": "2.2.a",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Both ends of a link are set to switchport mode dynamic auto. What does the link become?",
+      "options": {
+        "A": {
+          "text": "An access link",
+          "correct": true
+        },
+        "B": {
+          "text": "A trunk",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Err-disabled",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "A trunk carrying only the native VLAN",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Dynamic auto only answers DTP, it never starts negotiation, so two auto ports stay access. Hard-code trunks and use switchport nonegotiate instead.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dtp-auto-auto",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-etherchannel-loadbalance",
+      "objectiveId": "2.4",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A single large file transfer between two hosts crosses a four-link EtherChannel. How much of the bundle does it use?",
+      "options": {
+        "A": {
+          "text": "One member link, because load balancing hashes each flow to one link",
+          "correct": true
+        },
+        "B": {
+          "text": "All four links, sending packets round-robin",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Two links, one in each direction",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The fastest link only, chosen by STP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "EtherChannel picks a link per flow from a hash of addresses or ports, which keeps frames in order. Many flows spread out; one flow does not.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "etherchannel-loadbalance",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-etherchannel-mismatch",
+      "objectiveId": "2.4",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "One port in a channel-group shows as suspended (s) in show etherchannel summary. What is the usual cause?",
+      "options": {
+        "A": {
+          "text": "Its settings, such as speed, duplex or VLAN configuration, differ from the other members",
+          "correct": true
+        },
+        "B": {
+          "text": "The port-channel interface was shut down",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "It is the backup link, which LACP keeps idle",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Spanning tree blocked the port-channel",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "All members must match speed, duplex, mode (access or trunk), access VLAN or allowed VLANs and native VLAN, or the odd one out is suspended.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "etherchannel-mismatch",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "etherchannel-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-lacp-modes",
+      "objectiveId": "2.4",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which pair of channel-group modes forms an LACP EtherChannel?",
+      "options": {
+        "A": {
+          "text": "passive and passive",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "desirable and auto",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "on and active",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "active and passive",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "LACP needs at least one active side. Passive and passive never start negotiation; desirable and auto are PAgP; \"on\" does not negotiate at all.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "lacp-modes",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "etherchannel-lacp"
+      ]
+    },
+    {
+      "id": "up-lldp-default",
+      "objectiveId": "2.3",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What is the default state of CDP and LLDP on most Cisco IOS switches?",
+      "options": {
+        "A": {
+          "text": "Both are disabled",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "LLDP is enabled and CDP is disabled",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "CDP is enabled and LLDP is disabled",
+          "correct": true
+        },
+        "D": {
+          "text": "Both are enabled",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "CDP runs globally by default. LLDP needs lldp run (and can be tuned per interface with lldp transmit and lldp receive).",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "lldp-default",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "cdp-lldp-map"
+      ]
+    },
+    {
+      "id": "up-loop-guard",
+      "objectiveId": "2.5.d",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A fiber link becomes unidirectional and a root or alternate port stops receiving BPDUs. Which feature stops that port from moving to forwarding?",
+      "options": {
+        "A": {
+          "text": "BPDU filter",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "PortFast",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Loop guard",
+          "correct": true
+        },
+        "D": {
+          "text": "Root guard",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Loop guard puts the port in loop-inconsistent (blocking) instead of letting it become designated and create a loop.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "loop-guard",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-native-vlan-mismatch",
+      "objectiveId": "2.2.c",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A switch logs \"%CDP-4-NATIVE_VLAN_MISMATCH\". What is wrong?",
+      "options": {
+        "A": {
+          "text": "The two ends of a trunk use different native VLANs",
+          "correct": true
+        },
+        "B": {
+          "text": "One end of the link is an access port in the wrong VLAN",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "CDP is disabled on the neighbor",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The trunk is missing an allowed VLAN",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "CDP advertises the native VLAN and complains when the neighbor differs. Untagged traffic would otherwise leak between the two VLANs.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "native-vlan-mismatch",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "cdp-native-vlan"
+      ]
+    },
+    {
+      "id": "up-native-vlan-untagged",
+      "objectiveId": "2.2.c",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How does an 802.1Q trunk send frames that belong to its native VLAN?",
+      "options": {
+        "A": {
+          "text": "Tagged with VLAN 0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Tagged with VLAN 1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Encapsulated in ISL",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Untagged",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Native VLAN traffic crosses the trunk without a tag, and untagged frames received are placed in the native VLAN. Both ends must agree on it.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "native-vlan-untagged",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "trunk-two-switches"
+      ]
+    },
+    {
+      "id": "up-portfast",
+      "objectiveId": "2.5.c",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does PortFast do on an access port?",
+      "options": {
+        "A": {
+          "text": "Bundles the port into an EtherChannel",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Moves the port straight to forwarding when it comes up",
+          "correct": true
+        },
+        "C": {
+          "text": "Disables STP on the whole VLAN",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Raises the port speed to the maximum",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "PortFast skips the listening and learning delay so hosts get connectivity quickly. Use it only where a single end device connects.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "portfast",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "stp-portfast-bpduguard"
+      ]
+    },
+    {
+      "id": "up-roas-subinterface",
+      "objectiveId": "2.1.c",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "On a router-on-a-stick, which command ties subinterface G0/0.10 to VLAN 10?",
+      "options": {
+        "A": {
+          "text": "switchport access vlan 10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "vlan 10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "ip vlan 10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "encapsulation dot1q 10",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Each subinterface needs encapsulation dot1q with its VLAN ID before it accepts an IP address. Add \"native\" for the native VLAN.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "roas-subinterface",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "router-on-a-stick"
+      ]
+    },
+    {
+      "id": "up-root-guard",
+      "objectiveId": "2.5.d",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does root guard protect against?",
+      "options": {
+        "A": {
+          "text": "A switch on that port becoming the root bridge",
+          "correct": true
+        },
+        "B": {
+          "text": "A unidirectional link turning an alternate port into a designated port",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Hosts sending too many broadcasts",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "BPDUs arriving on a PortFast port",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "If a superior BPDU arrives on a root-guard port, the port goes root-inconsistent until the BPDUs stop. Loop guard handles unidirectional links.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "root-guard",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-rstp-alternate",
+      "objectiveId": "2.5.a",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "In Rapid PVST+, what is an alternate port?",
+      "options": {
+        "A": {
+          "text": "A port connected to an end host",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "A second root port that load-balances",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A discarding port with a backup path to the root, ready to replace the root port",
+          "correct": true
+        },
+        "D": {
+          "text": "A port that is forwarding toward a segment with no other switch",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Alternate ports receive superior BPDUs from another switch and take over immediately if the root port fails. Backup ports back up a designated port on a shared segment.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "rstp-alternate",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "stp-root-bridge"
+      ]
+    },
+    {
+      "id": "up-rstp-states",
+      "objectiveId": "2.5.b",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which port states does Rapid PVST+ use?",
+      "options": {
+        "A": {
+          "text": "Disabled, listening and forwarding",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Discarding, listening and forwarding",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Discarding, learning and forwarding",
+          "correct": true
+        },
+        "D": {
+          "text": "Blocking, listening, learning and forwarding",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "RSTP merges disabled, blocking and listening into discarding. Classic 802.1D has blocking, listening, learning and forwarding.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "rstp-states",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "stp-root-bridge"
+      ]
+    },
+    {
+      "id": "up-stp-cost-100",
+      "objectiveId": "2.5.b",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Using the default short path-cost method, what is the STP cost of a 100 Mbps link?",
+      "options": {
+        "A": {
+          "text": "2",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "19",
+          "correct": true
+        },
+        "C": {
+          "text": "4",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "100",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Short costs: 10 Mbps = 100, 100 Mbps = 19, 1 Gbps = 4, 10 Gbps = 2.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "stp-cost-100",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-stp-priority-sysid",
+      "objectiveId": "2.5.a",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A switch has the default bridge priority. What priority does show spanning-tree report for VLAN 10?",
+      "options": {
+        "A": {
+          "text": "32769",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "32778",
+          "correct": true
+        },
+        "C": {
+          "text": "32768",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "4096",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "PVST+ adds the VLAN ID (the extended system ID) to the configured priority: 32768 + 10 = 32778.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "stp-priority-sysid",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "stp-root-bridge"
+      ]
+    },
+    {
+      "id": "up-stp-root-election",
+      "objectiveId": "2.5.a",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How is the spanning tree root bridge elected?",
+      "options": {
+        "A": {
+          "text": "Lowest bridge ID: priority first, then the lowest MAC address",
+          "correct": true
+        },
+        "B": {
+          "text": "Highest bridge ID",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Lowest total path cost",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The switch with the most ports",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Every switch first claims to be root; the lowest priority wins, and the lowest MAC breaks a tie. Set the priority so the choice is deliberate.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "stp-root-election",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "stp-root-bridge"
+      ]
+    },
+    {
+      "id": "up-stp-root-primary",
+      "objectiveId": "2.5.a",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does spanning-tree vlan 10 root primary do?",
+      "options": {
+        "A": {
+          "text": "Makes the port connected to the root a root port",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Disables STP on VLAN 10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Locks the current root so no other switch can take over",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Sets this switch’s VLAN 10 priority low enough to become root",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "The macro sets priority 24576, or lower if another switch already beats that. It does not stop a lower priority from taking over later; root guard does that.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "stp-root-primary",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "stp-root-bridge"
+      ]
+    },
+    {
+      "id": "up-svi-ip-routing",
+      "objectiveId": "2.1.c",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A multilayer switch has SVIs for VLANs 10 and 20, both up, but hosts in the two VLANs cannot reach each other. What is missing?",
+      "options": {
+        "A": {
+          "text": "A trunk between the SVIs",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "encapsulation dot1q on each SVI",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "spanning-tree portfast",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "ip routing",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "SVIs give each VLAN a gateway address, but a Layer 3 switch only routes between them once ip routing is enabled globally.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "svi-ip-routing",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "l3-switch-svi"
+      ]
+    },
+    {
+      "id": "up-switch-default-gateway",
+      "objectiveId": "2.1.c",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A Layer 2 switch has a management SVI and answers pings from its own subnet but not from other subnets. What should you add?",
+      "options": {
+        "A": {
+          "text": "spanning-tree vlan 1 root primary",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "ip default-gateway pointing at the subnet’s router",
+          "correct": true
+        },
+        "C": {
+          "text": "ip routing",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "A static route on the PCs",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "A Layer 2 switch does not route, so it needs ip default-gateway to send replies off its own subnet.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "switch-default-gateway",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "switch-management"
+      ]
+    },
+    {
+      "id": "up-tacacs-vs-radius",
+      "objectiveId": "2.8",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which statement compares TACACS+ and RADIUS correctly?",
+      "options": {
+        "A": {
+          "text": "Both are Cisco proprietary",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "TACACS+ combines authentication and authorization; RADIUS separates them",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "TACACS+ uses TCP 49 and encrypts the whole payload; RADIUS uses UDP and encrypts only the password",
+          "correct": true
+        },
+        "D": {
+          "text": "RADIUS uses TCP 49 and encrypts everything; TACACS+ uses UDP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "TACACS+ (Cisco) separates authentication, authorization and accounting and suits device administration. RADIUS (open standard, UDP 1812/1813) combines authentication and authorization and suits network access.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "tacacs-vs-radius",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "aaa-tacacs"
+      ]
+    },
+    {
+      "id": "up-trunk-allowed",
+      "objectiveId": "2.2.a",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which interface command limits a trunk to carrying only VLANs 10 and 20?",
+      "options": {
+        "A": {
+          "text": "switchport trunk native vlan 10,20",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "switchport access vlan 10,20",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "vlan 10,20 trunk",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "switchport trunk allowed vlan 10,20",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "The allowed list filters which VLANs cross the trunk. Use \"allowed vlan add\" to append rather than replace the list.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "trunk-allowed",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "trunk-two-switches"
+      ]
+    },
+    {
+      "id": "up-vlan-default",
+      "objectiveId": "2.1.b",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Out of the box, which VLAN are all the access ports on a Cisco switch in?",
+      "options": {
+        "A": {
+          "text": "No VLAN until one is assigned",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "VLAN 1",
+          "correct": true
+        },
+        "C": {
+          "text": "VLAN 0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "VLAN 99",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Every port starts in VLAN 1, which also cannot be deleted. Best practice moves user ports and the native VLAN off it.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "vlan-default",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "vlans-basic"
+      ]
+    },
+    {
+      "id": "up-voice-vlan",
+      "objectiveId": "2.1.a",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "An IP phone with a PC plugged into it connects to an access port configured with switchport access vlan 10 and switchport voice vlan 20. How does the traffic arrive?",
+      "options": {
+        "A": {
+          "text": "PC traffic untagged in VLAN 10, phone traffic tagged with VLAN 20",
+          "correct": true
+        },
+        "B": {
+          "text": "Both untagged in VLAN 10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Both tagged, because the port becomes a trunk",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Phone traffic untagged in VLAN 20, PC traffic tagged with VLAN 10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "The phone has a small internal switch. It tags its own voice frames with the voice VLAN and passes the PC’s frames untagged.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "voice-vlan",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-vtp-transparent",
+      "objectiveId": "2.2.a",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does a switch in VTP transparent mode do with VTP advertisements?",
+      "options": {
+        "A": {
+          "text": "Applies them and forwards them",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Drops them",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Applies them but does not forward them",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Forwards them on trunks but does not apply them to its own VLAN database",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Transparent switches keep their own VLANs and revision number 0, which is why many networks run every switch in transparent mode or VTP off.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "vtp-transparent",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-wifi-24-channels",
+      "objectiveId": "2.6",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which 2.4 GHz channels should neighbouring APs use so that none of them overlap?",
+      "options": {
+        "A": {
+          "text": "36, 40 and 44",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "1, 6 and 11",
+          "correct": true
+        },
+        "C": {
+          "text": "1, 2 and 3",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "1, 5 and 9",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "2.4 GHz channels are 5 MHz apart but about 20 MHz wide, so only 1, 6 and 11 avoid each other in most regions. 36, 40 and 44 are 5 GHz channels.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "wifi-24-channels",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "wireless-channels"
+      ]
+    },
+    {
+      "id": "up-wifi-5ghz",
+      "objectiveId": "2.6",
+      "domain": "NA",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Compared with 2.4 GHz, what is true of the 5 GHz band?",
+      "options": {
+        "A": {
+          "text": "It does not support 802.11ac or 802.11ax",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "It suffers more from microwave oven interference",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "More non-overlapping channels but shorter range through walls",
+          "correct": true
+        },
+        "D": {
+          "text": "Longer range but fewer channels",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Higher frequencies are absorbed more by obstacles, so range drops, but 5 GHz offers many more 20 MHz channels. Microwave ovens interfere with 2.4 GHz.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "wifi-5ghz",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "wireless-channels"
+      ]
+    }
+  ]
+}

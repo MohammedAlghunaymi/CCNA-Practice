@@ -59,6 +59,7 @@ export function validateQuestionShape(question) {
     errors.push('explanation is required on every question')
   }
   if (typeof q.batch !== 'string' || !q.batch.trim()) errors.push('batch must be a non-empty string')
+  errors.push(...validateProvenance(q))
 
   if (q.type === 'hands-on') {
     errors.push(...validateExpectedState(q.expectedState))
@@ -192,6 +193,47 @@ function validateExpectedState(state) {
       errors.push(`expectedState.all[${index}] op "${predicate.op}" requires a value`)
     }
   })
+
+  return errors
+}
+
+/**
+ * Provenance for adopted questions.
+ *
+ * A question carrying `upstream` was taken from a third-party MIT-licensed
+ * project rather than authored here, so it has to say exactly where it came
+ * from: which project, at which commit, and under which upstream id. That record
+ * is what makes the adoption auditable rather than a claim in a README, and it
+ * is why `validateBank` can cross-check it against docs/ADOPTED.md.
+ *
+ * Optional field `adapted` records work done on top of the upstream text beyond
+ * the objective re-key, so a later reviewer can tell a re-key from a rewrite.
+ */
+function validateProvenance(q) {
+  const errors = []
+  if (q.upstream === undefined || q.upstream === null) return errors
+
+  const u = q.upstream
+  if (typeof u !== 'object' || Array.isArray(u)) {
+    return ['upstream must be an object with project, commit, id and licence']
+  }
+
+  for (const field of ['project', 'commit', 'id', 'licence']) {
+    if (typeof u[field] !== 'string' || !u[field].trim()) {
+      errors.push(`upstream.${field} must be a non-empty string`)
+    }
+  }
+
+  // A commit must be a full 40-character SHA. A branch or tag name would let the
+  // referenced content move underneath us, which is the whole thing this record
+  // exists to prevent.
+  if (typeof u.commit === 'string' && u.commit.trim() && !/^[0-9a-f]{40}$/.test(u.commit.trim())) {
+    errors.push(`upstream.commit must be a full 40-character SHA, got "${u.commit}"`)
+  }
+
+  if (u.adapted !== undefined && typeof u.adapted !== 'string') {
+    errors.push('upstream.adapted, when present, must be a string describing the adaptation')
+  }
 
   return errors
 }

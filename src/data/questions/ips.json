@@ -1,0 +1,1404 @@
+{
+  "provenance": "Questions in this file were adopted from the MIT-licensed project Onesayi/ccna-simulator at commit 6efca4f15e8ccf01fb44973b46bb26922797965a (Alistair Nhiwatiwa, 2026-10-04), originally authored against the CCNA v1.0 blueprint and re-keyed here to the v1.1 leaf objective IDs in src/data/objectives.json. The full per-question mapping, including every item dropped as out of scope and the reason, is in docs/ADOPTED.md. Each question records its origin in its `upstream` field. Distractor rationales are marked TODO and are written during Phase 2; no question ships without them.",
+  "domain": "IPS",
+  "questions": [
+    {
+      "id": "up-dhcp-dora",
+      "objectiveId": "4.6",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "In what order are the four DHCP messages exchanged when a client first gets an address?",
+      "options": {
+        "A": {
+          "text": "Discover, Request, Offer, Acknowledge",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Offer, Discover, Acknowledge, Request",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Discover, Offer, Request, Acknowledge",
+          "correct": true
+        },
+        "D": {
+          "text": "Request, Offer, Discover, Acknowledge",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "DORA: the client broadcasts a Discover, servers Offer, the client Requests one offer, and that server Acknowledges.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dhcp-dora",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "dhcp-server"
+      ]
+    },
+    {
+      "id": "up-dhcp-exclude",
+      "objectiveId": "4.6",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which command stops a Cisco DHCP server from leasing 192.168.1.1 to 192.168.1.10?",
+      "options": {
+        "A": {
+          "text": "no network 192.168.1.1 192.168.1.10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "ip dhcp reserve 192.168.1.1 192.168.1.10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "ip dhcp excluded-address 192.168.1.1 192.168.1.10 (global configuration)",
+          "correct": true
+        },
+        "D": {
+          "text": "excluded-address 192.168.1.1 192.168.1.10 (inside the pool)",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Exclusions are global, not part of the pool, and should be entered before the pool starts leasing.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dhcp-exclude",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "dhcp-server"
+      ]
+    },
+    {
+      "id": "up-dhcp-ports",
+      "objectiveId": "4.6",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which transport and ports does DHCP for IPv4 use?",
+      "options": {
+        "A": {
+          "text": "UDP 67 on the server and UDP 68 on the client",
+          "correct": true
+        },
+        "B": {
+          "text": "TCP 67 on the server and TCP 68 on the client",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "UDP 68 on the server and UDP 67 on the client",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "UDP 546 and 547",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "DHCPv4 servers listen on UDP 67 and clients on UDP 68. UDP 546 and 547 are DHCPv6.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dhcp-ports",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-dhcp-relay",
+      "objectiveId": "4.6",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Clients in VLAN 20 must get addresses from a DHCP server in another subnet. What do you configure on the router interface that is the clients’ gateway?",
+      "options": {
+        "A": {
+          "text": "ip dhcp pool on that interface",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "ip dhcp snooping trust",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "ip address dhcp",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "ip helper-address followed by the server’s address",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "DHCP Discovers are broadcasts and routers do not forward broadcasts. ip helper-address makes the interface relay them to the server as unicast.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dhcp-relay",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "dhcp-relay"
+      ]
+    },
+    {
+      "id": "up-dns-aaaa",
+      "objectiveId": "4.3",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A user can reach www.example.com over IPv4 but not IPv6. Which DNS record would hold the site’s IPv6 address?",
+      "options": {
+        "A": {
+          "text": "PTR",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "CNAME",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "AAAA",
+          "correct": true
+        },
+        "D": {
+          "text": "A",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "A records map names to IPv4 addresses, AAAA to IPv6. PTR maps addresses back to names; CNAME is an alias for another name.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dns-aaaa",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-dns-cname",
+      "objectiveId": "4.3",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which DNS record type makes shop.example.com an alias of a host named web1.example.com?",
+      "options": {
+        "A": {
+          "text": "MX",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "NS",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "CNAME",
+          "correct": true
+        },
+        "D": {
+          "text": "A",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "A CNAME points one name at another canonical name, which then needs its own A or AAAA record.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dns-cname",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-dns-mx",
+      "objectiveId": "4.3",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Other organisations cannot deliver email to @example.com. Which record should you check first?",
+      "options": {
+        "A": {
+          "text": "The AAAA record for www.example.com",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The MX record for example.com",
+          "correct": true
+        },
+        "C": {
+          "text": "The NS record for the mail server",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The PTR record for the web server",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Senders look up MX records to find the mail servers for a domain, then resolve those names with A or AAAA records.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dns-mx",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-dns-ns",
+      "objectiveId": "4.3",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does an NS record tell a resolver?",
+      "options": {
+        "A": {
+          "text": "An alias for the zone apex",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Which servers are authoritative for a zone",
+          "correct": true
+        },
+        "C": {
+          "text": "Which server handles mail for the zone",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The zone’s IPv6 prefix",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "NS records delegate a zone to its authoritative name servers. DNS queries use UDP 53 (TCP 53 for large responses and zone transfers).",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dns-ns",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-dns-ptr",
+      "objectiveId": "4.3",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A server logs client addresses but you want their hostnames. Which record type answers a reverse lookup?",
+      "options": {
+        "A": {
+          "text": "PTR",
+          "correct": true
+        },
+        "B": {
+          "text": "NS",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "CNAME",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "PTR records live in the in-addr.arpa (IPv4) and ip6.arpa (IPv6) zones and map addresses to names.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dns-ptr",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ftp-ports",
+      "objectiveId": "4.9",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which ports does FTP use in active mode?",
+      "options": {
+        "A": {
+          "text": "TCP 20 for control and TCP 21 for data",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "TCP 21 for control and TCP 20 for data",
+          "correct": true
+        },
+        "C": {
+          "text": "UDP 69 for both",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "TCP 22 for both",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "FTP keeps a control connection on TCP 21. In active mode the server opens data connections from TCP 20; in passive mode the client opens them to a port the server names.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ftp-ports",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ftp-restore"
+      ]
+    },
+    {
+      "id": "up-nat-inside-local",
+      "objectiveId": "4.1",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "In NAT terms, what is the inside local address?",
+      "options": {
+        "A": {
+          "text": "The private address of a host on the inside network",
+          "correct": true
+        },
+        "B": {
+          "text": "The public address that represents the inside host",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The address of a server on the internet",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The router’s outside interface address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Inside local is the host’s real (usually private) address; inside global is the public address it is translated to.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "nat-inside-local",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "nat-static"
+      ]
+    },
+    {
+      "id": "up-nat-interfaces",
+      "objectiveId": "4.1",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "PAT is configured with an ACL and overload, but show ip nat translations stays empty. What is the most likely omission?",
+      "options": {
+        "A": {
+          "text": "ip nat inside and ip nat outside on the interfaces",
+          "correct": true
+        },
+        "B": {
+          "text": "ip routing",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A static route for the inside network",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "service nat enable",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "NAT only considers traffic crossing from an inside-marked interface to an outside-marked one.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "nat-interfaces",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "nat-pat",
+        "capstone-branch-internet"
+      ]
+    },
+    {
+      "id": "up-nat-pat",
+      "objectiveId": "4.1",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which keyword lets many inside hosts share one public address by tracking port numbers?",
+      "options": {
+        "A": {
+          "text": "static",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "extendable",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "prefix-length",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "overload",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "ip nat inside source list 1 interface g0/1 overload is PAT, the most common form of NAT on the internet edge.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "nat-pat",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "nat-pat"
+      ]
+    },
+    {
+      "id": "up-nat-pool-exhausted",
+      "objectiveId": "4.1",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Dynamic NAT (without overload) has a pool of 4 public addresses, all in use. What happens to a fifth inside host’s traffic?",
+      "options": {
+        "A": {
+          "text": "It shares an address using port numbers",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "It is translated to the router’s outside address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "It is dropped until a translation times out",
+          "correct": true
+        },
+        "D": {
+          "text": "It is sent untranslated",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Dynamic NAT maps one inside address to one pool address. Only PAT shares addresses.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "nat-pool-exhausted",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-nat-static-cmd",
+      "objectiveId": "4.1",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which command publishes the inside web server 192.168.1.10 as 203.0.113.10?",
+      "options": {
+        "A": {
+          "text": "ip nat outside source static 192.168.1.10 203.0.113.10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "ip nat inside source static 203.0.113.10 192.168.1.10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "ip nat pool WEB 203.0.113.10 192.168.1.10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "ip nat inside source static 192.168.1.10 203.0.113.10",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Static NAT lists the inside local address first, then the inside global. Interfaces still need ip nat inside and ip nat outside.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "nat-static-cmd",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "nat-static"
+      ]
+    },
+    {
+      "id": "up-ntp-stratum",
+      "objectiveId": "4.2",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "R1 synchronises to an NTP server at stratum 2. What stratum does R1 report?",
+      "options": {
+        "A": {
+          "text": "16",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "3",
+          "correct": true
+        },
+        "C": {
+          "text": "2",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Each hop away from the reference clock adds one. Stratum 16 means unsynchronised; ntp master defaults to stratum 8.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ntp-stratum",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ntp-clock"
+      ]
+    },
+    {
+      "id": "up-ntp-why",
+      "objectiveId": "4.2",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Why should every device in the network synchronise its clock with NTP?",
+      "options": {
+        "A": {
+          "text": "So DHCP leases never expire",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "So log timestamps line up when you correlate events across devices",
+          "correct": true
+        },
+        "C": {
+          "text": "So routing protocols can converge",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Because SSH refuses connections without NTP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Accurate, consistent time makes syslog useful for troubleshooting and audits, and is needed for certificate checks.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ntp-why",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ntp-clock"
+      ]
+    },
+    {
+      "id": "up-qos-ef",
+      "objectiveId": "4.7",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which DSCP value marks voice as Expedited Forwarding?",
+      "options": {
+        "A": {
+          "text": "0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "46",
+          "correct": true
+        },
+        "C": {
+          "text": "34",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "26",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "EF is 46. AF41 is 34, AF31 is 26, and 0 is best effort (default).",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "qos-ef",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "qos-marking"
+      ]
+    },
+    {
+      "id": "up-qos-llq",
+      "objectiveId": "4.7",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which queuing method gives voice a strict-priority queue while other classes share the remaining bandwidth?",
+      "options": {
+        "A": {
+          "text": "FIFO",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Weighted random early detection",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Policing",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "LLQ (low latency queuing)",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "LLQ is CBWFQ plus a priority queue, configured with the priority command in a policy map. The priority queue is policed so it cannot starve the rest.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "qos-llq",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "qos-marking"
+      ]
+    },
+    {
+      "id": "up-qos-shape-police",
+      "objectiveId": "4.7",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What is the difference between policing and shaping?",
+      "options": {
+        "A": {
+          "text": "Both buffer traffic, but policing uses more memory",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Policing only works inbound and shaping only outbound on every platform",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Policing drops or re-marks traffic over the rate; shaping buffers it and sends it later",
+          "correct": true
+        },
+        "D": {
+          "text": "Shaping drops excess traffic; policing buffers it",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "An ISP often polices to the contracted rate, so the customer shapes outbound to stay under it.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "qos-shape-police",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-qos-trust-boundary",
+      "objectiveId": "4.7",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Voice packets leave the IP phone marked EF but arrive at the router marked 0. What is the likely cause?",
+      "options": {
+        "A": {
+          "text": "EF is not a valid DSCP value",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The access switch port does not trust the phone’s markings and rewrites them",
+          "correct": true
+        },
+        "C": {
+          "text": "The router’s policy map is missing a priority queue",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The phone is in the data VLAN",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "With mls qos enabled, ports are untrusted by default and reset markings. Extend the trust boundary to the phone with mls qos trust (and trust device cisco-phone).",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "qos-trust-boundary",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "qos-trust-boundary"
+      ]
+    },
+    {
+      "id": "up-snmp-inform",
+      "objectiveId": "4.4",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What is the difference between an SNMP Trap and an Inform?",
+      "options": {
+        "A": {
+          "text": "Traps are encrypted and Informs are not",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Informs read values and Traps write them",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The manager acknowledges an Inform, so the agent can resend it; a Trap is not acknowledged",
+          "correct": true
+        },
+        "D": {
+          "text": "Informs are sent by the manager to the agent",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Both are unsolicited messages from the agent. Gets read values, Sets write them.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "snmp-inform",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "snmp-v2c-traps"
+      ]
+    },
+    {
+      "id": "up-snmp-mib",
+      "objectiveId": "4.4",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What identifies an individual variable, such as sysName, that SNMP can read?",
+      "options": {
+        "A": {
+          "text": "A YANG module name",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "An OID in the MIB",
+          "correct": true
+        },
+        "C": {
+          "text": "A community string",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "A syslog facility",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "The Management Information Base organises variables in a tree; each has an object identifier such as 1.3.6.1.2.1.1.5.0 for sysName.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "snmp-mib",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "snmp-v2c-traps"
+      ]
+    },
+    {
+      "id": "up-snmp-ports",
+      "objectiveId": "4.4",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which ports does SNMP use?",
+      "options": {
+        "A": {
+          "text": "UDP 162 on agents; UDP 161 on managers",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Agents listen on UDP 161; managers receive traps on UDP 162",
+          "correct": true
+        },
+        "C": {
+          "text": "Agents listen on TCP 161; traps go to TCP 162",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "UDP 514 for everything",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "The NMS polls agents on 161 (Get, Set) and agents send unsolicited Traps and Informs to the NMS on 162.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "snmp-ports",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "snmp-v2c-traps"
+      ]
+    },
+    {
+      "id": "up-snmp-v3",
+      "objectiveId": "4.4",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which SNMP version and level gives both authentication and encryption?",
+      "options": {
+        "A": {
+          "text": "SNMPv3 with authPriv",
+          "correct": true
+        },
+        "B": {
+          "text": "SNMPv2c with a read-only community",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "SNMPv3 with authNoPriv",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "SNMPv1 with a read-write community",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "v1 and v2c send community strings in clear text. v3 adds users: noAuthNoPriv, authNoPriv (integrity) and authPriv (integrity and encryption).",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "snmp-v3",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "snmpv3-secure"
+      ]
+    },
+    {
+      "id": "up-ssh-only-vty",
+      "objectiveId": "4.8",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which VTY line commands allow only SSH logins checked against local usernames?",
+      "options": {
+        "A": {
+          "text": "login and transport input all",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "password cisco and transport input telnet ssh",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "login local and transport output ssh",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "login local and transport input ssh",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "transport input controls which protocols may connect in; login local uses the username database. SSH uses TCP 22, Telnet TCP 23 in clear text.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ssh-only-vty",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ssh-remote-access"
+      ]
+    },
+    {
+      "id": "up-ssh-prereqs",
+      "objectiveId": "4.8",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "crypto key generate rsa fails on a new switch. What does it need first?",
+      "options": {
+        "A": {
+          "text": "An enable secret",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "transport input ssh on the VTY lines",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "An SVI with an IP address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "A hostname other than the default and an ip domain-name",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "The RSA key is named after hostname.domain-name, so both must be set. VTY settings and addressing are needed later to actually log in.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ssh-prereqs",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ssh-remote-access"
+      ]
+    },
+    {
+      "id": "up-syslog-buffered",
+      "objectiveId": "4.5",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You configure logging buffered 5. Which messages are kept in the buffer?",
+      "options": {
+        "A": {
+          "text": "Only severity 5",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Severities 5 to 7",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Severities 0 to 4",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Severities 0 to 5",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "A logging level includes that level and everything more severe (lower numbers).",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "syslog-buffered",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "syslog-read"
+      ]
+    },
+    {
+      "id": "up-syslog-format",
+      "objectiveId": "4.5",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "*Oct  4 09:14:02.511: %LINEPROTO-5-UPDOWN: Line protocol on Interface GigabitEthernet0/1, changed state to down\n\nIn the message below, what are LINEPROTO and 5?",
+      "options": {
+        "A": {
+          "text": "The process name and the CPU usage",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The facility and the severity (notification)",
+          "correct": true
+        },
+        "C": {
+          "text": "The severity and the facility",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The mnemonic and the sequence number",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "The format is %FACILITY-SEVERITY-MNEMONIC: description. UPDOWN is the mnemonic. The timestamp needs service timestamps log datetime.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "syslog-format",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "syslog-read"
+      ]
+    },
+    {
+      "id": "up-syslog-levels",
+      "objectiveId": "4.5",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which syslog severity level is \"warning\"?",
+      "options": {
+        "A": {
+          "text": "2",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "5",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "6",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "4",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "0 emergency, 1 alert, 2 critical, 3 error, 4 warning, 5 notification, 6 informational, 7 debugging. Lower is more severe.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "syslog-levels",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "syslog-read"
+      ]
+    },
+    {
+      "id": "up-syslog-server",
+      "objectiveId": "4.5",
+      "domain": "IPS",
+      "type": "mcq-multi",
+      "preamble": null,
+      "prompt": "Which two statements about syslog on Cisco IOS are true? (Choose two.)",
+      "options": {
+        "A": {
+          "text": "Console logging is on by default, so messages appear on the console line",
+          "correct": true
+        },
+        "B": {
+          "text": "Syslog lets an NMS change device settings",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Messages are only kept if logging buffered is configured",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Syslog servers poll devices for messages every 60 seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "E": {
+          "text": "Messages sent to a remote syslog server use UDP port 514",
+          "correct": true
+        }
+      },
+      "answer": [
+        "A",
+        "E"
+      ],
+      "explanation": "Devices push syslog to servers on UDP 514 and log to the console by default. Syslog is for reporting events; SNMP Set is what changes settings.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "syslog-server",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "syslog-read"
+      ]
+    },
+    {
+      "id": "up-tftp-facts",
+      "objectiveId": "4.9",
+      "domain": "IPS",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which statement about TFTP is true?",
+      "options": {
+        "A": {
+          "text": "It uses UDP port 69 and has no authentication",
+          "correct": true
+        },
+        "B": {
+          "text": "It uses TCP ports 20 and 21",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "It encrypts transfers with SSH",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "It lets you list and navigate server directories",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "TFTP is minimal: read or write one named file, with its own acknowledgements over UDP. FTP is the one with TCP 20/21, logins and directory commands.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "tftp-facts",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "config-backup"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1360 @@
+{
+  "provenance": "Questions in this file were adopted from the MIT-licensed project Onesayi/ccna-simulator at commit 6efca4f15e8ccf01fb44973b46bb26922797965a (Alistair Nhiwatiwa, 2026-10-04), originally authored against the CCNA v1.0 blueprint and re-keyed here to the v1.1 leaf objective IDs in src/data/objectives.json. The full per-question mapping, including every item dropped as out of scope and the reason, is in docs/ADOPTED.md. Each question records its origin in its `upstream` field. Distractor rationales are marked TODO and are written during Phase 2; no question ships without them.",
+  "domain": "IPC",
+  "questions": [
+    {
+      "id": "up-ad-values",
+      "objectiveId": "3.1.e",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "R1 learns 10.5.0.0/16 from both OSPF and EIGRP. Which route does it install, and why?",
+      "options": {
+        "A": {
+          "text": "Whichever has the lower metric",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Both, load-balancing between them",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The EIGRP route, because its administrative distance (90) is lower than OSPF’s (110)",
+          "correct": true
+        },
+        "D": {
+          "text": "The OSPF route, because its AD (110) is higher",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "For the same prefix, the lowest AD wins. Metrics from different protocols are not comparable. Defaults: connected 0, static 1, eBGP 20, EIGRP 90, OSPF 110, RIP 120.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ad-values",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-connected-local",
+      "objectiveId": "3.3.b",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You configure ip address 192.168.1.1 255.255.255.0 on G0/0 and bring it up. Which routes appear?",
+      "options": {
+        "A": {
+          "text": "L 192.168.1.0/24 only",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "C 192.168.1.0/24 and L 192.168.1.1/32",
+          "correct": true
+        },
+        "C": {
+          "text": "C 192.168.1.1/24 only",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "S 192.168.1.0/24 and C 192.168.1.1/32",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Every up interface with an address adds a connected route for its subnet and a local /32 host route for its own address.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "connected-local",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "router-basics"
+      ]
+    },
+    {
+      "id": "up-fhrp-virtual-mac",
+      "objectiveId": "3.5",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which virtual MAC address belongs to HSRP version 1 group 10?",
+      "options": {
+        "A": {
+          "text": "0000.0c9f.f00a",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "0007.b400.0a01",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "0000.0c07.ac0a",
+          "correct": true
+        },
+        "D": {
+          "text": "0000.5e00.010a",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "HSRPv1 uses 0000.0c07.acXX (group in hex), VRRP 0000.5e00.01XX, HSRPv2 0000.0c9f.fXXX and GLBP 0007.b400.XXYY.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "fhrp-virtual-mac",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-floating-static",
+      "objectiveId": "3.3.d",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "R1 learns 10.2.0.0/16 by OSPF over its primary link. You want a static route over a backup link that is used only if OSPF loses the route. What makes it a floating static?",
+      "options": {
+        "A": {
+          "text": "Give it an administrative distance of 1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Give it a longer prefix, such as /24",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Use the permanent keyword",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Give it an administrative distance above 110, for example 115",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "With AD 115 the static loses to OSPF (110) while OSPF has the route and is installed only when it disappears. A longer prefix would always win.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "floating-static",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "floating-static"
+      ]
+    },
+    {
+      "id": "up-glbp-avg",
+      "objectiveId": "3.5",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How does GLBP share hosts across several gateways?",
+      "options": {
+        "A": {
+          "text": "The AVG answers ARP for the virtual IP with different virtual MACs belonging to different AVFs",
+          "correct": true
+        },
+        "B": {
+          "text": "Each router owns a different virtual IP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The active router forwards every packet and the others wait",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Hosts are given several default gateways by DHCP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "One active virtual gateway hands out up to four virtual MACs, so hosts keep one gateway address but spread across routers.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "glbp-avg",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "glbp-load-balancing"
+      ]
+    },
+    {
+      "id": "up-host-route",
+      "objectiveId": "3.3.c",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which prefix lengths does a host route use?",
+      "options": {
+        "A": {
+          "text": "/0 for both",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "/30 for IPv4 and /127 for IPv6",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "/32 for IPv4 and /128 for IPv6",
+          "correct": true
+        },
+        "D": {
+          "text": "/24 for IPv4 and /64 for IPv6",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "A host route matches exactly one address, so every bit is network bits.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "host-route",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-hsrp-defaults",
+      "objectiveId": "3.5",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Two routers run HSRP with default settings. R1 was active, failed and has come back. Which router is active now?",
+      "options": {
+        "A": {
+          "text": "R1, because HSRP preemption is on by default",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Both, sharing the load",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "R2 stays active, because HSRP preemption is off by default",
+          "correct": true
+        },
+        "D": {
+          "text": "R1, because it was active first",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Without standby preempt, a recovered higher-priority router waits as standby. VRRP, by contrast, preempts by default.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "hsrp-defaults",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "hsrp-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-hsrp-show-standby",
+      "objectiveId": "3.5",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "R2# show standby brief\nInterface   Grp  Pri P State   Active          Standby         Virtual IP\nGi0/0       10   110 P Standby 10.1.1.2        local           10.1.1.254\n\nWhat does this output from R2 tell you?",
+      "options": {
+        "A": {
+          "text": "R2 is active for 10.1.1.254",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "R2 has priority 100 and preemption off",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The active router is 10.1.1.254",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "R2 is standby with priority 110 and preempt on; 10.1.1.2 is active",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "P means preempt. Since R2 has preempt and priority 110 but is still standby, the active router must have a higher priority (or a tie with a higher IP).",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "hsrp-show-standby",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "hsrp-basic"
+      ]
+    },
+    {
+      "id": "up-hsrp-track",
+      "objectiveId": "3.5",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "The active HSRP router’s WAN link fails but it stays active, so traffic is black-holed. Which pair of settings fixes that?",
+      "options": {
+        "A": {
+          "text": "Use the same priority on both routers",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Track the WAN interface to lower priority on the active router, and enable preempt on the standby",
+          "correct": true
+        },
+        "C": {
+          "text": "Raise the hello timer on both routers",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Disable preempt on both routers",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Tracking drops the active router’s priority below its peer, and preempt lets the peer take over.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "hsrp-track",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "hsrp-basic",
+        "hsrp-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-ipv6-static-link-local",
+      "objectiveId": "3.3.b",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You write an IPv6 static route whose next hop is the neighbor’s link-local address FE80::2. What else must the command include?",
+      "options": {
+        "A": {
+          "text": "An administrative distance",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The eui-64 keyword",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Nothing else",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The exit interface",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "The same link-local address can exist on every link, so the router needs the interface to know which link: ipv6 route 2001:db8:3::/64 g0/0 fe80::2.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-static-link-local",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ipv6-static-routing"
+      ]
+    },
+    {
+      "id": "up-ipv6-unicast-routing",
+      "objectiveId": "3.3.b",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A router has IPv6 addresses on two interfaces, but hosts on one LAN cannot reach the other and get no Router Advertisements. What is missing?",
+      "options": {
+        "A": {
+          "text": "ip routing",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "A default route ::/0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "ipv6 unicast-routing",
+          "correct": true
+        },
+        "D": {
+          "text": "ipv6 enable on the loopback",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "IPv6 forwarding (and sending RAs) is off on IOS routers until ipv6 unicast-routing is configured.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-unicast-routing",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ipv6-static-routing",
+        "ipv6-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-lpm-24",
+      "objectiveId": "3.2.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "R1 has the routing table shown. Where does it send a packet for 10.1.1.200?",
+      "options": {
+        "A": {
+          "text": "192.168.14.4",
+          "correct": true
+        },
+        "B": {
+          "text": "192.168.15.5",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "192.168.13.3",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "192.168.12.2",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "10.1.1.200 is outside 10.1.1.0/25 (.0 to .127), so the longest matching prefix is 10.1.1.0/24 via 192.168.14.4.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "lpm-24",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "static-routing"
+      ]
+    },
+    {
+      "id": "up-lpm-25",
+      "objectiveId": "3.2.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "R1 has the routing table shown. Where does it send a packet for 10.1.1.20?",
+      "options": {
+        "A": {
+          "text": "192.168.14.4",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "192.168.13.3",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "203.0.113.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "192.168.15.5",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Longest prefix wins before administrative distance is considered: the EIGRP /25 is more specific than the OSPF /24.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "lpm-25",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-lpm-default",
+      "objectiveId": "3.3.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "R1 has the routing table shown. Where does it send a packet for 172.16.5.5?",
+      "options": {
+        "A": {
+          "text": "Out every interface",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "203.0.113.1, using the default route",
+          "correct": true
+        },
+        "C": {
+          "text": "192.168.12.2, using the 10.0.0.0/8 route",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Nowhere: it drops the packet",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Nothing but 0.0.0.0/0 matches 172.16.5.5, so the gateway of last resort is used.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "lpm-default",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "default-route"
+      ]
+    },
+    {
+      "id": "up-ospf-2way-normal",
+      "objectiveId": "3.4.c",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "On a broadcast segment, show ip ospf neighbor on a DROTHER lists another DROTHER in state 2WAY. What does that mean?",
+      "options": {
+        "A": {
+          "text": "The MTU differs on the two interfaces",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "One router is in the wrong area",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Normal: DROTHERs only go FULL with the DR and BDR",
+          "correct": true
+        },
+        "D": {
+          "text": "Their hello timers do not match",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Limiting full adjacencies to the DR and BDR cuts LSA flooding. 2WAY between DROTHERs is expected.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-2way-normal",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-dr-bdr"
+      ]
+    },
+    {
+      "id": "up-ospf-adjacency-mismatch",
+      "objectiveId": "3.4.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Two routers on the same subnet will not become OSPF neighbors. Which difference would cause that?",
+      "options": {
+        "A": {
+          "text": "Different interface priorities",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Different router IDs",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Different hello and dead timers",
+          "correct": true
+        },
+        "D": {
+          "text": "Different OSPF process IDs",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Area, subnet, hello/dead timers, authentication and stub flags must match. Process IDs are local, priorities only steer the DR election, and router IDs must differ.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-adjacency-mismatch",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-ospf-dr-election",
+      "objectiveId": "3.4.c",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Four routers share an Ethernet segment with default settings. How is the DR chosen?",
+      "options": {
+        "A": {
+          "text": "The first router to boot, always",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Highest interface priority, then highest router ID",
+          "correct": true
+        },
+        "C": {
+          "text": "Lowest router ID",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Lowest interface IP address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Priority (default 1) decides first, then router ID. Priority 0 means never DR or BDR. The election is not preemptive once a DR exists.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-dr-election",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-dr-bdr"
+      ]
+    },
+    {
+      "id": "up-ospf-link-state",
+      "objectiveId": "3.4.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How does OSPF build its routing table?",
+      "options": {
+        "A": {
+          "text": "Each router sends its full routing table to neighbors every 30 seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Routers trust the hop count their neighbors advertise",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A central controller pushes routes to every router",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Each router floods LSAs, builds the same link-state database and runs SPF (Dijkstra) on it",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "OSPF is link state: everyone in the area shares a map and computes shortest paths. Periodic full tables are how distance-vector protocols like RIP work.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-link-state",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-single-area"
+      ]
+    },
+    {
+      "id": "up-ospf-multicast",
+      "objectiveId": "3.4.c",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "To which address do OSPF routers send hellos on a broadcast network?",
+      "options": {
+        "A": {
+          "text": "255.255.255.255",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "224.0.0.5",
+          "correct": true
+        },
+        "C": {
+          "text": "224.0.0.6",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "224.0.0.10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "224.0.0.5 reaches all OSPF routers; 224.0.0.6 reaches only the DR and BDR. 224.0.0.10 is EIGRP.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-multicast",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ospf-network-wildcard",
+      "objectiveId": "3.4.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which command enables OSPF in area 0 on the interface with address 10.1.1.1/24 and no other?",
+      "options": {
+        "A": {
+          "text": "network 10.0.0.0 0.255.255.255 area 0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "network 10.1.1.0 0.0.0.255 area 1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "network 10.1.1.1 0.0.0.0 area 0",
+          "correct": true
+        },
+        "D": {
+          "text": "network 10.1.1.1 255.255.255.0 area 0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "The network command uses a wildcard mask; 0.0.0.0 matches exactly one interface address. ip ospf 1 area 0 on the interface does the same.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-network-wildcard",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-single-area"
+      ]
+    },
+    {
+      "id": "up-ospf-p2p",
+      "objectiveId": "3.4.b",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You set ip ospf network point-to-point on both ends of a router-to-router Ethernet link. What changes?",
+      "options": {
+        "A": {
+          "text": "The routers must be in different areas",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "No DR or BDR is elected, so the adjacency forms faster",
+          "correct": true
+        },
+        "C": {
+          "text": "The link stops sending hellos",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The link’s cost doubles",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "With only two routers on the link, a DR adds nothing. Point-to-point skips the election and the wait timer.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-p2p",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-dr-bdr"
+      ]
+    },
+    {
+      "id": "up-ospf-passive",
+      "objectiveId": "3.4.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does passive-interface g0/1 do under router ospf 1?",
+      "options": {
+        "A": {
+          "text": "Stops OSPF hellos on G0/1 while still advertising its subnet",
+          "correct": true
+        },
+        "B": {
+          "text": "Removes G0/1’s subnet from OSPF",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Shuts G0/1 down",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Makes G0/1 accept routes but not send them",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Use it on LAN interfaces with no routers so nobody can form an adjacency there, while the LAN stays reachable.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-passive",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-single-area"
+      ]
+    },
+    {
+      "id": "up-ospf-priority-zero",
+      "objectiveId": "3.4.c",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does ip ospf priority 0 do on an interface?",
+      "options": {
+        "A": {
+          "text": "Stops the router from becoming DR or BDR on that segment",
+          "correct": true
+        },
+        "B": {
+          "text": "Makes the router the DR",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Disables OSPF on the interface",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Sets the interface cost to 0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Priority 0 routers still form adjacencies with the DR and BDR, but never take either role.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-priority-zero",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-dr-bdr"
+      ]
+    },
+    {
+      "id": "up-ospf-reference-bw",
+      "objectiveId": "3.4.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "OSPF gives a FastEthernet and a GigabitEthernet link the same cost of 1. Why, and what fixes it?",
+      "options": {
+        "A": {
+          "text": "Both links have the same delay; change the delay",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The cost is per hop; add more hops",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The default reference bandwidth is 100 Mbps; raise it with auto-cost reference-bandwidth",
+          "correct": true
+        },
+        "D": {
+          "text": "OSPF ignores bandwidth; use EIGRP instead",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Cost = reference bandwidth / interface bandwidth, never below 1. Set the same reference bandwidth on every router.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-reference-bw",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ospf-rid-change",
+      "objectiveId": "3.4.d",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You change a running router’s OSPF router-id. When does the new ID take effect?",
+      "options": {
+        "A": {
+          "text": "Only after removing all network statements",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "After clear ip ospf process (or a reload)",
+          "correct": true
+        },
+        "C": {
+          "text": "Immediately",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "After the next hello",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "IOS keeps the old router ID until the OSPF process is reset, and warns you so.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-rid-change",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-single-area"
+      ]
+    },
+    {
+      "id": "up-ospf-router-id",
+      "objectiveId": "3.4.d",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "R1 has no router-id command, a loopback 10.0.0.1 and physical interfaces 192.168.1.1 and 172.16.1.1, all up. What is its OSPF router ID?",
+      "options": {
+        "A": {
+          "text": "10.0.0.1",
+          "correct": true
+        },
+        "B": {
+          "text": "192.168.1.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "172.16.1.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "0.0.0.0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Order: the router-id command, then the highest loopback address, then the highest physical interface address. A loopback beats any physical interface.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-router-id",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-single-area"
+      ]
+    },
+    {
+      "id": "up-ospf-timers",
+      "objectiveId": "3.4.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What are the default OSPF hello and dead intervals on an Ethernet (broadcast) interface?",
+      "options": {
+        "A": {
+          "text": "30 seconds and 120 seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "5 seconds and 15 seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "60 seconds and 180 seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "10 seconds and 40 seconds",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Broadcast and point-to-point networks default to 10/40. The dead interval is four hellos.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ospf-timers",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-route-metric-brackets",
+      "objectiveId": "3.1.f",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "In the entry \"O 10.1.0.0/16 [110/20] via 192.168.13.3\", what do 110 and 20 mean?",
+      "options": {
+        "A": {
+          "text": "110 is the administrative distance and 20 is the OSPF cost",
+          "correct": true
+        },
+        "B": {
+          "text": "110 is the cost and 20 is the administrative distance",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "110 is the process ID and 20 is the area",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "110 is the hop count and 20 is the age in seconds",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Routing table brackets are [AD/metric]. AD compares sources; the metric compares paths within one protocol.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "route-metric-brackets",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ospf-single-area"
+      ]
+    },
+    {
+      "id": "up-static-default",
+      "objectiveId": "3.3.a",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which command gives a branch router a default route to its ISP at 203.0.113.1?",
+      "options": {
+        "A": {
+          "text": "ip default-gateway 203.0.113.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "ip route 0.0.0.0 255.255.255.255 203.0.113.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "ip route 0.0.0.0 0.0.0.0 203.0.113.1",
+          "correct": true
+        },
+        "D": {
+          "text": "ip route 255.255.255.255 0.0.0.0 203.0.113.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "A default route matches everything: network 0.0.0.0 with mask 0.0.0.0. ip default-gateway is for hosts and Layer 2 switches that do not route.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "static-default",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "default-route"
+      ]
+    },
+    {
+      "id": "up-static-recursive",
+      "objectiveId": "3.3.b",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which kind of static route names only the next-hop address, so the router must look that address up to find the exit interface?",
+      "options": {
+        "A": {
+          "text": "A directly attached static route",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "A fully specified static route",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A floating static route",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "A recursive static route",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Recursive routes give just the next hop; directly attached give just the interface; fully specified give both.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "static-recursive",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "static-routing"
+      ]
+    },
+    {
+      "id": "up-vrrp-standard",
+      "objectiveId": "3.5",
+      "domain": "IPC",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which statement compares VRRP and HSRP correctly?",
+      "options": {
+        "A": {
+          "text": "VRRP is an open standard whose roles are master and backup; HSRP is Cisco proprietary with active and standby",
+          "correct": true
+        },
+        "B": {
+          "text": "VRRP is Cisco proprietary; HSRP is the open standard",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "VRRP load-balances by default; HSRP does not",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "VRRP does not use a virtual IP address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Both give hosts one virtual gateway. GLBP is the one that balances hosts across several routers.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "vrrp-standard",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "vrrp-basic"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,522 @@
+{
+  "provenance": "Questions in this file were adopted from the MIT-licensed project Onesayi/ccna-simulator at commit 6efca4f15e8ccf01fb44973b46bb26922797965a (Alistair Nhiwatiwa, 2026-10-04), originally authored against the CCNA v1.0 blueprint and re-keyed here to the v1.1 leaf objective IDs in src/data/objectives.json. The full per-question mapping, including every item dropped as out of scope and the reason, is in docs/ADOPTED.md. Each question records its origin in its `upstream` field. Distractor rationales are marked TODO and are written during Phase 2; no question ships without them.",
+  "domain": "AUTO",
+  "questions": [
+    {
+      "id": "up-agentic-ai",
+      "objectiveId": "6.4",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What sets an agentic AI system apart from a generative AI chatbot in network operations?",
+      "options": {
+        "A": {
+          "text": "It replaces routing protocols with machine learning",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "It needs no permissions because it only reads data",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "It can plan multi-step tasks and act on them with tools, such as running show commands, toward a goal",
+          "correct": true
+        },
+        "D": {
+          "text": "It only answers questions in natural language",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "An agent pursues a goal by choosing and calling tools in a loop. Because it can act, it needs scoped permissions and human oversight.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "agentic-ai",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-agentic-ai-oversight",
+      "objectiveId": "6.4",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "An AI agent diagnoses an outage and proposes a configuration change on a production core switch. What is the sound practice?",
+      "options": {
+        "A": {
+          "text": "Apply it, then ask the agent to check its own work",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Ignore the proposal; AI output is never useful",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Review and approve the change, and its rollback, before it is applied",
+          "correct": true
+        },
+        "D": {
+          "text": "Let the agent apply it at once, since it found the fault",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Agents speed up diagnosis, but changes to production need a human in the loop, validation against the evidence and a way back.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "agentic-ai-oversight",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ansible-agentless",
+      "objectiveId": "6.6",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which statement about Ansible is true?",
+      "options": {
+        "A": {
+          "text": "It needs an agent installed on every router",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Devices pull their configuration from it on a schedule",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Its playbooks are written in Ruby",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "It is agentless and pushes changes over SSH using YAML playbooks",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Ansible needs only SSH (or an API) on the managed device. Puppet and Chef traditionally use agents and a pull model.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ansible-agentless",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ansible-playbook"
+      ]
+    },
+    {
+      "id": "up-ansible-inventory",
+      "objectiveId": "6.6",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "In Ansible, what does the inventory file define?",
+      "options": {
+        "A": {
+          "text": "The tasks to run, in order",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The Python modules to install",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The commit history of the configurations",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The managed hosts and the groups they belong to",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "The inventory lists hosts and groups (with variables); a playbook maps tasks onto hosts from it.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ansible-inventory",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ansible-playbook"
+      ]
+    },
+    {
+      "id": "up-mgmt-approaches",
+      "objectiveId": "6.6",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A team stores every device configuration as templates in Git and applies changes only through a pipeline after review. Which management approach is this?",
+      "options": {
+        "A": {
+          "text": "Infrastructure as code",
+          "correct": true
+        },
+        "B": {
+          "text": "Device-based management",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Cloud-based management",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Out-of-band management",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "IaC treats configuration as versioned, reviewable code applied by automation, so changes are repeatable and auditable. Device-based means logging in to each box.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "mgmt-approaches",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ansible-playbook"
+      ]
+    },
+    {
+      "id": "up-mgmt-cloud",
+      "objectiveId": "6.2",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "APs and switches at fifty branches are configured and monitored from a vendor-hosted web dashboard. Which approach is that?",
+      "options": {
+        "A": {
+          "text": "Device-based management",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Infrastructure as code",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Controller-less autonomous management",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Cloud-based management",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Cloud-managed devices (Meraki, for example) call home to a hosted controller, so no on-site controller is needed.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "mgmt-cloud",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-prompt-data-classification",
+      "objectiveId": "6.4",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You want a public generative AI service to explain a router’s running-config. What should you do first?",
+      "options": {
+        "A": {
+          "text": "Add your enable secret so the AI can log in",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Convert it to JSON",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Remove secrets and internal details the data classification policy does not allow to leave the company",
+          "correct": true
+        },
+        "D": {
+          "text": "Paste it as is so the answer is accurate",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Prompts sent to an external service leave your control. Passwords, keys, SNMP communities and internal addressing are often restricted data.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "prompt-data-classification",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-prompt-output-format",
+      "objectiveId": "6.4",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which prompt line is an output format instruction?",
+      "options": {
+        "A": {
+          "text": "\"Here is the output of show ip ospf neighbor.\"",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "\"Find why R2 has no OSPF neighbors.\"",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "\"Answer as a table with columns: interface, status, problem.\"",
+          "correct": true
+        },
+        "D": {
+          "text": "\"You are a Cisco TAC engineer.\"",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "The other lines are a persona, supplied data and the instruction. Asking for a fixed format makes the answer easy to check or feed into a tool.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "prompt-output-format",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-prompt-persona",
+      "objectiveId": "6.4",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A prompt begins \"You are a senior network engineer reviewing changes for a bank.\" Which prompt component is that?",
+      "options": {
+        "A": {
+          "text": "Context window",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Persona",
+          "correct": true
+        },
+        "C": {
+          "text": "Output format",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Data classification",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "A persona sets the role and expertise the model should answer from. Instructions say what to do; output format says how to present it.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "prompt-persona",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-rest-verbs",
+      "objectiveId": "6.5",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which HTTP method does a RESTCONF client use to read a device’s interface configuration?",
+      "options": {
+        "A": {
+          "text": "POST",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "PUT",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "DELETE",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "GET",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "GET reads, POST creates, PUT replaces, PATCH updates part of a resource and DELETE removes it.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "rest-verbs",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "restconf-api"
+      ]
+    },
+    {
+      "id": "up-restconf-transport",
+      "objectiveId": "6.5",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does RESTCONF need enabled on an IOS XE router?",
+      "options": {
+        "A": {
+          "text": "Telnet on the VTY lines",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "An Ansible inventory on the router",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The HTTPS server and the restconf command",
+          "correct": true
+        },
+        "D": {
+          "text": "SNMPv3 and a trap host",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "RESTCONF runs over HTTPS and exposes YANG-modelled data as JSON or XML.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "restconf-transport",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "restconf-api"
+      ]
+    },
+    {
+      "id": "up-sdn-northbound",
+      "objectiveId": "6.3.b",
+      "domain": "AUTO",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "In controller-based networking, what does the northbound interface connect?",
+      "options": {
+        "A": {
+          "text": "The controller to the network devices it manages",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Access switches to distribution switches",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Two controllers in a cluster",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "The controller to applications and scripts, usually through a REST API",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Southbound interfaces (NETCONF, OpenFlow, CLI over SSH) reach the devices; northbound APIs let apps and automation talk to the controller.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "sdn-northbound",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "restconf-api"
+      ]
+    }
+  ]
+}

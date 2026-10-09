@@ -1,0 +1,1423 @@
+{
+  "provenance": "Questions in this file were adopted from the MIT-licensed project Onesayi/ccna-simulator at commit 6efca4f15e8ccf01fb44973b46bb26922797965a (Alistair Nhiwatiwa, 2026-10-04), originally authored against the CCNA v1.0 blueprint and re-keyed here to the v1.1 leaf objective IDs in src/data/objectives.json. The full per-question mapping, including every item dropped as out of scope and the reason, is in docs/ADOPTED.md. Each question records its origin in its `upstream` field. Distractor rationales are marked TODO and are written during Phase 2; no question ships without them.",
+  "domain": "NF",
+  "questions": [
+    {
+      "id": "up-apipa",
+      "objectiveId": "1.7",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A Windows PC set to obtain an address automatically shows 169.254.33.7. What does that tell you?",
+      "options": {
+        "A": {
+          "text": "Its DNS server is unreachable",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "It never got a reply from a DHCP server",
+          "correct": true
+        },
+        "C": {
+          "text": "The DHCP server leased it a link-local address on purpose",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "It has a duplicate address on the LAN",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "169.254.0.0/16 is APIPA. Windows picks one when DHCP discovery fails, so look at the path to the DHCP server or the relay.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "apipa",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "dhcp-server",
+        "wireless-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-cable-copper-distance",
+      "objectiveId": "1.3.a",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What is the maximum segment length for 1000BASE-T over Cat 5e or Cat 6 copper?",
+      "options": {
+        "A": {
+          "text": "55 metres",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "185 metres",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "500 metres",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "100 metres",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Twisted-pair Ethernet up to 1 Gbps is rated for 100 m. Longer runs need fiber or a switch in between.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "cable-copper-distance",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-cable-crossover",
+      "objectiveId": "1.3.b",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Two older switches without Auto MDI-X are cabled together with copper. Which cable brings the link up?",
+      "options": {
+        "A": {
+          "text": "A rollover cable",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "A serial DCE cable",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A crossover cable",
+          "correct": true
+        },
+        "D": {
+          "text": "A straight-through cable",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Like devices (switch to switch, PC to PC) need a crossover; unlike devices (PC to switch) use straight-through. Auto MDI-X removes the issue on modern gear.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "cable-crossover",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-cable-fiber",
+      "objectiveId": "1.3.a",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which statement about fiber is true?",
+      "options": {
+        "A": {
+          "text": "Single-mode fiber has a narrower core and reaches farther than multimode",
+          "correct": true
+        },
+        "B": {
+          "text": "Multimode fiber reaches farther because it carries more modes",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Single-mode fiber uses cheaper LED transmitters",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Fiber is limited to 100 metres like copper",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Single-mode uses a small core and lasers for kilometres of reach; multimode has a wider core, cheaper optics and shorter reach.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "cable-fiber",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-cable-late-collisions",
+      "objectiveId": "1.4",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "show interfaces on one end of a link shows late collisions climbing. What is the most likely cause?",
+      "options": {
+        "A": {
+          "text": "A native VLAN mismatch",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "An MTU mismatch",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A duplex mismatch",
+          "correct": true
+        },
+        "D": {
+          "text": "A speed mismatch",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "The half-duplex side sees late collisions while the full-duplex side logs CRC errors and runts. A speed mismatch would keep the link down instead.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "cable-late-collisions",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-client-linux-ip",
+      "objectiveId": "1.10",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "On a Linux host, which command shows the IP addresses assigned to its interfaces?",
+      "options": {
+        "A": {
+          "text": "show ip interface brief",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "netsh interface ip show config",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "ip address show",
+          "correct": true
+        },
+        "D": {
+          "text": "ipconfig /all",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "ip address (or the older ifconfig) is the Linux tool. ipconfig and netsh are Windows; show ip interface brief is Cisco IOS.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "client-linux-ip",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-dhcp-renew-windows",
+      "objectiveId": "1.10",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which Windows command makes a PC ask its DHCP server for a lease again?",
+      "options": {
+        "A": {
+          "text": "ipconfig /release",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "ipconfig /flushdns",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "arp -d *",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "ipconfig /renew",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "/release gives the lease back; /renew starts the request. /flushdns and arp -d clear caches but do not touch the address.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "dhcp-renew-windows",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-extended-ping",
+      "objectiveId": "1.4",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "You want to test whether a remote network has a route back to R1’s LAN interface. Which tool lets you set the source of a ping from R1?",
+      "options": {
+        "A": {
+          "text": "An extended ping (ping with the source option)",
+          "correct": true
+        },
+        "B": {
+          "text": "A standard ping",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "show ip route",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "show cdp neighbors",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "A normal ping is sourced from the exit interface. Sourcing it from the LAN address proves the return path to that subnet too.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "extended-ping",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-interface-admin-down",
+      "objectiveId": "1.6",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "show ip interface brief lists Gi0/1 as \"administratively down / down\". What fixes it?",
+      "options": {
+        "A": {
+          "text": "no shutdown on the interface",
+          "correct": true
+        },
+        "B": {
+          "text": "Replacing the cable",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Matching the duplex on both ends",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Adding an IP address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Administratively down means the interface is shut down in the configuration. Router interfaces start that way.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "interface-admin-down",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "router-basics"
+      ]
+    },
+    {
+      "id": "up-ipv4-broadcast-26",
+      "objectiveId": "1.6",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What is the broadcast address of the subnet that contains 172.16.45.70/26?",
+      "options": {
+        "A": {
+          "text": "172.16.45.127",
+          "correct": true
+        },
+        "B": {
+          "text": "172.16.45.63",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "172.16.45.128",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "172.16.45.255",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "A /26 moves in blocks of 64 in the last octet: .0, .64, .128, .192. Host .70 sits in the .64 block, whose last address, .127, is the broadcast.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv4-broadcast-26",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "subnetting-hosts"
+      ]
+    },
+    {
+      "id": "up-ipv4-gateway-outside",
+      "objectiveId": "1.6",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A PC is set to 10.1.1.200/25 with default gateway 10.1.1.1. It can reach hosts in its own subnet but nothing beyond. What is wrong?",
+      "options": {
+        "A": {
+          "text": "The gateway is not in the PC’s subnet",
+          "correct": true
+        },
+        "B": {
+          "text": "The /25 mask is invalid for a 10.x address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The PC needs a DNS server to leave the subnet",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "10.1.1.200 is the broadcast address of its subnet",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "10.1.1.200/25 belongs to 10.1.1.128/25 (hosts .129 to .254). The gateway 10.1.1.1 is in the other half, so the PC cannot ARP for it.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv4-gateway-outside",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "fix-the-office"
+      ]
+    },
+    {
+      "id": "up-ipv4-hosts-27",
+      "objectiveId": "1.6",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How many addresses can be assigned to hosts in a /27 subnet?",
+      "options": {
+        "A": {
+          "text": "62",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "30",
+          "correct": true
+        },
+        "C": {
+          "text": "32",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "14",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "A /27 leaves 5 host bits: 2^5 = 32 addresses, minus the network and broadcast addresses, gives 30 usable hosts.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv4-hosts-27",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "subnetting-hosts"
+      ]
+    },
+    {
+      "id": "up-ipv4-mask-22",
+      "objectiveId": "1.6",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which dotted-decimal mask matches a /22 prefix?",
+      "options": {
+        "A": {
+          "text": "255.255.248.0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "255.255.254.0",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "255.255.255.252",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "255.255.252.0",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Twenty-two bits is 16 bits for the first two octets plus 6 in the third: 11111100 = 252.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv4-mask-22",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ipv4-private",
+      "objectiveId": "1.7",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which address is a private (RFC 1918) address?",
+      "options": {
+        "A": {
+          "text": "11.0.0.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "172.20.14.1",
+          "correct": true
+        },
+        "C": {
+          "text": "172.32.1.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "192.169.10.1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "The private ranges are 10.0.0.0/8, 172.16.0.0/12 (172.16.0.0 to 172.31.255.255) and 192.168.0.0/16. 172.32.x.x falls just outside the /12.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv4-private",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "nat-pat"
+      ]
+    },
+    {
+      "id": "up-ipv4-smallest-prefix",
+      "objectiveId": "1.6",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A VLAN needs room for 50 hosts. Which prefix length wastes the fewest addresses?",
+      "options": {
+        "A": {
+          "text": "/26",
+          "correct": true
+        },
+        "B": {
+          "text": "/25",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "/27",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "/28",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "A /27 offers only 30 hosts. A /26 offers 62, the smallest block that fits 50.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv4-smallest-prefix",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "subnetting-hosts"
+      ]
+    },
+    {
+      "id": "up-ipv4-ttl",
+      "objectiveId": "1.4",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What does a router do with the IPv4 TTL field when it forwards a packet?",
+      "options": {
+        "A": {
+          "text": "Decrements it by 1 and drops the packet if it reaches 0",
+          "correct": true
+        },
+        "B": {
+          "text": "Resets it to 255",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Increments it by 1 to count hops",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Leaves it unchanged",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "TTL stops routing loops from circulating packets forever. Traceroute relies on the ICMP Time Exceeded messages routers send when it hits 0.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv4-ttl",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ipv6-compress",
+      "objectiveId": "1.8",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What is the shortest valid way to write 2001:0db8:0000:0000:0000:ff00:0042:8329?",
+      "options": {
+        "A": {
+          "text": "2001:db8:::ff00:42:8329",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "2001:db8::ff00::42:8329",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "2001:db8::ff00:42:8329",
+          "correct": true
+        },
+        "D": {
+          "text": "2001:db8::ff:42:8329",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Drop leading zeros in each quartet (0db8 to db8, 0042 to 42) and replace one run of all-zero quartets with ::. Trailing zeros (ff00) stay, and :: may appear only once.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-compress",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ipv6-addressing"
+      ]
+    },
+    {
+      "id": "up-ipv6-eui64",
+      "objectiveId": "1.9.d",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A router interface has MAC 0011.2233.4455 and is configured with ipv6 address 2001:db8:1:1::/64 eui-64. Which address does it build?",
+      "options": {
+        "A": {
+          "text": "2001:db8:1:1:211:22fe:ff33:4455",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "2001:db8:1:1:211:22ff:fe33:4455",
+          "correct": true
+        },
+        "C": {
+          "text": "2001:db8:1:1:11:22ff:fe33:4455",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "2001:db8:1:1:211:2233:fffe:4455",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Split the MAC in half, insert FFFE in the middle (0011.22FF.FE33.4455), then flip the 7th bit of the first byte: 00 becomes 02.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-eui64",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ipv6-addressing"
+      ]
+    },
+    {
+      "id": "up-ipv6-link-local",
+      "objectiveId": "1.9.a",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which prefix do IPv6 link-local addresses come from?",
+      "options": {
+        "A": {
+          "text": "FE80::/10",
+          "correct": true
+        },
+        "B": {
+          "text": "FC00::/7",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "FF02::/16",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "2000::/3",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Link-local is FE80::/10 and never routed. FC00::/7 is unique local, FF02::/16 link-scope multicast, and 2000::/3 global unicast.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-link-local",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ipv6-addressing"
+      ]
+    },
+    {
+      "id": "up-ipv6-multicast-all-nodes",
+      "objectiveId": "1.9.c",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which IPv6 address reaches every node on the local link, much like an IPv4 broadcast?",
+      "options": {
+        "A": {
+          "text": "FF02::1",
+          "correct": true
+        },
+        "B": {
+          "text": "FF02::2",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "FE80::1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "::1",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "FF02::1 is all nodes, FF02::2 all routers. ::1 is loopback; IPv6 has no broadcast.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-multicast-all-nodes",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ipv6-ndp",
+      "objectiveId": "1.9.b",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "IPv6 has no ARP. Which messages does a host use instead to learn a neighbor’s MAC address?",
+      "options": {
+        "A": {
+          "text": "ICMPv6 Neighbor Solicitation and Neighbor Advertisement",
+          "correct": true
+        },
+        "B": {
+          "text": "ICMPv6 Router Solicitation and Router Advertisement",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "DHCPv6 Solicit and Advertise",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Broadcast ARP over IPv6",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "NDP replaces ARP: an NS goes to the target’s solicited-node multicast address and the target answers with an NA.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-ndp",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-ipv6-slaac",
+      "objectiveId": "1.8",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A host set for SLAAC has only a link-local address. Where should it have learned its global prefix from?",
+      "options": {
+        "A": {
+          "text": "Its own MAC address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "A Neighbor Advertisement from its gateway",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "A Router Advertisement from a router on its link",
+          "correct": true
+        },
+        "D": {
+          "text": "A DHCPv6 server lease",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "SLAAC hosts take the /64 prefix from Router Advertisements. No RA (for example, a router without ipv6 unicast-routing) means no global address.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-slaac",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "ipv6-troubleshoot"
+      ]
+    },
+    {
+      "id": "up-ipv6-ula",
+      "objectiveId": "1.9.a",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which IPv6 addresses play the role that RFC 1918 private addresses play in IPv4?",
+      "options": {
+        "A": {
+          "text": "Unique local addresses in FC00::/7",
+          "correct": true
+        },
+        "B": {
+          "text": "Link-local addresses in FE80::/10",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Global unicast addresses in 2000::/3",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Anycast addresses in FF00::/8",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Unique local addresses (in practice FDxx::) are routable inside an organisation but dropped by ISPs, like private IPv4.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "ipv6-ula",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-packet-dst-mac",
+      "objectiveId": "1.1.b",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "PC1 sends a packet to a server in another subnet. What destination MAC address does the frame leaving PC1 carry?",
+      "options": {
+        "A": {
+          "text": "The broadcast address FFFF.FFFF.FFFF",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "The MAC address of the switch PC1 is connected to",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The MAC address of PC1’s default gateway",
+          "correct": true
+        },
+        "D": {
+          "text": "The server’s MAC address",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "The IP addresses stay end to end, but each Layer 2 hop is rewritten. A remote destination means the first frame goes to the gateway.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "packet-dst-mac",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "router-basics"
+      ]
+    },
+    {
+      "id": "up-spine-leaf",
+      "objectiveId": "1.2.c",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which rule describes a spine-leaf data centre design?",
+      "options": {
+        "A": {
+          "text": "Every leaf switch connects to every spine switch, and servers connect only to leaves",
+          "correct": true
+        },
+        "B": {
+          "text": "Spine switches connect to each other in a full mesh",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Leaf switches connect to each other for redundancy",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Servers connect to spines for the lowest latency",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Any server is the same number of hops from any other, which suits heavy east-west traffic between virtual machines.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "spine-leaf",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-switch-learns-source",
+      "objectiveId": "1.13.a",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which address does a switch use to build its MAC address table?",
+      "options": {
+        "A": {
+          "text": "The source IP address of packets",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "MAC addresses announced by CDP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "The source MAC address of frames it receives",
+          "correct": true
+        },
+        "D": {
+          "text": "The destination MAC address of frames it receives",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "Switches learn where a MAC lives from the source field and the arriving port, then forward by looking up the destination.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "switch-learns-source",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-switch-unknown-unicast",
+      "objectiveId": "1.13.a",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A switch receives a frame whose destination MAC address is not in its MAC address table. What does it do?",
+      "options": {
+        "A": {
+          "text": "Forwards it to the default gateway only",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Floods it out every port in the same VLAN except the one it arrived on",
+          "correct": true
+        },
+        "C": {
+          "text": "Drops it",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Sends an ARP request for the destination",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "Unknown unicast is flooded within the VLAN. The switch learns the source MAC from every frame, so the reply fills in the table.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "switch-unknown-unicast",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "vlans-basic"
+      ]
+    },
+    {
+      "id": "up-tcp-handshake",
+      "objectiveId": "1.5",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which messages make up the TCP three-way handshake, in order?",
+      "options": {
+        "A": {
+          "text": "SYN, SYN, ACK",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "SYN, SYN-ACK, ACK",
+          "correct": true
+        },
+        "C": {
+          "text": "SYN, ACK, FIN",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "ACK, SYN, SYN-ACK",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "B"
+      ],
+      "explanation": "The client sends SYN, the server answers SYN-ACK, and the client confirms with ACK.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "tcp-handshake",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-traceroute-mechanism",
+      "objectiveId": "1.4",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "How does traceroute discover each router along the path?",
+      "options": {
+        "A": {
+          "text": "It sends probes with increasing TTL values and lists who returns ICMP Time Exceeded",
+          "correct": true
+        },
+        "B": {
+          "text": "Each router adds its address to the packet as it passes",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "It asks each router for its routing table",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "It uses CDP to find the next hop",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "A probe with TTL 1 expires at the first router, TTL 2 at the second, and so on, until the destination answers.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "traceroute-mechanism",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "fix-the-office"
+      ]
+    },
+    {
+      "id": "up-udp-apps",
+      "objectiveId": "1.5",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which application protocol runs over UDP?",
+      "options": {
+        "A": {
+          "text": "SSH",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "HTTPS",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "TFTP",
+          "correct": true
+        },
+        "D": {
+          "text": "FTP",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "TFTP uses UDP 69 and handles its own acknowledgements. FTP, SSH and HTTPS all use TCP.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "udp-apps",
+        "licence": "MIT"
+      },
+      "upstreamLabs": [
+        "config-backup"
+      ]
+    },
+    {
+      "id": "up-virt-containers",
+      "objectiveId": "1.12",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "What is the key difference between containers and virtual machines?",
+      "options": {
+        "A": {
+          "text": "Containers share the host operating system kernel; each VM runs its own guest OS",
+          "correct": true
+        },
+        "B": {
+          "text": "Containers need a Type 1 hypervisor; VMs do not",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "VMs start faster and use less memory than containers",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "Containers cannot be moved between hosts",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "A"
+      ],
+      "explanation": "Because containers share the host kernel they are small and fast to start, but a host OS crash takes every container with it.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "virt-containers",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-virt-saas",
+      "objectiveId": "1.2.f",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "A company uses Microsoft 365 in the browser and manages nothing but user settings. Which cloud service model is that?",
+      "options": {
+        "A": {
+          "text": "Infrastructure as a Service",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "Private cloud",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "Software as a Service",
+          "correct": true
+        },
+        "D": {
+          "text": "Platform as a Service",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        }
+      },
+      "answer": [
+        "C"
+      ],
+      "explanation": "SaaS delivers finished applications. PaaS hosts your own code; IaaS rents virtual servers, storage and networks. Private cloud is a deployment model, not a service model.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "virt-saas",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    },
+    {
+      "id": "up-virt-type1",
+      "objectiveId": "1.12",
+      "domain": "NF",
+      "type": "mcq-single",
+      "preamble": null,
+      "prompt": "Which describes a Type 1 hypervisor such as VMware ESXi?",
+      "options": {
+        "A": {
+          "text": "It runs as an application on a desktop operating system",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "B": {
+          "text": "It shares one kernel among all its workloads",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "C": {
+          "text": "It only runs containers",
+          "correct": false,
+          "rationale": "TODO: explain why this is wrong"
+        },
+        "D": {
+          "text": "It runs directly on the server hardware",
+          "correct": true
+        }
+      },
+      "answer": [
+        "D"
+      ],
+      "explanation": "Type 1 (bare-metal) hypervisors sit on the hardware and suit data centres. Type 2 hypervisors, like VirtualBox, run on top of a host OS.",
+      "difficulty": "medium",
+      "batch": "upstream",
+      "upstream": {
+        "project": "Onesayi/ccna-simulator",
+        "commit": "6efca4f15e8ccf01fb44973b46bb26922797965a",
+        "id": "virt-type1",
+        "licence": "MIT"
+      },
+      "upstreamLabs": []
+    }
+  ]
+}

@@ -30,6 +30,7 @@ const PREAMBLE_FLOOR = 2
  * @param {string} input.milestone   which milestone to judge against
  * @param {boolean} [input.checkTotal] enforce the exact total (milestone close only)
  * @param {boolean} [input.openBank]  allow shape errors while the bank is mid-authoring
+ * @param {Array}    [input.adoptionRegistry] rows from docs/ADOPTED.md, to cross-check adopted questions
  */
 export function validateBank({
   questions,
@@ -37,6 +38,7 @@ export function validateBank({
   config,
   milestone,
   checkTotal = false,
+  adoptionRegistry = null,
 }) {
   const results = []
   const record = (name, pass, detail) => results.push({ name, pass, detail })
@@ -278,7 +280,53 @@ export function validateBank({
       : `${questions.filter((q) => Array.isArray(q.sources)).length} sourced item(s) checked`
   )
 
-  // ---- 13. exact total, milestone close only -----------------------------
+  // ---- 13. adopted questions are recorded and attributed -------------------
+  // An adopted question must name its source AND that source must be listed in
+  // docs/ADOPTED.md. Schema validation already rejects a malformed `upstream`
+  // block; this check is what stops the legal record drifting away from the
+  // content, which is the failure that would actually matter.
+  const adopted = questions.filter((q) => q.upstream)
+  const registry = adoptionRegistry
+  const unregistered = registry
+    ? adopted
+        .filter((q) => !registry.some((row) => row.upstreamId === q.upstream.id))
+        .map((q) => `${q.id} -> ${q.upstream.id}`)
+    : []
+
+  record(
+    'Every adopted question is registered in docs/ADOPTED.md',
+    unregistered.length === 0,
+    adopted.length === 0
+      ? 'no adopted questions'
+      : !registry
+        ? `${adopted.length} adopted question(s); no adoption registry supplied, skipping`
+        : unregistered.length
+          ? `${unregistered.length} unregistered: ${unregistered.slice(0, 6).join(', ')}`
+          : `all ${adopted.length} adopted questions registered in ADOPTED.md`
+  )
+
+  // ---- 14. no unshippable placeholder rationale ---------------------------
+  // Adopted questions arrive with a single upstream explanation, not a
+  // rationale per wrong option. Our own defence against a defensible second
+  // answer is that rationale, so an unreplaced TODO must never reach a closed
+  // milestone. This is why the adopted bank can sit in the repo now and still
+  // be unmergeable at milestone close.
+  const placeholders = questions
+    .filter((q) =>
+      q.options && Object.values(q.options).some((o) => o.rationale === 'TODO: explain why this is wrong')
+    )
+    .map((q) => q.id)
+
+  record(
+    'Every wrong option carries a real rationale',
+    placeholders.length === 0,
+    placeholders.length === 0
+      ? `${questions.filter((q) => q.options).length} question(s) fully rationalised`
+      : `${placeholders.length} option(s) still hold a TODO placeholder, ` +
+        `first: ${placeholders.slice(0, 6).join(', ')}`
+  )
+
+  // ---- 15. exact total, milestone close only -----------------------------
   if (checkTotal) {
     record(`Total equals the ${milestone} target of ${spec.target}`, currentTotal === spec.target,
       currentTotal === spec.target ? `${currentTotal} questions` : `${currentTotal} vs target ${spec.target}`)
