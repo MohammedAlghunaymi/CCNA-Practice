@@ -8,7 +8,12 @@
  */
 
 export const QUESTION_TYPES = ['mcq-single', 'mcq-multi', 'drag-drop', 'hands-on']
-export const PREAMBLES = ['show-output', null]
+/**
+ * `show-output` presents captured or transcribed IOS CLI output; `show-json`
+ * presents REST/Ansible/Python JSON output. Automation objectives carry the
+ * latter because they are not CLI configure-and-verify work.
+ */
+export const PREAMBLES = ['show-output', 'show-json', null]
 export const DIFFICULTIES = ['easy', 'medium', 'hard']
 
 export const EXPECTED_STATE_OPS = [
@@ -39,7 +44,12 @@ export function validateQuestionShape(question) {
     errors.push(`type must be one of ${QUESTION_TYPES.join(', ')} (got ${JSON.stringify(q.type)})`)
   }
   if (!PREAMBLES.includes(q.preamble ?? null)) {
-    errors.push(`preamble must be null or "show-output" (got ${JSON.stringify(q.preamble)})`)
+    errors.push(
+      `preamble must be null, "show-output" or "show-json" (got ${JSON.stringify(q.preamble)})`
+    )
+  }
+  if (q.preamble && q.type === 'hands-on') {
+    errors.push('hands-on items carry their task in expectedState, not a show preamble')
   }
   if (typeof q.prompt !== 'string' || !q.prompt.trim()) errors.push('prompt must be a non-empty string')
   if (!DIFFICULTIES.includes(q.difficulty)) {
@@ -204,22 +214,59 @@ export function validateObjectiveMapping(question, objectives) {
   return errors
 }
 
-/** Index objectives.json into a fast lookup used by the validators. */
+/**
+ * Index objectives.json into a fast lookup used by the validators.
+ *
+ * Also recounts the declared `leafCount` fields. The plan's "97 topics" is the
+ * LEAF-ONLY count: lettered sub-objectives and unlettered leaf objectives each
+ * count once, while non-leaf parents are containers and do not. The declared
+ * numbers are duplicated metadata, so they can drift from the data, and nothing
+ * else checks them.
+ */
 export function indexObjectives(objectives) {
   const byId = {}
   const domainById = {}
   const leavesByDomain = {}
   const leafIdsByDomain = {}
+  const declaredLeafCount = objectives.meta?.leafCount
+  const declaredDomainLeafCount = {}
+  let leafTotal = 0
+  let parentTotal = 0
+  const leafCountErrors = []
 
   for (const domain of objectives.domains) {
-    leavesByDomain[domain.id] = domain.objectives.filter((o) => o.isLeaf).length
+    declaredDomainLeafCount[domain.id] = domain.leafCount
+    const leaves = domain.objectives.filter((o) => o.isLeaf)
+    leavesByDomain[domain.id] = leaves.length
+    leafTotal += leaves.length
+    if (domain.leafCount !== undefined && domain.leafCount !== leaves.length) {
+      leafCountErrors.push(
+        `domain ${domain.id} declares leafCount ${domain.leafCount} but holds ${leaves.length} testable topics`
+      )
+    }
     leafIdsByDomain[domain.id] = []
     for (const objective of domain.objectives) {
       byId[objective.id] = { ...objective, domain: domain.id }
       domainById[objective.id] = domain.id
       if (objective.isLeaf) leafIdsByDomain[domain.id].push(objective.id)
+      else parentTotal++
     }
   }
 
-  return { byId, domainById, leavesByDomain, leafIdsByDomain }
+  if (declaredLeafCount !== undefined && declaredLeafCount !== leafTotal) {
+    leafCountErrors.push(
+      `meta.leafCount declares ${declaredLeafCount} but the domains hold ${leafTotal} testable topics`
+    )
+  }
+
+  return {
+    byId,
+    domainById,
+    leavesByDomain,
+    leafIdsByDomain,
+    leafCountErrors,
+    declaredLeafCount,
+    declaredDomainLeafCount,
+    counts: { leafTotal, parentTotal, nodeTotal: leafTotal + parentTotal },
+  }
 }

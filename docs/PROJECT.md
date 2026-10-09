@@ -15,7 +15,7 @@ Candidates practise on material differing from the exam where it matters: no tim
 
 | Goal | Acceptance test |
 |---|---|
-| **G1** Format, pressure and navigation mirror the real exam | Owner walks a 100-item fixture exam end-to-end; `exam.test.ts` asserts one-way enforcement, auto-submit at 0:00, review-screen jump-back |
+| **G1** Format, pressure and navigation mirror the real exam | Owner walks a 100-item fixture exam end-to-end; `exam.test.ts` asserts one-way enforcement and auto-submit at 0:00 |
 | **G2** All four exam formats implemented, drawn in defined proportions | `drawExam.test.ts` asserts the §7b matrix cell-by-cell — every domain×format cell and every domain total |
 | **G3** Hands-on tasks where the student configures a device via CLI or GUI | All 15 shipped tasks run end-to-end and grade via machine-checkable `expectedState` |
 | **G4** Every question maps to an official sub-objective ID | `validate:bank` fails on any unmapped ID; `validate:docs` fails unless this file enumerates all 97 |
@@ -28,19 +28,36 @@ Reproducing Cisco's actual exam questions · certifying anyone · v2.0 · Packet
 
 ## 5. Legal position
 
-Code and questions original, MIT. Objective **descriptions paraphrased in our own words**; we reproduce only the objective IDs, the six domain names and the domain weights — short factual labels rather than expression. Cisco's blueprint wording is quoted in §6 with citation; IOS syntax is factual interface notation. Blueprint source: Cisco Learning Network. "CCNA" is Cisco's trademark, used descriptively; non-affiliation notice, no Cisco logos. No dumps, no scraped questions, no copied assets.
+Code and questions original, MIT. Objective **descriptions paraphrased in our own words**; we reproduce only the objective IDs, the six domain names and the domain weights — short factual labels rather than expression. Cisco's blueprint wording is quoted in §6 with citation; IOS syntax is factual interface notation. Blueprint source: `learningcontent.cisco.com/documents/marketing/exam-topics/200-301-CCNA-v1.1.pdf`. "CCNA" is Cisco's trademark, used descriptively; non-affiliation notice, no Cisco logos. No dumps, no scraped questions, no copied assets.
 
 ## 6. The exam we're mirroring
 
-**Published by Cisco** (`learningnetwork.cisco.com/s/ccna-exam-topics`, `/s/certification-exam-tutorials`, `learningcontent.cisco.com/…/200-301-CCNA-v1.1.pdf`): 120 minutes · domain weights NF 20% / NA 20% / IPC 25% / IPS 10% / SEC 15% / Auto 10% · v1.1 last test **February 2, 2027**, v2.0 first test **February 3, 2027** · item types per Cisco's exam tutorial: *"multiple-choice single answer, multiple-choice multiple answers, drag & drop, and labs"* · "Pass/fail results are **typically** available online within 48 hours."
+**Published by Cisco** (`learningnetwork.cisco.com/s/ccna-exam-topics`, `/s/certification-exam-tutorials`, `learningcontent.cisco.com/…/200-301-CCNA-v1.1.pdf`): 120 minutes · domain weights NF 20% / NA 20% / IPC 25% / IPS 10% / SEC 15% / Auto 10% · v1.1 last test **February 2, 2027**, v2.0 first test **February 3, 2027** · item types per Cisco's exam tutorial: *"multiple-choice single answer, multiple-choice multiple answers, drag & drop, and labs"* · "Pass/fail results are **typically** available online within 48 hours" · *"Passing scores are set by using statistical analysis… Cisco does not publish exam passing scores."*
 
-**Observed exam practice, not restated on those pages:** one-way navigation during the exam pass; auto-submit at timer expiry; a pre-submit review screen; per-domain **proficiency** on the score report.
+### Evidence, graded by what each source actually covers
 
-**Community-reported, not published by Cisco:** question count 100–120 (default 100) · hands-on items 2–5 per exam · passing scaled score 825/1000, never confirmed.
+Sources differ in scope, so a single published/not-published split would be dishonest. Each claim below is graded against the source that carries it.
+
+**(a) No back navigation for performance-based lab items — CISCO-PUBLISHED.** Anna Rubin, *Manager, Associate and Professional Certifications*, "New Performance-Based Lab Exam Items Build Opportunities", `blogs.cisco.com/learning`, 2022-07-07: *"Candidates can skip any item and move to the next item, but they cannot go back to a previous item."*
+*Qualifier:* an authored Learning & Certifications blog post, not exam policy documentation; its declared subject is the lab environment; it covers all Associate and Professional exams without naming 200-301 v1.1. Neither the Cisco Candidate Rules Agreement nor the Pearson VUE Candidate Rules Agreement mentions navigation at all.
+
+**(b) The same rule applied to multiple-choice and drag-drop — SOURCE-PENDING, and we implement it anyway.** The quoted sentence follows an enumeration of all three item types (*"candidates may encounter performance-based labs, multiple-choice items, and drag-and-drop items… Candidates can skip any item"*), which reads as exam-wide, and July 2022 is contemporaneous with v1.1. But no Cisco page states the MCQ rule directly. The emulator implements one-way navigation because no credible source reports otherwise. **This is a graded inference, not a confirmed fact**, and it is recorded as one.
+
+**(c) No per-item time limit — CISCO-PUBLISHED, and exam-scoped.** Same post: *"the whole exam is timed, but candidates have no limits on how long they spend on each question."* The 5–7 minutes quoted alongside it is a **design target for labs** (*"designed to give candidates 5-7 minutes to complete"*), not an enforced limit, so the emulator shows it as a soft advisory and never as a lock.
+
+**(d) COMMUNITY-REPORTED.** The absence of a flag-for-review affordance and the absence of a pre-submit review screen. No Cisco page and not the blog above address either.
+
+**(e) The score report — MIXED.** *Cisco-published:* *"candidates receive a score report along with their performance breakout by exam section"* (Exam, Testing, and Certification Policies). *Community-reported:* the label **proficiency**, and the mapping of those sections onto the six blueprint domains.
+
+**Community-reported, never confirmed by Cisco:** question count 100–120 (default 100) · hands-on items 2–5 per exam · passing scaled score 825/1000 — Cisco states outright that it does not publish passing scores.
 
 ## 7a. Exam-day shell and scoring
 
-Persistent header with countdown timer and question counter. During the exam pass navigation is one-way, with a confirmation dialog stating the student cannot return. Flag-for-review marks an item. A pre-submit review screen lists every item answered / unanswered / flagged and lets the student **jump to any flagged or unanswered item to answer it before submitting**. Auto-submit fires when the timer reaches 0:00.
+Persistent header with countdown timer and question counter. **During the exam pass navigation is one-way: the student may advance only.** There is no back control, no flag-for-review affordance and no pre-submit review screen. A confirmation on the first advance states the student cannot return. Auto-submit fires when the timer reaches 0:00.
+
+There is **no per-item timer**. Per §6(c) the whole exam is timed but candidates have no limit per question, so the only countdown is the whole-exam one. Hands-on items carry a soft elapsed-time advisory at 5 and 7 minutes matching Cisco's stated lab design target; it never locks, grades or ends the item.
+
+Per §6(b) the one-way model is a graded inference rather than a confirmed fact, and `docs/GROWTH.md` carries it as a v2.0 item to re-verify.
 
 **Per-question scoring — all-or-nothing, no partial credit:**
 
@@ -57,13 +74,14 @@ Persistent header with countdown timer and question counter. During the exam pas
 3. Unanswered items are incorrect.
 4. `W = Σ_d (weight_d × correct_d / quota_d)`
 5. **Pass** = `W ≥ 82.5%` **AND** no domain below 60% of its quota
-6. **Below proficiency** = any domain under 60%, reported per domain
+6. **Below threshold** = any domain under 60%, reported per domain
+7. **Rounding:** a domain needs at least `ceil(0.60 × quota_d)` correct answers, so a pass is never granted on a fraction. Pilot quotas give IPS 4 and SEC 6.
 
-**Provenance:** 82.5% mirrors the community-reported 825/1000, which Cisco has never confirmed; the 60% domain floor is our own choice with no published basis. Both labelled in the UI as approximations, not official cut scores.
+**Provenance:** 82.5% mirrors the community-reported 825/1000; Cisco states outright that it does not publish passing scores. The 60% domain floor is our own choice with no published basis. Both labelled in code and UI — the first as community-derived, the second as this project's choice — never as "approximate", which implies an official figure we do not have.
 
 **Full-length exams require the v1 bank.** A 100-item exam cannot be filled from 60 questions, so pilot exams run at reduced N with the same domain weights and format ratios scaled to N, are labelled **practice mode**, apply no pass rule, and render a **practice result** — per-domain percentages, no verdict, no scaling.
 
-**Auto-submit during a hands-on item:** graded against `expectedState` **as of the moment the timer reaches 0:00** — partial work earns nothing. The result screen states how many hands-on items were auto-submitted mid-task. At 0:00 the review screen disables answering.
+**Auto-submit during a hands-on item:** graded against `expectedState` **as of the moment the timer reaches 0:00** — partial work earns nothing. The result screen states how many hands-on items were auto-submitted mid-task.
 
 ## 7b. Question formats — the four Cisco names, full domain × format matrix
 
@@ -83,7 +101,11 @@ Target time each: single 45 s · multi 65 s · drag-drop 100 s · hands-on 6 min
 
 **Hands-on pool: 15 tasks, 12 CLI and 3 WLC** — Network Fundamentals 4 CLI · Network Access 3 CLI + 1 WLC · IP Connectivity 3 CLI · Security Fundamentals 2 CLI + 2 WLC. Each exam draws exactly one from each of those four domains; IP Services and Automation never supply hands-on because they contain no configure-and-verify objective.
 
-`show-output` is a **presentation modifier, not a type** — a question carries `"preamble": "show-output"` and is still an `mcq-single` or `mcq-multi`.
+`show-output` is a **presentation modifier, not a type** — a question carries `"preamble": "show-output"` and is still an `mcq-single` or `mcq-multi`. There is a second variant, `"show-json"`, for Automation items presenting REST/Ansible/Python output.
+
+**Per-domain output floors, enforced by `validateBank` check 11 at milestone close:** at least **2** items carrying `show-output` in each CLI domain — NF, NA, IPC, IPS, SEC (10 minimum) — and at least **2** carrying `show-json` in AUTO. IPS is included because the v1.1 blueprint gives domain 4 three configure-and-verify objectives (4.1 NAT, 4.2 NTP, 4.6 DHCP client and relay); 4.8 SSH is configure-only and is not counted as such. AUTO is excluded from `show-output` on a factual basis: 6.5, 6.6 and 6.7 contain no configure-and-verify verb, so an IOS-CLI floor there would demand content the blueprint does not describe.
+
+**Sourcing, one of three, recorded per item in `review/batches/<batch-id>.json` under `sources[]`:** a capture the author actually ran, recording platform, IOS version and command; Cisco's own published sample output in the linked command reference; or authored as `[illustrative]` with a visible marker in the stem. The third category is allowed and disclosed because Cisco's command references frequently describe fields without shipping version-exact literal output. `validateBank` check 12 fails any illustrative-sourced item whose stem lacks the marker.
 
 **Quota assignment order:** `drawExam` fixes the per-domain quota from blueprint weights → the per-format quota from the matrix → then selects questions, applying the low-frequency objective bias **within** a domain×format cell whose count is already fixed. Neither proportion set can drift.
 
@@ -116,7 +138,7 @@ src/
   data/objectives.json, not-emulated.json
   data/questions/<domain>.json
   config/bank.config.json          # milestone, frozen allocation, named pilot subset
-  lib/{blueprint,drawExam,score,validateQuestion,expectedState,allocation,ipv4,verify}.js
+  lib/{blueprint,drawExam,score,validateQuestion,expectedState,allocation,ipv4,verify,sessionStore}.js
   device/harness/LabHarness.js
   device/state/{interfaces,vlan,routing,services,security}.js
   device/cli/{parser,commands/config,commands/render}.js
@@ -126,38 +148,57 @@ src/
 tests/
 scripts/{allocate-bank,validate-bank,validate-review,validate-docs,license-check,generate-docs}.mjs
 review/batches/<batch-id>.json
-docs/{PROJECT,NOT-EMULATED}.md   # NOT-EMULATED generated from not-emulated.json
+docs/{PROJECT,NOT-EMULATED,GROWTH}.md   # NOT-EMULATED generated from not-emulated.json
 ```
 
 ## 8. Question bank
 
-**Target: 300 verified questions across 97 sub-objectives (leaf topics): NF 35, NA 16, IPC 19, IPS 9, SEC 10, Auto 8.**
+**Target ladder: 60 → 300 → 450 → 600 questions across the 97 testable topics (NF 35, NA 16, IPC 19, IPS 9, SEC 10, Auto 8).**
 
-**Allocation formula, verified to reproduce the table:** `allocation_d = (2 × leaves_d) + largestRemainder(300 − 194, weight_d)`. The 194 is `2 × 97`, the coverage floor. 106 × {20,20,25,10,15,10}% yields floors {21,21,26,10,15,10} = 103, so 3 seats go to the three largest fractional parts (SEC .9, IPS .6, Auto .6) → {21,21,26,11,16,11} = 106.
+### Counting rule for "97"
 
-| Domain | Sub-obj | Weight | Floor | Remainder | Allocation | Drawn | Draw prob |
-|---|---|---|---|---|---|---|---|
-| Network Fundamentals | 35 | 20% | 70 | 21 | **91** | 20 | 22% |
-| Network Access | 16 | 20% | 32 | 21 | **53** | 20 | 38% |
-| IP Connectivity | 19 | 25% | 38 | 26 | **64** | 25 | 39% |
-| IP Services | 9 | 10% | 18 | 11 | **29** | 10 | 34% |
-| Security Fundamentals | 10 | 15% | 20 | 16 | **36** | 15 | 42% |
-| Automation & Programmability | 8 | 10% | 16 | 11 | **27** | 10 | 37% |
-| **Total** | **97** | 100% | 194 | 106 | **300** | **100** | |
+97 is the **leaf-only** count: every lettered sub-objective (`1.1.a`) and every unlettered leaf objective (`1.4`, `1.6`, `2.3`) counts once, while non-leaf parents (`1.1`, `2.1`, `6.3`) are containers and do **not** count. Verified against `objectives.json`: 97 leaves, 14 non-leaf parents, 111 nodes total. `validateBank` check 11 fails if a declared `leafCount` drifts from the counted data, because those numbers are duplicated metadata and nothing else checks them.
 
-`scripts/allocate-bank.mjs` computes this and writes it to `config/bank.config.json`, where it is frozen. **The table is generated output, not hand-maintained.** All apportionment uses integer arithmetic, because with float division 106 × 0.15 lands on 15.899999999999999 and the largest-remainder ordering can invert — which would make a published table unreproducible.
+### Per-topic minimums are balanced, not uniform
 
-**Per-domain format floors** equal the §7b matrix cell counts, guaranteeing any draw can be filled; the four hands-on domains additionally carry the declared task pool.
+The blueprint is lopsided: Network Fundamentals holds 35 of the 97 topics but only 20% of the exam, while Security Fundamentals holds 10 topics and 15% of the exam. A single global floor therefore over-stocks NF with questions a candidate rarely draws and under-stocks SEC with questions they see repeatedly. So the minimum is scaled per domain by weight-to-topic ratio, with `floorPerObjective` anchoring the domain with the worst ratio (NF).
 
-**Exam variety, stated honestly:** an individual question is drawn in **22–42%** of attempts, Security Fundamentals worst at 42% (15 items from 36 questions). You will see repeated questions between attempts. **The bank guarantees coverage, not novelty.** At the 450-question milestone the same formula yields NF 121, NA 83, IPC 102, IPS 44, SEC 58, Auto 42, and every per-question draw probability falls to **17–26%** — meaningfully better, not transformative.
+The floors are **stored explicitly** in `config.floorsByMilestone` and verified against `balancedFloors()`, rather than derived at read time — deriving them arithmetically makes the knob inert, because `round(2 × 1.75 × 0.1/20)` is 0 and most cells would round to zero, silently disabling coverage.
+
+| Milestone | Floors NF/NA/IPC/IPS/SEC/AUTO |
+|---|---|
+| pilot | 1 / 1 / 1 / 1 / 1 / 1 |
+| v1 | 1 / 2 / 2 / 2 / 3 / 2 |
+| later | 2 / 4 / 5 / 4 / 5 / 4 |
+| frontier | 3 / 7 / 7 / 6 / 8 / 7 |
+
+**The pilot is a documented exception:** the balanced rule needs 62 questions to cover its 32 topics and cannot fit in a 60-question milestone, so the pilot uses a uniform floor of 1 and says so in config.
+
+### The allocation and the exam draw are two sides of one contract
+
+`allocation_d = floor_d × leaves_d + largestRemainder(target − Σ floor_d × leaves_d, weight_d)`, surplus seats to descending remainder with ties broken by domain name ascending. `scripts/allocate-bank.mjs` computes this and freezes it into `bank.config.json`; **these tables are generated output, not hand-maintained.** Integer arithmetic throughout — with float division 106 × 0.15 lands on 15.899999999999999 and the largest-remainder ordering can invert.
+
+Supply must also meet demand: a milestone can hit its target and still be undrawable, which is exactly what the shipped pilot config did — it asked for 15 IP Connectivity questions from a bank holding 14. `validateBank` check 10 now fails when any domain's supply falls below its draw quota for that milestone's exam length.
+
+| Milestone | Questions | NF | NA | IPC | IPS | SEC | AUTO | Each question seen |
+|---|---|---|---|---|---|---|---|---|
+| pilot | 60 | 12 | 12 | 15 | 6 | 9 | 6 | n/a |
+| v1 | 300 | 61 | 58 | 71 | 31 | 50 | 29 | 30.0–35.2% |
+| later | 450 | 91 | 85 | 121 | 46 | 65 | 42 | 20.7–23.8% |
+| frontier | 600 | 117 | 124 | 148 | 60 | 89 | 62 | 16.1–17.1% |
+
+"Each question seen" is `draw_quota_d ÷ bank_d` — the chance one authored question appears in one sitting. **The bank guarantees coverage, not novelty:** you will see repeated questions between attempts. Balancing holds that spread to roughly 1.2× across domains; a uniform floor left it at 1.9× with no amount of size. Adding a rung is a config change only — see `docs/GROWTH.md`.
 
 **Milestones**
 
-| Milestone | Target | Sub-objectives in scope | Floor per in-scope sub-objective |
-|---|---|---|---|
-| Pilot | 60 | the 30 named explicitly in `config/bank.config.json` | ≥1 |
-| v1 | 300 | all 97 | ≥2 |
-| Later | 450 | all 97 | ≥2 |
+| Milestone | Target | Topics in scope | Per-topic minimum | Exam length |
+|---|---|---|---|---|
+| Pilot | 60 | the 32 named explicitly in `config.bank.config.json` | 1 | 60 |
+| v1 | 300 | all 97 | 1–3, balanced per domain | 100 |
+| Later | 450 | all 97 | 2–5, balanced per domain | 100 |
+| Frontier | 600 | all 97 | 3–8, balanced per domain | 100 |
+
+**The pilot's 32-topic subset is forced, not chosen.** A 60-question exam draws 60 from a 60-question bank, so each domain's allocation must equal its draw quota *exactly*. Choosing NF 7 / NA 6 / IPC 8 / IPS 3 / SEC 5 / AUTO 3 is the only split where the formula lands on 12/12/15/6/9/6.
 
 ## 9. Schema
 
@@ -167,14 +208,28 @@ Every wrong option carries a `rationale`; if one cannot be articulated the quest
 
 `npm run lint` · `npm run test` · `npm run build` · `npm run validate:bank` · `npm run validate:review` · `npm run validate:docs` · `npm run license:check` — **all seven must pass before push, on every pull request.**
 
-`validate:bank` is **milestone-aware**, reading the current milestone from `config/bank.config.json`. It fails on: duplicate IDs or stems · schema violations · unmapped objective IDs · a domain that disagrees with its objective · failed `verify` assertions · hands-on tasks lacking a valid `expectedState` · an in-scope sub-objective below the milestone floor · a per-domain format count below its matrix cell · **proportional drift** `|count_d − target_d × (current_total / milestone_target)| > ±2`.
+`validate:bank` is **milestone-aware**, reading the current milestone from `config/bank.config.json`. It fails on:
 
-Two deliberate carve-outs, both stated so they cannot be abused to ship a bad bank:
+1. duplicate IDs or stems
+2. schema violations
+3. unmapped objective IDs
+4. a domain that disagrees with its objective
+5. failed `verify` assertions
+6. hands-on tasks lacking a valid `expectedState`
+7. an in-scope topic below the milestone's per-topic minimum, read from `floorsByMilestone` — never a global constant
+8. a per-domain format count below its matrix cell
+9. **proportional drift** `|count_d − target_d × (current_total / milestone_target)| > ±2`
+10. **supply failing to cover the exam draw** — any domain holding fewer questions than its quota for that milestone's exam length
+11. **declared topic counts drifting** from the counted `isLeaf` entries
+12. **an `[illustrative]`-sourced item whose stem lacks the marker**
+13. at milestone close only: **the exact total**, and **the `show-output`/`show-json` floors per domain**
+
+Three deliberate carve-outs, all stated so they cannot be abused to ship a bad bank:
 
 - **Allocation drift is informational until the milestone is 25% underway.** Authoring goes domain by domain, and at a small bank size a ±2 proportional tolerance is tighter than any real batching strategy can meet. Past 25% it is enforced; the exact-total check at milestone close is what actually guarantees the finished bank matches the allocation.
-- **The exact-total check runs only when a milestone is closed**, never per batch.
+- **The exact-total and preamble-floor checks run only when a milestone is closed**, never per batch. Mid-milestone authoring goes domain by domain, so a domain not yet reached would fail a floor it has had no chance to satisfy.
 
-An empty bank passes the coverage check rather than reporting 97 phantom violations; the floor activates on the first question. Completeness still comes from the milestone-close total.
+An empty bank passes the coverage check rather than reporting 32 phantom violations; the floor activates on the first question. Completeness still comes from the milestone-close total.
 
 ## 11. Verification
 
@@ -193,27 +248,29 @@ An empty bank passes the coverage check rather than reporting 97 phantom violati
 
 | # | Deliverable | Hours | Exit criteria |
 |---|---|---|---|
-| 0 | Toolchain + CI + nine artifacts: Node 22 LTS, Vite, React 19, Tailwind v4, Vitest, ESLint; GitHub Actions; **this document**, incl. the appendix below generated from `objectives.json`; `not-emulated.json`; `bank.config.json`; `allocate-bank.mjs`; four validators; README with `git clone && npm ci && npm run dev` | **12** | CI green on empty bank; all four validators exercised |
-| 1 | Exam-day shell over synthetic fixtures: timer, one-way nav, flag, review screen, auto-submit, scoring contract | 8 | Owner walks a 100-item fixture exam end-to-end; `exam.test.ts` green |
-| 2 | Pilot bank: 60 questions over the 30-sub-objective subset, **all three authored formats (`mcq-single`, `mcq-multi`, `drag-drop`)**. 60 × 13–19 min | 13–19 | `validate:bank` green at pilot target; pilot exams in practice mode |
-| 3 | `show-output` modifier, generated `NOT-EMULATED.md`, scoring verified per authored format, **plus acting on pilot feedback (4 h)** | 8 | all three authored formats render and score correctly |
-| 4 | Emulator core: 5 `DeviceState` sub-reducers, `LabHarness`, `CliEngine`, `expectedState.js`, 16 config families (2.5–3.5 h each), 10 h engine, 8 h renderers, golden fixtures | 58–74 | all 16 families mutate state correctly; 4 renderers byte-match fixtures |
-| 5 | 15 hands-on tasks: 12 CLI × 1.5–2 h + 3 WLC × 3–4 h + `WlcState` 6 h | 33–42 | all 15 tasks run end-to-end and grade via `expectedState` |
-| 6 | Bank growth 60 → 300 in batches of ≤40. 240 × 13–19 min | 52–76 | every sub-objective ≥2 at v1; drift within ±2 |
-| 7 | Ambiguity pass 3 h + 15% sample (45 × 6 min) 4.5 h + rotation 2 h + CONTRIBUTING 2 h | 12 | 15% milestone sample re-read |
+| 0 | Toolchain + CI + nine artifacts: Node 22 LTS, Vite, React 19, Tailwind v4, Vitest, ESLint; GitHub Actions; **this document**, incl. the appendix below generated from `objectives.json`; `not-emulated.json`; `bank.config.json`; `allocate-bank.mjs`; four validators; README with `git clone && npm ci && npm run dev` | **14** | CI green on empty bank; all four validators exercised |
+| 1 | Exam-day shell over synthetic fixtures: fixture generator + 100 fixtures + derived-matrix test 3 · session store with `SCHEMA_VERSION`, clock tolerance, `BroadcastChannel` 2.5 · exam shell with paired assertions 4 · `score.js` four graders + frozen DSL operator set + DSL unit tests + placeholder banner 4 · result screen 1.5 | **15** | Owner walks a 100-item fixture exam end-to-end; `exam.test.ts` green |
+| 2 | Pilot bank: 60 questions over the 32-topic subset, all three authored formats. 60 × 13–19 min, in batches of ≤40 | **13–19** | `validate:bank` green at pilot target with all 13 checks; pilot exams in practice mode |
+| 3 | Capture/transcribe/verify the 10 `show-output` + 2 `show-json` items with per-item `sources[]` 5 · generated `NOT-EMULATED.md` 1 · scoring verified per authored format 2 · acting on pilot feedback 4 | **12** | all three authored formats render and score correctly |
+| 4 | Emulator core: 5 `DeviceState` sub-reducers, `LabHarness`, `CliEngine`, `expectedState.js`, 16 config families (2.5–3.5 h each), 10 h engine, 8 h renderers, golden fixtures | **58–74** | all 16 families mutate state correctly; 4 renderers byte-match fixtures |
+| 5 | 15 hands-on tasks: 12 CLI × 1.5–2 h + 3 WLC × 3–4 h + `WlcState` 6 h | **33–42** | all 15 tasks run end-to-end and grade via `expectedState` |
+| 6 | Bank growth 60 → 300 in batches of ≤40. 240 × 13–19 min | **52–76** | supply covers the 100-question draw at v1; drift within ±2 |
+| 7 | Ambiguity pass 3 h + 15% sample 4.5 h + rotation 2 h + CONTRIBUTING 2 h + **5 h rework budget** (inclusive of seven-gate re-runs, 2 amendment rounds per batch; a third round escalates to a design change) | **17** | 15% milestone sample re-read |
+| 8 | Bank growth 300 → 450. Parameterised re-run of Phase 6 against the `later` rung. 150 × 13–19 min, mid-block checkpoint at +75 | **32.5–47.5** | supply covers the draw at `later` |
+| 9 | Bank growth 450 → 600. Parameterised re-run against `frontier`. 150 × 13–19 min, mid-block checkpoint at +75 | **32.5–47.5** | supply covers the draw at `frontier` |
 
-**Honest scale: 196–251 hours, 49–63 four-hour sessions.** Phases 0–3 (**41–47 h, 11–12 sessions**) ship a usable, format-faithful practice exam over 60 questions and three formats. The emulator and task library (Phases 4–5, **91–116 h**) are the dominant fidelity cost and deliberately come last. Every batch merged in Phase 6 is independently usable, so the project can stop at any boundary.
+**Totals: 279–364 h = 70–91 four-hour sessions.** Phases 0–7 are **214–269 h (54–68 sessions)**; adding both growth rungs is 279–364 h (70–91). Phases 1–2 alone — the first usable product — are **28–34 h (7–9 sessions)**. Phases 0–3 (**54–60 h, 14–15 sessions**) ship a format-faithful practice exam over 60 questions. The emulator and task library (Phases 4–5, **91–116 h**) are the dominant fidelity cost and deliberately come last. Every phase boundary is an independently usable stopping point, and Phases 8–9 carry a mid-block checkpoint so an interrupted run still lands on a coherent bank.
 
 ## 13. Non-negotiables
 
 1. No third-party content — `license:check` fails on any non-MIT **direct** dependency or missing provenance header; transitive licences are advisory only, because the Vite/Tailwind trees include ISC packages
 2. No question without an explanation and distractor rationales
 3. No question without passing all seven gates
-4. One-way navigation during the exam pass; the pre-submit review screen is the only way back
+4. One-way navigation during the exam pass: no back control, no flag-for-review affordance, no pre-submit review screen. Recorded in §6(b) as a graded inference, not a confirmed fact
 5. Timer and auto-submit behave as the real thing; unanswered items grade incorrect; mid-task expiry earns no partial credit and is disclosed
 6. Full-length results are pass/fail plus per-domain proficiency — never a scaled score or percentage; practice-mode results carry no verdict
 7. All seven CI gates green before push
-8. Any fact not published by Cisco is labelled community-reported or observed, in code and UI
+8. Any fact not published by Cisco is labelled community-reported, observed or inferred, in code and UI — and §6 grades each claim by the scope of the source carrying it, so a blog post's silence is never read as Cisco policy
 
 ## 14. Decisions
 
@@ -227,8 +284,8 @@ An empty bank passes the coverage check rather than reporting 97 phantom violati
 | Repo | `MohammedAlghunaymi/CCNA-Practice`, public |
 | Pass threshold | `W ≥ 82.5%` AND no domain below 60%; both labelled approximate |
 | **Git identity** | **Open** — user chooses global config vs per-commit |
-| **Bank target beyond 300** | **Open** — 450 is a later milestone, not committed |
-| **Scope beyond Phase 3** | **Open** — full 196–251 h, or the 41–47 h subset with hands-on deferred |
+| **Bank ladder** | 60 → 300 → 450 → 600, each rung a config-only addition. Further rungs are a procedure, not a redesign — `docs/GROWTH.md` |
+| **IP Services hands-on** | **Deferred** — the blueprint does give domain 4 configure-and-verify objectives; adding it changes the N=100 matrix and cascades through the allocation. Backlog entry in `GROWTH.md` |
 
 <!-- BEGIN GENERATED OBJECTIVE APPENDIX -->
 

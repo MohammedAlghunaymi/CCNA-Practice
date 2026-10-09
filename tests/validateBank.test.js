@@ -35,19 +35,22 @@ function named(results, fragment) {
 }
 
 describe('validateBank: empty bank', () => {
-  it('passes on an empty bank so Phase 0 can go green before authoring', () => {
+  it('passes on an empty bank so the toolchain can go green before authoring', () => {
     const { results } = run([])
-    expect(results.every((r) => r.pass)).toBe(true)
-    expect(named(results, 'sub-objective has at least').detail).toMatch(/bank is empty/)
+    // Every gate except the milestone-close total, which needs a closed batch.
+    const failures = results.filter((r) => !r.pass)
+    expect(failures.map((r) => r.name)).toEqual([])
+    expect(named(results, 'in-scope sub-objective has').detail).toMatch(/bank is empty/)
   })
 })
 
 describe('validateBank: coverage floor activates on the first question', () => {
   it('fails once a single question exists and 29 in-scope objectives are empty', () => {
     const { results, stats } = run([question('NF-0001', '1.1.a', 'NF')])
-    const coverage = named(results, 'sub-objective has at least')
+    const coverage = named(results, 'in-scope sub-objective has')
     expect(coverage.pass).toBe(false)
-    expect(coverage.detail).toMatch(/29\/30 below floor/)
+    // The pilot subset is 32 objectives; one question covers one of them.
+    expect(coverage.detail).toMatch(/31\/32 below floor/)
     expect(stats.total).toBe(1)
   })
 })
@@ -133,5 +136,148 @@ describe('validateBank: total, at milestone close only', () => {
 describe('validateBank: unknown milestone', () => {
   it('throws rather than silently passing', () => {
     expect(() => run([], 'nonsense')).toThrow(/unknown milestone/)
+  })
+})
+
+describe('validateBank: supply covers exam draw (check 10)', () => {
+  it('passes for every milestone in the shipped config', () => {
+    // The invariant the original pilot config violated: a 60-question exam
+    // drawing 15 from IP Connectivity cannot be filled from 14 questions.
+    for (const milestone of Object.keys(config.milestones)) {
+      const check = named(run([], milestone).results, 'supply covers')
+      expect(check, milestone).toBeDefined()
+      expect(check.pass, `${milestone}: ${check.detail}`).toBe(true)
+    }
+  })
+
+  it('fails when a milestone cannot supply one of its draw quotas', () => {
+    const broken = structuredClone(config)
+    broken.allocation.byMilestone.pilot.perDomain.IPC = 10
+    const check = named(
+      validateBank({ questions: [], objectives, config: broken, milestone: 'pilot' }).results,
+      'supply covers'
+    )
+    expect(check.pass).toBe(false)
+    expect(check.detail).toMatch(/IPC/)
+    expect(check.detail).toMatch(/needs 15/)
+  })
+
+  it('reads the exam length from the milestone, not the global default', () => {
+    // A 60-question pilot draws a reduced-length quota; at 100 it would demand
+    // 25 from IPC, which a 60-question bank cannot supply.
+    const check = named(run([], 'pilot').results, 'supply covers')
+    expect(check.detail).toMatch(/60/)
+  })
+})
+
+describe('validateBank: show-output floors (check 11)', () => {
+  it('reports the floor per CLI domain at milestone close', () => {
+    const check = named(run([], 'pilot', true).results, 'show-output')
+    expect(check).toBeDefined()
+    expect(check.pass).toBe(false)
+    expect(check.detail).toMatch(/NF/)
+    expect(check.detail).toMatch(/IPS/)
+  })
+
+  it('does not enforce the floor mid-milestone', () => {
+    const check = named(run([], 'pilot', false).results, 'show-output')
+    expect(check.pass).toBe(true)
+    expect(check.detail).toMatch(/milestone close/)
+  })
+
+  it('passes at close when every CLI domain carries its minimum', () => {
+    const questions = []
+    const bases = { NF: '1.6', NA: '2.3', IPC: '3.3.a', IPS: '4.1', SEC: '5.3' }
+    let n = 0
+    for (const [domain, objectiveId] of Object.entries(bases)) {
+      for (let i = 0; i < 2; i++) {
+        questions.push(
+          question(`${domain}-S${n}`, objectiveId, domain, {
+            preamble: 'show-output',
+            prompt: `show-output item ${n}`,
+          })
+        )
+        n++
+      }
+    }
+    for (let i = 0; i < 2; i++) {
+      questions.push(question(`AUTO-J${i}`, '6.7', 'AUTO', {
+        preamble: 'show-json',
+        prompt: `show-json item ${i}`,
+      }))
+    }
+    const check = named(run(questions, 'pilot', false).results, 'show-output')
+    expect(check.pass).toBe(true)
+  })
+
+  it('requires an [illustrative] marker on any item sourced as illustrative', () => {
+    // Disclosed sourcing is the point: an item whose output block was authored
+    // rather than captured must say so in the stem the student reads.
+    const marked = (id) => ({
+      ...question(id, '1.6', 'NF', {
+        preamble: 'show-output',
+        prompt: `Router#show ip route [illustrative]\n${id}`,
+      }),
+      sources: [{ kind: 'illustrative' }],
+    })
+
+    const bothMarked = run([marked('Z1'), marked('Z2')], 'pilot', false).results
+    expect(named(bothMarked, 'illustrative').pass).toBe(true)
+
+    const oneUnmarked = run(
+      [
+        marked('Z3'),
+        {
+          ...question('Z4', '1.6', 'NF', {
+            preamble: 'show-output',
+            prompt: 'Router#show ip route with no marker',
+          }),
+          sources: [{ kind: 'illustrative' }],
+        },
+      ],
+      'pilot',
+      false
+    ).results
+    expect(named(oneUnmarked, 'illustrative').pass).toBe(false)
+    expect(named(oneUnmarked, 'illustrative').detail).toMatch(/Z4/)
+  })
+})
+
+describe('validateBank: declared topic counts (check 12)', () => {
+  it('passes against the shipped objectives file', () => {
+    const check = named(run([]).results, 'Declared leaf counts')
+    expect(check.pass).toBe(true)
+    expect(check.detail).toMatch(/97/)
+  })
+
+  it('fails when a declared leafCount drifts from the counted topics', () => {
+    const broken = structuredClone(objectivesRaw)
+    broken.domains[0].leafCount += 1
+    const check = named(
+      validateBank({
+        questions: [],
+        objectives: indexObjectives(broken),
+        config,
+        milestone: 'pilot',
+      }).results,
+      'Declared leaf counts'
+    )
+    expect(check.pass).toBe(false)
+    expect(check.detail).toMatch(/NF/)
+  })
+
+  it('counts lettered sub-objectives and unlettered leaves, excluding non-leaf parents', () => {
+    // 97 leaves, 14 non-leaf parents, 111 nodes total.
+    let leaves = 0
+    let parents = 0
+    for (const domain of objectivesRaw.domains) {
+      for (const objective of domain.objectives) {
+        if (objective.isLeaf) leaves++
+        else parents++
+      }
+    }
+    expect(leaves).toBe(97)
+    expect(parents).toBe(14)
+    expect(leaves + parents).toBe(111)
   })
 })

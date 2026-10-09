@@ -14,7 +14,7 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
-import { computeAllocation } from '../src/lib/allocation.js'
+import { computeAllocation, balancedFloors, examDrawQuota } from '../src/lib/allocation.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const configPath = join(root, 'src/config/bank.config.json')
@@ -51,39 +51,82 @@ if (badSubset.length) {
 }
 
 const generated = {}
-for (const [name, milestone] of Object.entries(config.milestones)) {
-  // Resolve the scope for this milestone. A pilot-scope milestone counts only
-  // the leaves actually named in pilotSubset; everything else covers all leaves.
-  let scopedLeafs = leafs
-  let scopedWeights = weights
+  for (const [name, milestone] of Object.entries(config.milestones)) {
+    // Resolve the scope for this milestone. A pilot-scope milestone counts only
+    // the leaves actually named in pilotSubset; everything else covers all leaves.
+    let scopedLeafs = leafs
+    let scopedWeights = weights
 
-  if (milestone.scope === 'pilotSubset') {
-    const counts = {}
-    for (const id of pilotSubset) {
-      const domain = domainOfObjective[id]
-      counts[domain] = (counts[domain] ?? 0) + 1
+    if (milestone.scope === 'pilotSubset') {
+      const counts = {}
+      for (const id of pilotSubset) {
+        const domain = domainOfObjective[id]
+        counts[domain] = (counts[domain] ?? 0) + 1
+      }
+      scopedLeafs = { ...counts }
+      scopedWeights = {}
+      for (const domain of Object.keys(counts)) scopedWeights[domain] = weights[domain]
     }
-    scopedLeafs = { ...counts }
-    scopedWeights = {}
-    for (const domain of Object.keys(counts)) scopedWeights[domain] = weights[domain]
-  }
 
-  const result = computeAllocation({
-    leafs: scopedLeafs,
-    weights: scopedWeights,
-    scope: Object.keys(scopedLeafs),
-    floor: milestone.floorPerObjective,
-    target: milestone.target,
-  })
+    // Per-domain coverage minimums are frozen in config.floorsByMilestone and
+    // verified against balancedFloors() below. Reading them from config rather
+    // than recomputing keeps the allocation reproducible even if a future
+    // milestone wants a floor the formula would not produce.
+    const stored = config.floorsByMilestone?.[name]
+    if (!stored) {
+      console.error(`ERROR: floorsByMilestone has no entry for milestone "${name}"`)
+      process.exit(1)
+    }
+    const derived = balancedFloors({
+      leafs: scopedLeafs,
+      weights: scopedWeights,
+      floorPerObjective: milestone.floorPerObjective,
+    })
+    const mismatched = Object.keys(derived).filter((domain) => derived[domain] !== stored[domain])
+    if (milestone.uniformFloors && mismatched.length === 0) {
+      // Documented exception: this milestone wants the same minimum everywhere.
+    } else if (mismatched.length) {
+      console.error(
+        `ERROR: floorsByMilestone.${name} disagrees with balancedFloors() for: ${mismatched.join(', ')}`
+      )
+      console.error(`  stored:  ${JSON.stringify(stored)}`)
+      console.error(`  derived: ${JSON.stringify(derived)}`)
+      process.exit(1)
+    }
 
-  generated[name] = {
-    target: milestone.target,
-    floorPerObjective: milestone.floorPerObjective,
-    scope: milestone.scope,
-    perDomain: result.perDomain,
-    detail: result.detail,
+    const result = computeAllocation({
+      leafs: scopedLeafs,
+      weights: scopedWeights,
+      scope: Object.keys(scopedLeafs),
+      floors: stored,
+      target: milestone.target,
+    })
+
+    generated[name] = {
+      target: milestone.target,
+      floorPerObjective: milestone.floorPerObjective,
+      examLength: milestone.examLength,
+      scope: milestone.scope,
+      floors: stored,
+      perDomain: result.perDomain,
+      detail: result.detail,
+      // Demand side: a milestone is only buildable if the bank can supply at
+      // least this many questions per domain.
+      drawQuota: examDrawQuota({
+        matrix: config.exam.domainFormatMatrix,
+        length: milestone.examLength,
+      }),
+    }
+
+    const short = Object.entries(generated[name].drawQuota)
+      .filter(([domain, need]) => result.perDomain[domain] < need)
+      .map(([domain, need]) => `${domain} needs ${need}, bank holds ${result.perDomain[domain]}`)
+    if (short.length) {
+      console.error(`ERROR: milestone "${name}" cannot fill its exam:`)
+      for (const line of short) console.error(`  ${line}`)
+      process.exit(1)
+    }
   }
-}
 
 const existing = config.allocation?.byMilestone ?? {}
 const drifted = Object.keys(generated).filter(

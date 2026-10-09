@@ -8,9 +8,19 @@
  */
 import { validateQuestionShape, validateObjectiveMapping } from './questionSchema.js'
 import { evaluateVerify } from './verify.js'
-import { proportionalDrift } from './allocation.js'
+import { proportionalDrift, examDrawQuota } from './allocation.js'
 
 const DRIFT_TOLERANCE = 2
+
+/**
+ * Minimum questions per domain carrying each presentation preamble, enforced at
+ * milestone close. CLI domains get IOS output; Automation gets JSON output
+ * because 6.5-6.7 carry no configure-and-verify verb, so an IOS-CLI floor there
+ * would force content the blueprint does not describe.
+ */
+const CLI_DOMAINS = ['NF', 'NA', 'IPC', 'IPS', 'SEC']
+const JSON_DOMAINS = ['AUTO']
+const PREAMBLE_FLOOR = 2
 
 /**
  * @param {Object} input
@@ -83,7 +93,15 @@ export function validateBank({
     verifyErrors.length ? verifyErrors.slice(0, 6).join('; ') : `${verified} computational question(s) verified`)
 
   // ---- 6. coverage floor for in-scope sub-objectives ---------------------
-  const floor = spec.floorPerObjective
+  // Read the per-domain table, never a global constant: each milestone has its
+  // own balanced minimums, and Q3 is the single source for them.
+  const floorsByDomain = config.floorsByMilestone?.[milestone]
+  if (!floorsByDomain) {
+    throw new Error(
+      `validateBank: floorsByMilestone has no entry for milestone "${milestone}"`
+    )
+  }
+
   const scopeIds = new Set()
   if (spec.scope === 'pilotSubset') {
     for (const id of config.pilotSubset) scopeIds.add(id)
@@ -99,16 +117,25 @@ export function validateBank({
   // question rather than reporting 97 phantom violations. Completeness is still
   // guaranteed: the exact-total check runs at milestone close.
   const started = currentTotal > 0
-  const underFloor = [...scopeIds].filter((id) => (countsByObjective.get(id) ?? 0) < floor)
+  const underFloor = [...scopeIds].filter((id) => {
+    const domain = objectives.domainById[id]
+    const minimum = floorsByDomain[domain] ?? spec.floorPerObjective
+    return (countsByObjective.get(id) ?? 0) < minimum
+  })
+
+  const minFloors = [...new Set(Object.values(floorsByDomain))]
+  const floorLabel = minFloors.length === 1
+    ? `${minFloors[0]} question(s)`
+    : `at least ${Math.min(...minFloors)} question(s), rising per domain`
 
   record(
-    `Every in-scope sub-objective has at least ${floor} question(s)`,
+    `Every in-scope sub-objective has ${floorLabel}`,
     !started || underFloor.length === 0,
     !started
-      ? `bank is empty; coverage activates on the first question. ${scopeIds.size} sub-objectives in scope.`
+      ? `bank is empty; coverage activates on the first question. ${scopeIds.size} topics in scope.`
       : underFloor.length
         ? `${underFloor.length}/${scopeIds.size} below floor: ${underFloor.slice(0, 10).join(', ')}${underFloor.length > 10 ? ' ...' : ''}`
-        : `${scopeIds.size} in-scope sub-objectives all at or above floor`
+        : `${scopeIds.size} in-scope topics all at or above floor`
   )
 
   // ---- 7. per-domain format floors, scaled to current bank size ---------
@@ -169,7 +196,89 @@ export function validateBank({
       'no frozen allocation for this milestone; run scripts/allocate-bank.mjs')
   }
 
-  // ---- 9. exact total, milestone close only -----------------------------
+  // ---- 9. declared topic counts match the data --------------------------
+  const leafCountErrors = objectives.leafCountErrors ?? []
+  record(
+    'Declared leaf counts match the counted testable topics',
+    leafCountErrors.length === 0,
+    leafCountErrors.length
+      ? leafCountErrors.slice(0, 6).join('; ')
+      : `${objectives.counts?.leafTotal ?? '?'} testable topics, ` +
+        `${objectives.counts?.parentTotal ?? '?'} non-leaf parents, ` +
+        `${objectives.counts?.nodeTotal ?? '?'} nodes`
+  )
+
+  // ---- 10. bank supply must cover the exam draw --------------------------
+  // The demand side of the allocation contract. Without this a milestone can
+  // close at its target and still be undrawable: the shipped pilot config asked
+  // for 15 IP Connectivity questions from a bank holding 14.
+  const examLength = spec.examLength ?? config.exam.defaultLength
+  if (allocation) {
+    const quota = examDrawQuota({ matrix: config.exam.domainFormatMatrix, length: examLength })
+    const shortfalls = []
+    for (const [domain, need] of Object.entries(quota)) {
+      const supply = allocation.perDomain[domain] ?? 0
+      if (supply < need) shortfalls.push(`${domain} needs ${need}, bank holds ${supply}`)
+    }
+    record(
+      `Bank supply covers the ${examLength}-question exam draw for ${milestone}`,
+      shortfalls.length === 0,
+      shortfalls.length
+        ? shortfalls.slice(0, 6).join('; ')
+        : `every domain can supply its quota of a ${examLength}-question exam`
+    )
+  } else {
+    record(`Bank supply covers the ${examLength}-question exam draw for ${milestone}`, false,
+      'no frozen allocation for this milestone; run scripts/allocate-bank.mjs')
+  }
+
+  // ---- 11. show-output / show-json floors --------------------------------
+  // Only enforceable once the batch is complete; mid-milestone authoring
+  // domain by domain would otherwise fail on a domain not yet reached.
+  const preambleCounts = {}
+  for (const q of questions) {
+    if (!q.preamble) continue
+    preambleCounts[q.domain] ??= { 'show-output': 0, 'show-json': 0 }
+    preambleCounts[q.domain][q.preamble] =
+      (preambleCounts[q.domain][q.preamble] ?? 0) + 1
+  }
+
+  const floors = [
+    ...CLI_DOMAINS.map((domain) => [domain, 'show-output']),
+    ...JSON_DOMAINS.map((domain) => [domain, 'show-json']),
+  ]
+  const floorShortfalls = floors
+    .filter(([domain, preamble]) => (preambleCounts[domain]?.[preamble] ?? 0) < PREAMBLE_FLOOR)
+    .map(([domain, preamble]) => `${domain} has ${preambleCounts[domain]?.[preamble] ?? 0}, needs ${PREAMBLE_FLOOR} ${preamble}`)
+
+  record(
+    `Every CLI domain carries >=${PREAMBLE_FLOOR} show-output items and Automation >=${PREAMBLE_FLOOR} show-json`,
+    !checkTotal || floorShortfalls.length === 0,
+    !checkTotal
+      ? `enforced at milestone close; currently ${Object.entries(preambleCounts)
+          .flatMap(([domain, counts]) => Object.entries(counts).map(([p, n]) => `${domain}/${p}=${n}`))
+          .join(', ') || 'no preamble items yet'}`
+      : floorShortfalls.length
+        ? floorShortfalls.join('; ')
+        : 'all preamble floors met'
+  )
+
+  // ---- 12. illustrative items must disclose themselves --------------------
+  const ILUSTRATIVE_MARKER = '[illustrative]'
+  const unmarked = questions
+    .filter((q) => Array.isArray(q.sources) && q.sources.some((s) => s.kind === 'illustrative'))
+    .filter((q) => !String(q.prompt ?? '').includes(ILUSTRATIVE_MARKER))
+    .map((q) => q.id)
+
+  record(
+    `Every [illustrative] item carries the ${ILUSTRATIVE_MARKER} marker in its stem`,
+    unmarked.length === 0,
+    unmarked.length
+      ? `${unmarked.length} item(s) missing the marker: ${unmarked.slice(0, 6).join(', ')}`
+      : `${questions.filter((q) => Array.isArray(q.sources)).length} sourced item(s) checked`
+  )
+
+  // ---- 13. exact total, milestone close only -----------------------------
   if (checkTotal) {
     record(`Total equals the ${milestone} target of ${spec.target}`, currentTotal === spec.target,
       currentTotal === spec.target ? `${currentTotal} questions` : `${currentTotal} vs target ${spec.target}`)
@@ -177,6 +286,13 @@ export function validateBank({
 
   return {
     results,
-    stats: { total: currentTotal, milestone, target: spec.target, floor, inScope: scopeIds.size },
+    stats: {
+      total: currentTotal,
+      milestone,
+      target: spec.target,
+      examLength: spec.examLength ?? config.exam.defaultLength,
+      floors: floorsByDomain,
+      inScope: scopeIds.size,
+    },
   }
 }
