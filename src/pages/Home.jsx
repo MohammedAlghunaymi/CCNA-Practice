@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import objectives from '../data/objectives.json'
 import config from '../config/bank.config.json'
 
@@ -19,6 +20,12 @@ export default function Home() {
         <p className="mt-2 text-sm text-[--color-text-muted]">
           {objectives.meta.exam} &middot; {objectives.meta.examTitle}
         </p>
+        <Link
+          className="mt-6 inline-block rounded-md bg-[--color-accent] px-5 py-2 text-sm font-semibold text-black"
+          to="/exam"
+        >
+          Start a practice exam
+        </Link>
       </header>
 
       <section aria-labelledby="domains-heading">
