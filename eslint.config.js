@@ -12,7 +12,10 @@ export default [
   {
     files: ['src/**/*.{js,jsx}'],
     languageOptions: {
-      ecmaVersion: 2023,
+      // `latest` rather than a pinned year: question and config data are
+      // imported with import attributes (`with { type: 'json' }`), which is
+      // newer than the 2023 parser the file used to pin.
+      ecmaVersion: 'latest',
       sourceType: 'module',
       globals: { ...globals.browser },
       parserOptions: { ecmaFeatures: { jsx: true } },
@@ -42,12 +45,22 @@ export default [
     },
   },
 
-  // Tests may lean on globals from the Vitest setup file.
+  // Tests may lean on globals from the Vitest setup file. These mirror the src
+  // block's language options: without an explicit ecmaVersion and sourceType,
+  // JSX usage is not counted as variable usage and every rendered component
+  // reads as unused.
   {
     files: ['tests/**/*.{js,jsx}'],
     languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: { ...globals.browser, ...globals.node },
       parserOptions: { ecmaFeatures: { jsx: true } },
+    },
+    // Matches src: core `no-unused-vars` does not count a JSX element as a
+    // variable reference, so component names would otherwise read as unused.
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]', argsIgnorePattern: '^_' }],
     },
   },
 ]
