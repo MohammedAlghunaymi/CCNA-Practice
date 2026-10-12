@@ -17,11 +17,11 @@ export default function Home() {
     <main className="mx-auto max-w-4xl px-6 py-12">
       <header className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight">CCNA 200-301 v1.1 Practice Simulator</h1>
-        <p className="mt-2 text-sm text-[--color-text-muted]">
+        <p className="mt-2 text-sm text-text-muted">
           {objectives.meta.exam} &middot; {objectives.meta.examTitle}
         </p>
         <Link
-          className="mt-6 inline-block rounded-md bg-[--color-accent] px-5 py-2 text-sm font-semibold text-black"
+          className="mt-6 inline-block rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black"
           to="/exam"
         >
           Start a practice exam
@@ -36,17 +36,17 @@ export default function Home() {
           {objectives.domains.map((domain) => (
             <li
               key={domain.id}
-              className="flex items-center justify-between rounded-lg border border-[--color-border] bg-[--color-surface] px-4 py-3"
+              className="flex items-center justify-between rounded-lg border border-border bg-surface px-4 py-3"
             >
               <span>
                 <span className="font-medium">{domain.name}</span>
-                <span className="ml-2 text-xs text-[--color-text-faint]">
+                <span className="ml-2 text-xs text-text-faint">
                   {domain.leafCount} sub-objectives
                 </span>
               </span>
               <span className="flex items-center gap-4 text-sm">
-                <span className="text-[--color-text-muted]">{domain.weight}% of exam</span>
-                <span className="font-mono text-[--color-accent]">
+                <span className="text-text-muted">{domain.weight}% of exam</span>
+                <span className="font-mono text-accent">
                   {v1[domain.id] ?? 0} in bank
                 </span>
               </span>
@@ -55,28 +55,28 @@ export default function Home() {
         </ul>
       </section>
 
-      <section className="mt-8 rounded-lg border border-[--color-border] bg-[--color-surface] px-4 py-4">
+      <section className="mt-8 rounded-lg border border-border bg-surface px-4 py-4">
         <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
           <div>
-            <dt className="text-[--color-text-faint]">Sub-objectives</dt>
+            <dt className="text-text-faint">Sub-objectives</dt>
             <dd className="font-mono text-lg">{objectives.meta.leafCount}</dd>
           </div>
           <div>
-            <dt className="text-[--color-text-faint]">v1 bank target</dt>
+            <dt className="text-text-faint">v1 bank target</dt>
             <dd className="font-mono text-lg">{totalTarget}</dd>
           </div>
           <div>
-            <dt className="text-[--color-text-faint]">Allocated</dt>
+            <dt className="text-text-faint">Allocated</dt>
             <dd className="font-mono text-lg">{allocated}</dd>
           </div>
           <div>
-            <dt className="text-[--color-text-faint]">Exam length</dt>
+            <dt className="text-text-faint">Exam length</dt>
             <dd className="font-mono text-lg">{config.exam.defaultLength}</dd>
           </div>
         </dl>
       </section>
 
-      <p className="mt-8 text-xs leading-relaxed text-[--color-text-faint]">
+      <p className="mt-8 text-xs leading-relaxed text-text-faint">
         Not affiliated with or endorsed by Cisco Systems, Inc. CCNA is a registered trademark of Cisco
         Systems, Inc. Objective descriptions are paraphrased by this project; only the objective IDs,
         domain names and domain weights are taken from the public blueprint at{' '}

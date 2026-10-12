@@ -61,7 +61,7 @@ export default function Exam() {
     return (
       <main className="mx-auto max-w-2xl px-6 py-12">
         <h1 className="text-2xl font-bold tracking-tight">Practice exam</h1>
-        <p className="mt-4 rounded-lg border border-[--color-border] bg-[--color-surface] px-4 py-3 text-sm">
+        <p className="mt-4 rounded-lg border border-border bg-surface px-4 py-3 text-sm">
           Could not build a paper: {error}
         </p>
         <Link className="mt-4 inline-block text-sm underline" to="/">
@@ -84,7 +84,7 @@ export default function Exam() {
     <main className="mx-auto max-w-3xl px-6 py-12">
       <header className="mb-8">
         <h1 className="text-2xl font-bold tracking-tight">Practice exam</h1>
-        <p className="mt-1 text-sm text-[--color-text-muted]">
+        <p className="mt-1 text-sm text-text-muted">
           {PAPER_LENGTH} questions &middot; question {index + 1} of {questions.length} &middot;{' '}
           {answered} answered
         </p>
@@ -92,8 +92,8 @@ export default function Exam() {
 
       <ProgressBar value={index + 1} total={questions.length} />
 
-      <article className="mt-6 rounded-lg border border-[--color-border] bg-[--color-surface] px-5 py-5">
-        <p className="text-xs text-[--color-text-faint]">
+      <article className="mt-6 rounded-lg border border-border bg-surface px-5 py-5">
+        <p className="text-xs text-text-faint">
           {question.domain} &middot; {question.objectiveId} &middot; {question.type}
         </p>
         <p className="mt-3 leading-relaxed">{question.prompt}</p>
@@ -106,8 +106,8 @@ export default function Exam() {
                 <label
                   className={`flex cursor-pointer items-start gap-3 rounded-md border px-3 py-2 text-sm ${
                     isSelected
-                      ? 'border-[--color-accent] bg-[--color-accent]/10'
-                      : 'border-[--color-border] hover:border-[--color-text-faint]'
+                      ? 'border-accent bg-accent/10'
+                      : 'border-border hover:border-text-faint'
                   }`}
                 >
                   <input
@@ -136,7 +136,7 @@ export default function Exam() {
         </ul>
 
         {question.type === 'mcq-multi' && (
-          <p className="mt-4 text-xs text-[--color-text-faint]">
+          <p className="mt-4 text-xs text-text-faint">
             Select every correct option. No partial credit.
           </p>
         )}
@@ -144,7 +144,7 @@ export default function Exam() {
 
       <footer className="mt-6 flex items-center justify-between">
         <button
-          className="rounded-md border border-[--color-border] px-4 py-2 text-sm disabled:opacity-40"
+          className="rounded-md border border-border px-4 py-2 text-sm disabled:opacity-40"
           type="button"
           disabled={index === 0}
           onClick={() => setIndex((i) => i - 1)}
@@ -154,7 +154,7 @@ export default function Exam() {
 
         {isLast ? (
           <button
-            className="rounded-md bg-[--color-accent] px-5 py-2 text-sm font-semibold text-black"
+            className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black"
             type="button"
             onClick={submit}
           >
@@ -162,7 +162,7 @@ export default function Exam() {
           </button>
         ) : (
           <button
-            className="rounded-md bg-[--color-accent] px-5 py-2 text-sm font-semibold text-black"
+            className="rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black"
             type="button"
             onClick={() => setIndex((i) => i + 1)}
           >
@@ -171,7 +171,7 @@ export default function Exam() {
         )}
       </footer>
 
-      <p className="mt-8 text-xs text-[--color-text-faint]">
+      <p className="mt-8 text-xs text-text-faint">
         This practice run is not timed and does not survive a refresh.
       </p>
     </main>
@@ -182,13 +182,13 @@ function ProgressBar({ value, total }) {
   const pct = Math.round((value / total) * 100)
   return (
     <div
-      className="h-1.5 w-full rounded-full bg-[--color-surface]"
+      className="h-1.5 w-full rounded-full bg-surface"
       role="progressbar"
       aria-valuenow={value}
       aria-valuemin={0}
       aria-valuemax={total}
     >
-      <div className="h-1.5 rounded-full bg-[--color-accent]" style={{ width: `${pct}%` }} />
+      <div className="h-1.5 rounded-full bg-accent" style={{ width: `${pct}%` }} />
     </div>
   )
 }
@@ -205,16 +205,16 @@ function Result({ result, questions }) {
     <main className="mx-auto max-w-3xl px-6 py-12">
       <header>
         <h1 className="text-2xl font-bold tracking-tight">Result</h1>
-        <p className="mt-2 text-sm text-[--color-text-muted]">{`${summary}${unansweredNote}`}</p>
+        <p className="mt-2 text-sm text-text-muted">{`${summary}${unansweredNote}`}</p>
       </header>
 
-      <section className="mt-6 rounded-lg border border-[--color-border] bg-[--color-surface] px-5 py-4">
+      <section className="mt-6 rounded-lg border border-border bg-surface px-5 py-4">
         <h2 className="text-sm font-semibold">By domain</h2>
         <ul className="mt-3 space-y-2">
           {Object.entries(result.perDomain).map(([domain, tally]) => (
             <li key={domain} className="flex items-center justify-between text-sm">
               <span>{domain}</span>
-              <span className="font-mono text-[--color-text-muted]">
+              <span className="font-mono text-text-muted">
                 {tally.correct} / {tally.total}
               </span>
             </li>
@@ -232,18 +232,18 @@ function Result({ result, questions }) {
               return (
                 <li
                   key={id}
-                  className="rounded-lg border border-[--color-border] bg-[--color-surface] px-5 py-4"
+                  className="rounded-lg border border-border bg-surface px-5 py-4"
                 >
-                  <p className="text-xs text-[--color-text-faint]">
+                  <p className="text-xs text-text-faint">
                     {question.domain} &middot; {question.objectiveId} &middot;{' '}
                     {unanswered ? 'not answered' : 'answered incorrectly'}
                   </p>
                   <p className="mt-2 text-sm">{question.prompt}</p>
                   <p className="mt-3 text-sm">
-                    <span className="text-[--color-text-faint]">Correct answer: </span>
+                    <span className="text-text-faint">Correct answer: </span>
                     <span className="font-mono">{question.answer.join(', ')}</span>
                   </p>
-                  <p className="mt-2 text-sm leading-relaxed text-[--color-text-muted]">
+                  <p className="mt-2 text-sm leading-relaxed text-text-muted">
                     {result.explanations[id]}
                   </p>
                 </li>
