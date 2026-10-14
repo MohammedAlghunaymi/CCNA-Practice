@@ -34,8 +34,11 @@ export function isCorrectSet(selected, expected) {
  *   wrongIds: string[],
  *   unansweredIds: string[],
  *   unsubmittedCount: number,
+ *   selections: Object<string, string[]>,
  *   explanations: Object<string, string>
  * }}
+ *   `selections` is what the candidate actually chose, per question, so the
+ *   result screen can mark their own wrong picks without re-deriving them.
  *   `explanations` covers exactly the wrong and unanswered ids, never the whole
  *   bank, so the review screen shows a reason for each thing the candidate missed
  *   and nothing else.
@@ -46,6 +49,7 @@ export function scoreExam({ questions, answers = {} }) {
   const wrongIds = []
   const unansweredIds = []
   const explanations = {}
+  const selections = {}
   const perDomain = {}
   let correct = 0
 
@@ -57,6 +61,8 @@ export function scoreExam({ questions, answers = {} }) {
     const selected = answers[question.id]
     const isUnanswered = selected === undefined || selected === null
     const isEmpty = Array.isArray(selected) && selected.length === 0
+
+    if (selected !== undefined && selected !== null) selections[question.id] = selected
 
     if (isUnanswered || isEmpty) {
       unansweredIds.push(question.id)
@@ -80,6 +86,7 @@ export function scoreExam({ questions, answers = {} }) {
     wrongIds,
     unansweredIds,
     unsubmittedCount: unansweredIds.length,
+    selections,
     explanations,
   }
 }

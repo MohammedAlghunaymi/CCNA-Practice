@@ -15,7 +15,7 @@ Candidates practise on material differing from the exam where it matters: no tim
 
 | Goal | Acceptance test |
 |---|---|
-| **G1** Format, pressure and navigation mirror the real exam | Owner walks a 100-item fixture exam end-to-end; `exam.test.ts` asserts one-way enforcement and auto-submit at 0:00 |
+| **G1** Format, pressure and navigation mirror the real exam | Owner walks a 100-item exam drawn from the real bank end-to-end; `tests/exam.test.jsx` asserts one-way enforcement and auto-submit at 0:00 |
 | **G2** All four exam formats implemented, drawn in defined proportions | `drawExam.test.ts` asserts the §7b matrix cell-by-cell — every domain×format cell and every domain total |
 | **G3** Hands-on tasks where the student configures a device via CLI or GUI | All 15 shipped tasks run end-to-end and grade via machine-checkable `expectedState` |
 | **G4** Every question maps to an official sub-objective ID | `validate:bank` fails on any unmapped ID; `validate:docs` fails unless this file enumerates all 97 |
@@ -249,8 +249,8 @@ An empty bank passes the coverage check rather than reporting 32 phantom violati
 | # | Deliverable | Hours | Exit criteria |
 |---|---|---|---|
 | 0 | Toolchain + CI + nine artifacts: Node 22 LTS, Vite, React 19, Tailwind v4, Vitest, ESLint; GitHub Actions; **this document**, incl. the appendix below generated from `objectives.json`; `not-emulated.json`; `bank.config.json`; `allocate-bank.mjs`; four validators; README with `git clone && npm ci && npm run dev` | **14** | CI green on empty bank; all four validators exercised |
-| 1 | Exam-day shell over synthetic fixtures: fixture generator + 100 fixtures + derived-matrix test 3 · session store with `SCHEMA_VERSION`, clock tolerance, `BroadcastChannel` 2.5 · exam shell with paired assertions 4 · `score.js` four graders + frozen DSL operator set + DSL unit tests + placeholder banner 4 · result screen 1.5 | **15** | Owner walks a 100-item fixture exam end-to-end; `exam.test.ts` green |
-| 2 | Pilot bank: 60 questions over the 32-topic subset, all three authored formats. 60 × 13–19 min, in batches of ≤40 | **13–19** | `validate:bank` green at pilot target with all 13 checks; pilot exams in practice mode |
+| 1 | Exam-day shell over the real bank: session store with `SCHEMA_VERSION` and clock tolerance 1 · exam shell with paired assertions 1 · result screen 1 · full-length walk and auto-submit proof 1 | **4** | Owner walks a 100-item exam drawn from the real bank end-to-end; `tests/exam.test.jsx` green |
+| 2 | Pilot bank: 60 questions over the 32-topic subset, all three authored formats. 60 × 13–19 min, in batches of ≤40. **Absorbs the Phase 1 deferrals** — see §14 | **24–30** | `validate:bank` green at pilot target with all 13 checks; pilot exams in practice mode |
 | 3 | Capture/transcribe/verify the 10 `show-output` + 2 `show-json` items with per-item `sources[]` 5 · generated `NOT-EMULATED.md` 1 · scoring verified per authored format 2 · acting on pilot feedback 4 | **12** | all three authored formats render and score correctly |
 | 4 | Emulator core: 5 `DeviceState` sub-reducers, `LabHarness`, `CliEngine`, `expectedState.js`, 16 config families (2.5–3.5 h each), 10 h engine, 8 h renderers, golden fixtures | **58–74** | all 16 families mutate state correctly; 4 renderers byte-match fixtures |
 | 5 | 15 hands-on tasks: 12 CLI × 1.5–2 h + 3 WLC × 3–4 h + `WlcState` 6 h | **33–42** | all 15 tasks run end-to-end and grade via `expectedState` |
@@ -286,6 +286,9 @@ An empty bank passes the coverage check rather than reporting 32 phantom violati
 | **Git identity** | **Open** — user chooses global config vs per-commit |
 | **Bank ladder** | 60 → 300 → 450 → 600, each rung a config-only addition. Further rungs are a procedure, not a redesign — `docs/GROWTH.md` |
 | **IP Services hands-on** | **Deferred** — the blueprint does give domain 4 configure-and-verify objectives; adding it changes the N=100 matrix and cascades through the allocation. Backlog entry in `GROWTH.md` |
+| **Phase 1 scope, reviewed** | **Cut from four steps to four steps' worth of work.** Phase 1 originally built a fixture corpus, a cell-aware draw, non-multiple-choice graders and a frozen `expectedState` evaluator — for formats the bank contains none of: 169 questions, 168 `mcq-single`, 1 `mcq-multi`, 0 drag-drop, 0 hands-on. Council review reduced it to the session store, an injectable paper length, one-way navigation, the result screen and a full-length walk. Phase 2 absorbs the deferrals and its hours rise to match, so **every §12 total is unchanged**: the work moved, it did not disappear. `scripts/check-anti-rot.mjs` fails the build if this row is reverted |
+| **Deferred to Phase 2 with the Phase 1 cut** | Non-multiple-choice schema, graders and renderers; the frozen `expectedState` evaluator (its nine operators stay frozen in `questionSchema.js:19-29`); cell-aware draw and the G2 matrix assertion; cross-tab coordination; the abandoned-record sweep; the §13 #6 no-percentage rule, which binds a shipped full-length mode that does not exist. The domain-proportion drift at n=100 (NF 19 against the matrix's 20) is the coverage floor at `selectQuestions.js:111`, not a missing dimension, and is carried forward unfixed |
+| **Home tile overstates the paper length** | `Home.jsx:73-74` renders `config.exam.defaultLength` — 100 — while the runner defaults to 20. Known and left: aligning them means re-labelling the tile or defaulting the runner to 100, and the latter would break the eleven `of 20` assertions for no Phase 1 benefit |
 
 <!-- BEGIN GENERATED OBJECTIVE APPENDIX -->
 

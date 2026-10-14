@@ -46,6 +46,9 @@ jobs:
       - name: Validate documentation
         run: npm run validate:docs
 
+      - name: Check Phase 1 anti-rot gates
+        run: npm run validate:anti-rot
+
       - name: Check licences and provenance
         run: npm run license:check
 

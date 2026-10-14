@@ -18,9 +18,10 @@
     "validate:bank": "node scripts/validate-bank.mjs",
     "validate:review": "node scripts/validate-review.mjs",
     "validate:docs": "node scripts/validate-docs.mjs",
+    "validate:anti-rot": "node scripts/check-anti-rot.mjs",
     "license:check": "node scripts/license-check.mjs",
     "docs:generate": "node scripts/generate-docs.mjs",
-    "validate": "npm run lint && npm run test && npm run build && npm run validate:bank && npm run validate:review && npm run validate:docs && npm run license:check"
+    "validate": "npm run lint && npm run test && npm run build && npm run validate:bank && npm run validate:review && npm run validate:docs && npm run validate:anti-rot && npm run license:check"
   },
   "dependencies": {
     "react": "^19.1.1",
