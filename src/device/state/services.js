@@ -30,6 +30,9 @@ const NAT_POOL = /^ip nat pool (\S+) netmask (\S+)$/
 const NAT_INSIDE = /^ip nat inside global (\d+)$/
 const NAT_OUTSIDE = /^ip nat outside global (\d+)$/
 
+/** What this reducer owns in the global configuration block. See routing.js. */
+export const OWNS = [/^ntp\b/, /^ip nat\b/, /^ip dhcp\b/]
+
 export function initialState() {
   return {
     ntp: { peers: {} },
@@ -89,20 +92,28 @@ export function reduce(context, previous = initialState()) {
       continue
     }
 
-    // The interface-scoped designations are refused here rather than ignored.
-    // They belong to the `interfaces` reducer, and this is where a learner
-    // finds out.
+    // Not mine: another reducer owns it, and saying so here would be wrong.
+    if (!OWNS.some((pattern) => pattern.test(text))) continue
+
+    // Mine, but it configures an interface. The designation half belongs to the
+    // `interfaces` reducer and the table half to this one, so the command is a
+    // transaction across both — which is what 2b batch 2 builds.
     if (/^ip nat (inside|outside) source\b/.test(text)) {
       throw new Error(
         `services: "${text}" designates an interface and writes to the interfaces reducer; ` +
-          'it becomes one transaction across both in 2a.4a'
+          'it becomes one transaction across both in 2b batch 2'
       )
     }
-    if (/^ip dhcp client\b/.test(text) || /^ip dhcp pool\b/.test(text)) {
-      throw new Error(`services: "${text}" belongs to 2b batch 2`)
+    if (/^ip dhcp client\b/.test(text)) {
+      throw new Error(
+        `services: "${text}" designates an interface and belongs at interfaces.<if>.dhcp`
+      )
     }
     if (/^ntp authenticate\b/.test(text) || /^ntp key\b/.test(text)) {
       throw new Error(`services: "${text}" is an NTP credential, governed from 2b batch 3`)
+    }
+    if (/^ip dhcp pool\b/.test(text)) {
+      throw new Error(`services: "${text}" arrives with 2b batch 2`)
     }
 
     throw new Error(`services: unrecognised command "${text}"`)

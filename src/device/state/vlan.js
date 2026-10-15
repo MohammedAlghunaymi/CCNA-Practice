@@ -12,52 +12,41 @@
  * a fact about a port. What lands here is the entity both sides agree on.
  */
 
-const VLAN = /^vlan (\d{1,4})$/
 const NAME = /^name (.+)$/
 
 export function initialState() {
   return { vlans: {} }
 }
 
-function blankVlan(id) {
-  return { id, name: null }
-}
-
 /**
- * Reduce parsed configuration lines to VLAN state.
+ * Reduce parsed VLAN blocks to VLAN state.
  *
- * `context` is the device's global configuration block only; interface blocks
- * belong to the `interfaces` reducer.
+ * Takes `{ id, lines }` blocks rather than a flat line list, because the parser
+ * already read the `vlan N` header. Re-parsing it here would carry the same fact
+ * in two places, and a path could then resolve to a VLAN the block never named.
  */
-export function reduce(context, previous = initialState()) {
+export function reduce(blocks, previous = initialState()) {
   const state = { vlans: { ...previous.vlans } }
-  const lines = Array.isArray(context) ? context : context.lines ?? []
 
-  let current = null
-  for (const raw of lines) {
-    const text = raw.trim()
+  for (const block of blocks ?? []) {
+    // The parser matches the *shape* of a VLAN id and this reducer decides
+    // whether it is a real one. `vlan 010` is three characters of shape and a
+    // key the grammar cannot address, so it is refused here rather than stored
+    // where `vlans.10.name` would never find it.
+    const id = vlanKey(block.id)
+    state.vlans[id] = state.vlans[id] ?? { id, name: null }
 
-    const created = VLAN.exec(text)
-    if (created) {
-      const id = created[1]
-      state.vlans[id] = state.vlans[id] ?? blankVlan(id)
-      current = id
-      continue
+    for (const raw of block.lines) {
+      const text = raw.trim()
+
+      const named = NAME.exec(text)
+      if (named) {
+        state.vlans[id].name = named[1]
+        continue
+      }
+
+      throw new Error(`vlan ${id}: unrecognised command "${text}"`)
     }
-
-    const named = NAME.exec(text)
-    if (named) {
-      if (!current) throw new Error(`"${text}" needs a preceding "vlan <id>" block`)
-      state.vlans[current].name = named[1]
-      continue
-    }
-
-    if (current && /^(exit|end)$/.test(text)) {
-      current = null
-      continue
-    }
-
-    throw new Error(`vlan: unrecognised command "${text}"`)
   }
 
   return state

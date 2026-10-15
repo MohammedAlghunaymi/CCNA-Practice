@@ -17,6 +17,17 @@
 const STATIC = /^ip route (\S+) (\S+)(?: (\d+))?$/
 const OSPF = /^router ospf (\d+)$/
 
+/**
+ * What this reducer owns in the global configuration block.
+ *
+ * A line that matches nothing here belongs to another reducer and is skipped. A
+ * line that matches is claimed, and if it then fails to parse the reducer throws
+ * — which is the distinction that matters: a line this reducer owns but cannot
+ * understand is a broken configuration, and a line it does not own is not its
+ * business to complain about.
+ */
+export const OWNS = [/^ip route\b/, /^router ospf\b/]
+
 export function initialState() {
   return { static: {}, ospf: {} }
 }
@@ -80,14 +91,13 @@ export function reduce(context, previous = initialState()) {
       continue
     }
 
+    if (!OWNS.some((pattern) => pattern.test(text))) continue
+
     if (/^router ospf\b/.test(text)) {
       throw new Error(`routing: "${text}" is network-type configuration, which belongs to 2b batch 2`)
     }
-    if (/^ip route\b/.test(text)) {
-      throw new Error(`routing: "${text}" is not a route this reducer recognises`)
-    }
 
-    throw new Error(`routing: unrecognised command "${text}"`)
+    throw new Error(`routing: "${text}" is not a route this reducer recognises`)
   }
 
   return state

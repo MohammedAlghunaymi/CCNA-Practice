@@ -3,6 +3,8 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { tryResolve } from '../src/lib/expectedState.js'
+import { parse } from '../src/device/cli/parser.js'
+import { reduceConfig } from '../src/device/cli/commands/config.js'
 import { reduce as reduceInterfaces, initialState as initialInterfaces } from '../src/device/state/interfaces.js'
 import { reduce as reduceVlan, vlanKey, initialState as initialVlan } from '../src/device/state/vlan.js'
 import { reduce as reduceRouting, initialState as initialRouting } from '../src/device/state/routing.js'
@@ -59,8 +61,8 @@ const CASES = {
   },
   vlan: {
     reduce: reduceVlan,
-    minimal: () => ['vlan 10', 'name mgmt'],
-    adversarial: () => ['vlan 1', 'name default', 'vlan 10', 'name mgmt'],
+    minimal: () => parse('vlan 10\n name mgmt').vlan,
+    adversarial: () => parse('vlan 1\n name default\nvlan 10\n name mgmt').vlan,
     // A list would make vlan.10 the eleventh entry; here it is the key "10".
     adversarialPaths: ['vlans.1.name', 'vlans.10.name'],
     adversarialValues: ['default', 'mgmt'],
@@ -95,13 +97,16 @@ const CASES = {
     adversarialValues: ['192.168.1.1', '192.168.1.10'],
   },
   security: {
-    reduce: reduceSecurity,
-    minimal: () => ['ip access-list extended 101', 'access-list 101 permit ip any any'],
+    // `security` takes two inputs - global lines and parsed ACL blocks - so the
+    // case supplies a pair, and this spreads the pair into the call. Spreading
+    // `args` instead would not: the case hands `reduce` one argument holding two.
+    reduce: (pair) => reduceSecurity(...pair),
+    minimal: () => [[], parse('ip access-list extended 101\n permit ip any any').acls],
     adversarial: () => [
-      'ip access-list extended 15',
-      'access-list 15 deny tcp any any eq 23',
-      'ip access-list extended 101',
-      'access-list 101 permit ip any any',
+      [],
+      parse(
+        'ip access-list extended 15\n deny tcp any any eq 23\nip access-list extended 101\n permit ip any any'
+      ).acls,
     ],
     // ACL 15 is a lexical prefix of ACL 101; a sloppy matcher crosses them.
     adversarialPaths: ['acls.15.entries.10.action', 'acls.101.entries.10.action'],
@@ -169,8 +174,21 @@ describe('each reducer matches its goldens byte for byte', () => {
 })
 
 describe('reducer behaviour, beyond the fixtures', () => {
-  it('vlan refuses a name with no vlan block', () => {
-    expect(() => reduceVlan(['name mgmt'])).toThrow(/preceding "vlan <id>"/)
+  it('vlan refuses a name that no block opened', () => {
+    // The reducer can no longer see this case - a `name` only arrives inside a
+    // VLAN block, because the parser is what makes a block. The refusal moved
+    // with it, to the dispatcher that owns the unclaimed line.
+    expect(() => reduceConfig('name mgmt')).toThrow(/no reducer claims 1 configuration line/)
+  })
+
+  it('vlan blocks are named by the block, not by a line inside it', () => {
+    const state = reduceVlan([{ id: '10', lines: ['name mgmt'] }])
+    expect(state.vlans['10'].name).toBe('mgmt')
+    expect(Object.keys(state.vlans)).toEqual(['10'])
+  })
+
+  it('vlan refuses a line inside a block it cannot parse', () => {
+    expect(() => reduceVlan([{ id: '10', lines: ['shutdown'] }])).toThrow(/vlan 10: unrecognised/)
   })
 
   it('vlanKey refuses a padded id, so the grammar can never read it as an index', () => {
@@ -232,8 +250,9 @@ describe('reducer behaviour, beyond the fixtures', () => {
   })
 
   it('security gives numbered ACL entries an implicit 10, 20, 30 sequence', () => {
+    // The numbered form has no header on IOS, so it arrives as a global line
+    // that repeats the list number.
     const state = reduceSecurity([
-      'ip access-list extended 101',
       'access-list 101 permit ip any any',
       'access-list 101 deny tcp any any eq 23',
     ])
@@ -242,14 +261,22 @@ describe('reducer behaviour, beyond the fixtures', () => {
   })
 
   it('security keeps the ACL entry options, because they change what a rule matches', () => {
-    const withOptions = reduceSecurity(['ip access-list extended 101', 'access-list 101 permit tcp any any eq 443'])
-    const without = reduceSecurity(['ip access-list extended 101', 'access-list 101 permit tcp any any'])
+    const withOptions = reduceSecurity(['access-list 101 permit tcp any any eq 443'])
+    const without = reduceSecurity(['access-list 101 permit tcp any any'])
     expect(withOptions.acls['101'].entries['10'].options).toBe('eq 443')
     expect(without.acls['101'].entries['10'].options).toBe(null)
   })
 
-  it('security refuses a named-list entry with no list open', () => {
-    expect(() => reduceSecurity(['10 permit ip any any'])).toThrow(/preceding "ip access-list extended/)
+  it('security gives block entries an explicit sequence and an implicit one alike', () => {
+    const state = reduceConfig(
+      'ip access-list extended MGMT\n 10 permit tcp any any eq 22\n permit ip any any'
+    )
+    expect(Object.keys(state.security.acls['MGMT'].entries)).toEqual(['10', '20'])
+    expect(state.security.acls['MGMT'].entries['20'].protocol).toBe('ip')
+  })
+
+  it('an ACL entry with no list open is refused, because no reducer owns it', () => {
+    expect(() => reduceConfig('10 permit ip any any')).toThrow(/no reducer claims/)
   })
 })
 
@@ -292,7 +319,7 @@ describe('the device axis, decided by the code rather than by argument', () => {
       [reduceInterfaces, [{ if: 'Gi0/0', lines: ['spanning-tree portfast'] }]],
       [reduceInterfaces, [{ if: 'Gi0/0', lines: ['switchport mode trunk'] }]],
       [reduceRouting, ['router ospf 1 area 0']],
-      [reduceVlan, ['vlan 10', 'name', 'x', 'y']],
+      [reduceVlan, [{ id: '10', lines: ['name', 'x', 'y'] }]],
     ]
     for (const [fn, input] of owned) {
       let threw = false
