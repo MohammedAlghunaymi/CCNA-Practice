@@ -20,7 +20,7 @@ const BY_ID = new Map(BANK.map((q) => [q.id, q]))
  * `config.exam.defaultLength` is 100, and is deliberately NOT what the runner
  * defaults to. It is read by `Home.jsx` and by `validateBank`, never here, so
  * changing the config changes nothing in the runner - and adopting 100 as the
- * component default would break the eleven `of 20` assertions in
+ * component default would break the fifteen `of 20` assertions in
  * `tests/exam.test.jsx` for no Phase 1 benefit. A full-length pass is a separate
  * shipped mode that does not exist yet.
  */
@@ -28,6 +28,39 @@ const DEFAULT_LENGTH = 20
 const ATTEMPT_KEY = 'exam.active'
 const SCHEMA_VERSION = 1
 const TARGET_SECONDS = config.exam.targetSecondsPerItem
+
+/**
+ * The preamble payload: captured or transcribed device output, rendered above
+ * the stem at both the runner and the review pane.
+ *
+ * Two properties matter and both are deliberate:
+ *
+ * 1. It renders whenever `text` is non-empty, *independently of the `preamble`
+ *    flag*. `questionSchema` forbids the flag on a hands-on item but not the
+ *    payload, and rejects no unknown keys, so an item can carry `preamble: null`
+ *    and still render a payload. Keying the render on the flag instead would
+ *    make that payload invisible while it is still on screen - and on screen is
+ *    the only place a disclosure matters.
+ *
+ * 2. It is a plain string in, plain markup out. It knows nothing about devices,
+ *    so it does not change when `device/cli/commands/render.js` starts producing
+ *    the output.
+ *
+ * Placement is above the stem, not below it: the disclosure qualifies the output
+ * it sits next to, and a marker under the thing it marks is easy to lose.
+ */
+export function PreambleBlock({ text }) {
+  const value = typeof text === 'string' ? text.trim() : ''
+  if (!value) return null
+  return (
+    <pre
+      data-testid="preamble"
+      className="mt-3 max-w-full overflow-x-auto whitespace-pre-wrap rounded-md border border-border bg-surface px-3 py-2 font-mono text-xs leading-relaxed text-text-muted"
+    >
+      {value}
+    </pre>
+  )
+}
 
 /**
  * The practice exam.
@@ -337,44 +370,63 @@ export default function Exam({ length = DEFAULT_LENGTH }) {
         <p className="text-xs text-text-faint">
           {question.domain} &middot; {question.objectiveId} &middot; {question.type}
         </p>
+        <PreambleBlock text={question.preambleText} />
+
         <p className="mt-3 leading-relaxed">{question.prompt}</p>
 
-        <ul className="mt-5 space-y-2">
-          {Object.entries(question.options).map(([key, option]) => {
-            const isSelected = selected.includes(key)
-            return (
-              <li key={key}>
-                <label
-                  className={`flex cursor-pointer items-start gap-3 rounded-md border px-3 py-2 text-sm focus-within:border-accent focus-within:ring-2 focus-within:ring-text ${
-                    isSelected ? 'border-accent bg-accent/10' : 'border-border hover:border-text-faint'
-                  }`}
-                >
-                  <input
-                    className="mt-0.5"
-                    type={question.type === 'mcq-multi' ? 'checkbox' : 'radio'}
-                    name={question.id}
-                    checked={isSelected}
-                    onChange={() =>
-                      choose(
-                        question,
-                        question.type === 'mcq-multi'
-                          ? isSelected
-                            ? selected.filter((k) => k !== key)
-                            : [...selected, key]
-                          : [key]
-                      )
-                    }
-                  />
-                  <span>
-                    <span className="font-mono font-semibold">{key}.</span> {option.text}
-                  </span>
-                </label>
-              </li>
-            )
-          })}
-        </ul>
+        {/*
+          A drag-drop or hands-on item carries neither `options` nor `answer`
+          - `validateAnswerAndOptions` returns at the drag-drop branch before it
+          looks at either, and hands-on skips it entirely. `Object.entries` on
+          undefined throws, so this site needs the guard.
+          Track 1 changes nothing drawable and the bank holds zero such items,
+          so the `else` branch is currently unreachable: it is here so a future
+          question cannot turn a missing field into a blank page, and so an
+          empty option list is never mistaken for "this question offered no
+          choices".
+        */}
+        {question.options ? (
+          <ul className="mt-5 space-y-2">
+            {Object.entries(question.options).map(([key, option]) => {
+              const isSelected = selected.includes(key)
+              return (
+                <li key={key}>
+                  <label
+                    className={`flex cursor-pointer items-start gap-3 rounded-md border px-3 py-2 text-sm focus-within:border-accent focus-within:ring-2 focus-within:ring-text ${
+                      isSelected ? 'border-accent bg-accent/10' : 'border-border hover:border-text-faint'
+                    }`}
+                  >
+                    <input
+                      className="mt-0.5"
+                      type={question.type === 'mcq-multi' ? 'checkbox' : 'radio'}
+                      name={question.id}
+                      checked={isSelected}
+                      onChange={() =>
+                        choose(
+                          question,
+                          question.type === 'mcq-multi'
+                            ? isSelected
+                              ? selected.filter((k) => k !== key)
+                              : [...selected, key]
+                            : [key]
+                        )
+                      }
+                    />
+                    <span>
+                      <span className="font-mono font-semibold">{key}.</span> {option.text}
+                    </span>
+                  </label>
+                </li>
+              )
+            })}
+          </ul>
+        ) : (
+          <p className="mt-5 rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-faint">
+            This item is a {question.type} task and offers no options to choose from.
+          </p>
+        )}
 
-        {question.type === 'mcq-multi' && (
+        {question.options && question.type === 'mcq-multi' && (
           <p className="mt-4 text-xs text-text-faint">
             Select every correct option. No partial credit.
           </p>
@@ -491,13 +543,18 @@ export function Result({ result, questions }) {
               const chosen = result.selections[id] ?? []
               // A placeholder is not a rationale, so it is never shown. The
               // question-level explanation below the list covers those.
-              const rationales = Object.entries(question.options).filter(
-                ([key, o]) =>
-                  !question.answer.includes(key) &&
-                  typeof o.rationale === 'string' &&
-                  o.rationale.trim() !== '' &&
-                  !isPlaceholderRationale(o.rationale)
-              )
+              // Same guard as the runner: a non-MCQ item has no `options` and no
+              // `answer`, and both dereferences below would throw on undefined.
+              const reviewable = Boolean(question.options) && Array.isArray(question.answer)
+              const rationales = reviewable
+                ? Object.entries(question.options).filter(
+                    ([key, o]) =>
+                      !question.answer.includes(key) &&
+                      typeof o.rationale === 'string' &&
+                      o.rationale.trim() !== '' &&
+                      !isPlaceholderRationale(o.rationale)
+                  )
+                : []
               return (
                 <li
                   key={id}
@@ -507,31 +564,39 @@ export function Result({ result, questions }) {
                     {question.domain} &middot; {question.objectiveId} &middot;{' '}
                     {unanswered ? 'not answered' : 'answered incorrectly'}
                   </p>
+                  <PreambleBlock text={question.preambleText} />
+
                   <p className="mt-2 text-sm">{question.prompt}</p>
 
-                  <ul className="mt-4 space-y-2">
-                    {Object.entries(question.options).map(([key, option]) => {
-                      const isCorrect = question.answer.includes(key)
-                      const wasChosen = chosen.includes(key)
-                      return (
-                        <li
-                          key={key}
-                          className="flex items-start justify-between gap-3 text-sm"
-                        >
-                          <span>
-                            <span className="font-mono font-semibold">{key}.</span>{' '}
-                            {option.text}
-                          </span>
-                          <span className="shrink-0 text-xs">
-                            {isCorrect && <span className="text-pass">correct</span>}
-                            {wasChosen && !isCorrect && (
-                              <span className="ml-2 text-fail">you chose this</span>
-                            )}
-                          </span>
-                        </li>
-                      )
-                    })}
-                  </ul>
+                  {reviewable ? (
+                    <ul className="mt-4 space-y-2">
+                      {Object.entries(question.options).map(([key, option]) => {
+                        const isCorrect = question.answer.includes(key)
+                        const wasChosen = chosen.includes(key)
+                        return (
+                          <li
+                            key={key}
+                            className="flex items-start justify-between gap-3 text-sm"
+                          >
+                            <span>
+                              <span className="font-mono font-semibold">{key}.</span>{' '}
+                              {option.text}
+                            </span>
+                            <span className="shrink-0 text-xs">
+                              {isCorrect && <span className="text-pass">correct</span>}
+                              {wasChosen && !isCorrect && (
+                                <span className="ml-2 text-fail">you chose this</span>
+                              )}
+                            </span>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="mt-4 rounded-md border border-border bg-surface px-3 py-2 text-sm text-text-faint">
+                      This item is a {question.type} task and offers no options to choose from.
+                    </p>
+                  )}
 
                   {rationales.length > 0 && (
                     <ul className="mt-3 space-y-2 border-l-2 border-border pl-4">

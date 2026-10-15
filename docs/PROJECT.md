@@ -71,7 +71,7 @@ Per §6(b) the one-way model is a graded inference rather than a confirmed fact,
 |---|---|
 | `mcq-single` | the single correct key is selected |
 | `mcq-multi` | the selected key **set equals** the correct key set exactly |
-| `drag-drop` | **every slot** holds a token declared in that item's `pairs` (positional; repeats legal either side) |
+| `drag-drop` | **slot *i* holds `pairs[i].right`** — the binding is positional, not membership; repeated text is legal on either side |
 | `hands-on` | the `expectedState` predicate holds against final device state |
 
 **Domain contract:**
@@ -111,7 +111,7 @@ Target time each: single 45 s · multi 65 s · drag-drop 100 s · hands-on 6 min
 
 **Per-domain output floors, enforced by `validateBank` check 11 at milestone close:** at least **2** items carrying `show-output` in each CLI domain — NF, NA, IPC, IPS, SEC (10 minimum) — and at least **2** carrying `show-json` in AUTO. IPS is included because the v1.1 blueprint gives domain 4 three configure-and-verify objectives (4.1 NAT, 4.2 NTP, 4.6 DHCP client and relay); 4.8 SSH is configure-only and is not counted as such. AUTO is excluded from `show-output` on a factual basis: 6.5, 6.6 and 6.7 contain no configure-and-verify verb, so an IOS-CLI floor there would demand content the blueprint does not describe.
 
-**Sourcing, one of three, recorded per item in `review/batches/<batch-id>.json` under `sources[]`:** a capture the author actually ran, recording platform, IOS version and command; Cisco's own published sample output in the linked command reference; or authored as `[illustrative]` with a visible marker in the stem. The third category is allowed and disclosed because Cisco's command references frequently describe fields without shipping version-exact literal output. `validateBank` check 12 fails any illustrative-sourced item whose stem lacks the marker.
+**Sourcing, one of three, recorded per item on the question itself under `sources[]`:** a capture the author actually ran, recording platform, IOS version and command; Cisco's own published sample output in the linked command reference; or authored as `[illustrative]` with a visible marker. The third category is allowed and disclosed because Cisco's command references frequently describe fields without shipping version-exact literal output. `validateBank` check 12 fails any illustrative-sourced item whose **stem, or whose `preambleText` payload, lacks the marker** — the disclosure has to qualify the output it sits next to, and the output renders above the stem. `kind` is matched case-insensitively at that check, so a capitalised `Illustrative` is accepted by the schema and caught here rather than slipping between the two.
 
 **Quota assignment order:** `drawExam` fixes the per-domain quota from blueprint weights → the per-format quota from the matrix → then selects questions, applying the low-frequency objective bias **within** a domain×format cell whose count is already fixed. Neither proportion set can drift.
 
@@ -227,7 +227,7 @@ Every wrong option carries a `rationale`; if one cannot be articulated the quest
 9. **declared topic counts drifting** from the counted `isLeaf` entries (`:201`)
 10. **supply failing to cover the exam draw** — any domain holding fewer questions than its quota for that milestone's exam length (`:213`)
 11. **`show-output`/`show-json` floors per domain**, at milestone close (`:237`)
-12. **an `[illustrative]`-sourced item whose stem lacks the marker** (`:268`)
+12. **an `[illustrative]`-sourced item whose stem or `preambleText` lacks the marker** (`:268`)
 13. **an adopted question missing from `docs/ADOPTED.md`** (`:283`)
 14. **a wrong option still carrying the placeholder rationale** (`:308`)
 15. at milestone close only: **the exact total** (`:329`)

@@ -21,6 +21,48 @@ export function isCorrectSet(selected, expected) {
 }
 
 /**
+ * Grade one drag-drop placement, positionally.
+ *
+ * Slot i must hold `pairs[i].right`. All-or-nothing, like every other format here
+ * and matching `scoring.partialCredit: false`.
+ *
+ * Two consequences worth stating, because both are traps:
+ *
+ * - It is positional, not a set comparison. `isCorrectSet` would sort
+ *   `[Y, X, Z]` equal to `[X, Y, Z]` and call it correct; here it is wrong,
+ *   because the slots mean different things.
+ * - An empty placement is UNANSWERED, not wrong. The stock path cannot make that
+ *   distinction: `isUnanswered` is false for `{}` (it is neither undefined nor
+ *   null), `isEmpty` is false for it (it is not an array), so control reaches
+ *   `isCorrectSet`, which returns false for any non-array, and an untouched item
+ *   would be marked wrong rather than left unanswered.
+ *
+ * Exported as a pure function so it can be unit-tested without the session
+ * machinery. Wiring it into `scoreExam` is Round 3, when `hands-on` arrives and
+ * the dispatch gains its first live caller.
+ */
+export function gradeDragDrop(pairs, placement) {
+  const slots = Array.isArray(pairs) ? pairs : []
+  const isPlacement = placement !== null && typeof placement === 'object' && !Array.isArray(placement)
+  const placed = isPlacement ? Object.keys(placement) : []
+
+  // No keys placed at all: the learner never touched the item. Reported
+  // separately from wrong, because unanswered items grade incorrect overall
+  // (PROJECT.md 7a.3) but are disclosed and counted differently.
+  if (placed.length === 0) return 'unanswered'
+
+  const wanted = slots.map((pair) => pair?.right)
+  // A chip dropped into a slot the item never declared has no meaning, so a
+  // placement longer than the slot list cannot be right.
+  if (placed.length > wanted.length) return 'wrong'
+
+  for (let i = 0; i < wanted.length; i++) {
+    if (placement[i] !== wanted[i]) return 'wrong'
+  }
+  return 'correct'
+}
+
+/**
  * Score a drawn exam.
  *
  * @param {Object} args

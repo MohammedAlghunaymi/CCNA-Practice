@@ -14,6 +14,7 @@ export const QUESTION_TYPES = ['mcq-single', 'mcq-multi', 'drag-drop', 'hands-on
  * latter because they are not CLI configure-and-verify work.
  */
 export const PREAMBLES = ['show-output', 'show-json', null]
+export const SOURCE_KINDS = ['capture', 'published', 'illustrative']
 export const DIFFICULTIES = ['easy', 'medium', 'hard']
 
 export const EXPECTED_STATE_OPS = [
@@ -51,6 +52,7 @@ export function validateQuestionShape(question) {
   if (q.preamble && q.type === 'hands-on') {
     errors.push('hands-on items carry their task in expectedState, not a show preamble')
   }
+  errors.push(...validatePreambleDisclosure(q))
   if (typeof q.prompt !== 'string' || !q.prompt.trim()) errors.push('prompt must be a non-empty string')
   if (!DIFFICULTIES.includes(q.difficulty)) {
     errors.push(`difficulty must be one of ${DIFFICULTIES.join(', ')}`)
@@ -67,7 +69,10 @@ export function validateQuestionShape(question) {
     errors.push(...validateAnswerAndOptions(q))
   }
 
-  if (q.type === 'drag-drop') errors.push(...validatePairs(q))
+  if (q.type === 'drag-drop') {
+    errors.push(...validatePairs(q))
+    errors.push(...validateDragDropAnswer(q))
+  }
 
   return errors
 }
@@ -151,6 +156,117 @@ function validatePairs(q) {
     const key = `${pair?.left}=>${pair?.right}`
     if (seen.has(key)) errors.push(`pairs[${index}] duplicates an earlier pairing (${key})`)
     seen.add(key)
+  })
+
+  return errors
+}
+
+/**
+ * `preamble` is a tag, not a payload. It records that an item presents device
+ * output; it says nothing about what that output is. `preambleText` carries the
+ * payload the student actually reads, and it renders above the stem at both
+ * render sites, which makes it a disclosure surface - so it cannot be
+ * ungoverned.
+ *
+ *   1. `preambleText` is required, non-empty, whenever `preamble` is set.
+ *   2. `sources` is required whenever there is anything to disclose - either
+ *      signal, not just the first.
+ *
+ * The OR in rule 2 is the whole point. The hands-on rule above forbids the
+ * `preamble` *flag*, not the payload, and `validateQuestionShape` rejects no
+ * unknown keys, so without the OR an item could carry `preamble: null` plus a
+ * rendered `preambleText` and cite nothing at all. Rendered payload implies
+ * non-empty preambleText implies sources, so one rule closes the path.
+ *
+ * `kind` is compared lower-cased so a capitalised `Illustrative` is *accepted*
+ * here rather than punished: the check that has to catch it is the marker
+ * requirement, and that lives at validateBank.js:271, which does the same
+ * normalisation.
+ */
+function validatePreambleDisclosure(q) {
+  const errors = []
+  const hasPreambleTag = (q.preamble ?? null) !== null
+  const text = typeof q.preambleText === 'string' ? q.preambleText.trim() : ''
+
+  if (hasPreambleTag && !text) {
+    errors.push('preambleText is required and must be non-empty when preamble is set')
+  }
+
+  if (!hasPreambleTag && !text) return errors
+
+  if (!Array.isArray(q.sources) || q.sources.length === 0) {
+    errors.push('sources is required and must be non-empty when an item presents a preamble payload')
+    return errors
+  }
+
+  q.sources.forEach((source, index) => {
+    const at = `sources[${index}]`
+    if (!source || typeof source !== 'object' || Array.isArray(source)) {
+      errors.push(`${at} must be an object`)
+      return
+    }
+    const kind = typeof source.kind === 'string' ? source.kind.trim().toLowerCase() : ''
+    if (!SOURCE_KINDS.includes(kind)) {
+      errors.push(
+        `${at}.kind must be one of ${SOURCE_KINDS.join(', ')} (got ${JSON.stringify(source.kind)})`
+      )
+      return
+    }
+    // A capture is a claim that someone ran this, so it has to say on what.
+    if (kind === 'capture') {
+      for (const field of ['platform', 'iosVersion', 'command']) {
+        if (typeof source[field] !== 'string' || !source[field].trim()) {
+          errors.push(`${at} is a capture, so it needs a non-empty ${field}`)
+        }
+      }
+    }
+  })
+
+  return errors
+}
+
+/**
+ * A drag-drop key is positional: slot i names `pairs[i].right`. PROJECT.md:68
+ * used to say this two ways at once - "every slot holds a token declared in that
+ * item's `pairs` (positional; repeats legal either side)" - which reads as
+ * membership and as positional simultaneously.
+ *
+ * This is the check `validateAnswerAndOptions` structurally cannot make: it
+ * returns early for drag-drop above, before it ever looks at `answer`, so before
+ * this function nothing validated the key at all.
+ *
+ * A key shorter than `pairs` is allowed and means those trailing slots were
+ * never filled; grading is all-or-nothing, so any learner who fills them is
+ * wrong on those slots. A key longer than `pairs` has no slot to point at.
+ */
+function validateDragDropAnswer(q) {
+  const errors = []
+  if (q.answer === undefined || q.answer === null) return errors
+
+  if (!Array.isArray(q.answer) || q.answer.length === 0) {
+    errors.push('drag-drop answer must be a non-empty array of tokens, one per slot')
+    return errors
+  }
+
+  const pairs = Array.isArray(q.pairs) ? q.pairs : []
+  if (q.answer.length > pairs.length) {
+    errors.push(
+      `answer has ${q.answer.length} tokens but the item declares only ${pairs.length} slot(s)`
+    )
+  }
+
+  q.answer.forEach((token, slot) => {
+    if (typeof token !== 'string' || !token.trim()) {
+      errors.push(`answer[${slot}] must be a non-empty token`)
+      return
+    }
+    const expected = pairs[slot]?.right
+    if (slot < pairs.length && token !== expected) {
+      errors.push(
+        `answer[${slot}] is "${token}" but slot ${slot} holds "${expected}" - ` +
+          'the key is positional (PROJECT.md 7a)'
+      )
+    }
   })
 
   return errors

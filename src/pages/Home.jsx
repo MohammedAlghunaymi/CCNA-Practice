@@ -71,7 +71,19 @@ export default function Home() {
           </div>
           <div>
             <dt className="text-text-faint">Exam length</dt>
-            <dd className="font-mono text-lg">{config.exam.defaultLength}</dd>
+            {/* Renders `config.exam.defaultLength` (100), the full-length paper,
+                which is not what the runner starts on: it defaults to 20. The
+                config is deliberately not changed to match, because
+                validateBank.js:151 computes its format scale from it and
+                tests/allocation.test.js:161-167 pins the draw quota against it -
+                a 20 there turns 16 short format cells into 22 and fails the
+                suite. See PROJECT.md 14. */}
+            <dd className="font-mono text-lg">
+              {config.exam.defaultLength}
+              <span className="ml-2 text-xs font-normal text-text-faint">
+                full-length paper
+              </span>
+            </dd>
           </div>
         </dl>
       </section>

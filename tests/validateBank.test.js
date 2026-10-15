@@ -195,6 +195,14 @@ describe('validateBank: show-output floors (check 11)', () => {
           question(`${domain}-S${n}`, objectiveId, domain, {
             preamble: 'show-output',
             prompt: `show-output item ${n}`,
+            // Both schema clauses fire on a non-null `preamble`: the payload is
+            // required, and so is `sources`. Twelve fixtures in this block, so a
+            // partial edit shows up as check 3 going red rather than passing.
+            preambleText: `Router#show ip route brief\nitem ${n}`,
+            // `published`, not `illustrative`: these prompts carry no marker and
+            // are not about disclosure. `illustrative` would pull all twelve
+            // into check 12 and fail them for an unrelated reason.
+            sources: [{ kind: 'published' }],
           })
         )
         n++
@@ -204,10 +212,15 @@ describe('validateBank: show-output floors (check 11)', () => {
       questions.push(question(`AUTO-J${i}`, '6.7', 'AUTO', {
         preamble: 'show-json',
         prompt: `show-json item ${i}`,
+        preambleText: `{"item": ${i}}`,
+        sources: [{ kind: 'published' }],
       }))
     }
-    const check = named(run(questions, 'pilot', false).results, 'show-output')
-    expect(check.pass).toBe(true)
+    const results = run(questions, 'pilot', false).results
+    // Check 3 is not selected by any other assertion in this file, so without
+    // this the suite is blind to the schema clauses above.
+    expect(named(results, 'satisfies the schema').pass).toBe(true)
+    expect(named(results, 'show-output').pass).toBe(true)
   })
 
   it('requires an [illustrative] marker on any item sourced as illustrative', () => {
@@ -217,12 +230,17 @@ describe('validateBank: show-output floors (check 11)', () => {
       ...question(id, '1.6', 'NF', {
         preamble: 'show-output',
         prompt: `Router#show ip route [illustrative]\n${id}`,
+        // Marked too, not just the stem: check 12 requires the marker in both
+        // the stem and the payload, and a payload carrying none is exactly the
+        // gap the second location was added to close.
+        preambleText: `Router#show ip route [illustrative]\n${id}`,
       }),
       sources: [{ kind: 'illustrative' }],
     })
 
     const bothMarked = run([marked('Z1'), marked('Z2')], 'pilot', false).results
     expect(named(bothMarked, 'illustrative').pass).toBe(true)
+    expect(named(bothMarked, 'satisfies the schema').pass).toBe(true)
 
     const oneUnmarked = run(
       [
@@ -231,6 +249,10 @@ describe('validateBank: show-output floors (check 11)', () => {
           ...question('Z4', '1.6', 'NF', {
             preamble: 'show-output',
             prompt: 'Router#show ip route with no marker',
+            // Present but unmarked: this is the case that only the payload
+            // location can see. Without it Z4 is caught by the stem check alone
+            // and the second location is never exercised.
+            preambleText: 'Router#show ip route with no marker',
           }),
           sources: [{ kind: 'illustrative' }],
         },
@@ -240,6 +262,8 @@ describe('validateBank: show-output floors (check 11)', () => {
     ).results
     expect(named(oneUnmarked, 'illustrative').pass).toBe(false)
     expect(named(oneUnmarked, 'illustrative').detail).toMatch(/Z4/)
+    // Proves the failure came from the payload location, not the stem one.
+    expect(named(oneUnmarked, 'illustrative').detail).toMatch(/preambleText: 1/)
   })
 })
 

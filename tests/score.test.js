@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { scoreExam, isCorrectSet } from '../src/lib/score.js'
+import { scoreExam, isCorrectSet, gradeDragDrop } from '../src/lib/score.js'
 
 /** Minimal single-answer item. */
 function single(id, domain, answer = ['A'], explanation = 'because A is right') {
@@ -172,5 +172,64 @@ describe('scoreExam — invariant', () => {
   it('scores an empty paper as zero of zero', () => {
     const r = scoreExam({ questions: [], answers: {} })
     expect(r).toMatchObject({ correct: 0, total: 0, unsubmittedCount: 0 })
+  })
+})
+describe('gradeDragDrop', () => {
+  const PAIRS = [
+    { left: 'X', right: 'alpha' },
+    { left: 'Y', right: 'beta' },
+    { left: 'Z', right: 'gamma' },
+  ]
+
+  it('scores an unpermuted placement correct - the positive control', () => {
+    expect(gradeDragDrop(PAIRS, { 0: 'alpha', 1: 'beta', 2: 'gamma' })).toBe('correct')
+  })
+
+  it('scores a permuted placement wrong, where a set grader would score it correct', () => {
+    const permuted = { 0: 'beta', 1: 'alpha', 2: 'gamma' }
+    expect(gradeDragDrop(PAIRS, permuted)).toBe('wrong')
+    // The trap this guards: isCorrectSet sorts, so it cannot tell the two apart.
+    // If that ever stops being true this test stops testing anything.
+    expect(isCorrectSet(['gamma', 'alpha', 'beta'], ['alpha', 'beta', 'gamma'])).toBe(true)
+  })
+
+  it('grades a repeated left value correctly, because only the right side is keyed', () => {
+    const pairs = [
+      { left: 'STP', right: 'prevents loops' },
+      { left: 'STP', right: 'redundant topology' },
+      { left: 'BPDU guard', right: 'prevents loops' },
+    ]
+    expect(gradeDragDrop(pairs, { 0: 'prevents loops', 1: 'redundant topology', 2: 'prevents loops' }))
+      .toBe('correct')
+  })
+
+  it('reports an empty placement as unanswered, not wrong', () => {
+    // The stock path cannot do this: isUnanswered is false for {} (not
+    // undefined, not null), isEmpty is false for it (not an array), so
+    // control reaches isCorrectSet, which returns false for any non-array and
+    // marks the untouched item wrong.
+    expect(gradeDragDrop(PAIRS, {})).toBe('unanswered')
+  })
+
+  it('reports a placement with only some slots filled as wrong, not unanswered', () => {
+    expect(gradeDragDrop(PAIRS, { 0: 'alpha' })).toBe('wrong')
+  })
+
+  it('rejects a chip dropped into a slot the item never declared', () => {
+    expect(gradeDragDrop(PAIRS, { 0: 'alpha', 1: 'beta', 2: 'gamma', 3: 'delta' })).toBe('wrong')
+  })
+
+  it('rejects a slot holding a token that belongs to a different slot', () => {
+    expect(gradeDragDrop(PAIRS, { 0: 'beta', 1: 'beta', 2: 'gamma' })).toBe('wrong')
+  })
+
+  it('treats a missing or malformed placement as unanswered rather than throwing', () => {
+    for (const value of [undefined, null, [], 'alpha', 0]) {
+      expect(gradeDragDrop(PAIRS, value)).toBe('unanswered')
+    }
+  })
+
+  it('scores a key longer than the slots wrong, since the extra chip has no slot', () => {
+    expect(gradeDragDrop(PAIRS.slice(0, 2), { 0: 'alpha', 1: 'beta', 2: 'gamma' })).toBe('wrong')
   })
 })

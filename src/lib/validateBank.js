@@ -266,17 +266,46 @@ export function validateBank({
   )
 
   // ---- 12. illustrative items must disclose themselves --------------------
+  // Two locations, one criterion: the stem the student reads, and the payload
+  // rendered above it. Checking only the stem lets an item disclose in the stem
+  // while the output it is qualifying is itself unattributed.
+  //
+  // `kind` is normalised HERE, at the point of enforcement, and that placement
+  // is the whole fix. Lower-casing it in questionSchema alone would be worse than
+  // useless: the schema would accept `Illustrative`, this filter would still miss
+  // it, and the one string that evades the marker requirement would become the
+  // string the schema blesses. The schema tolerates the capitalisation; this is
+  // where it gets caught.
   const ILUSTRATIVE_MARKER = '[illustrative]'
-  const unmarked = questions
-    .filter((q) => Array.isArray(q.sources) && q.sources.some((s) => s.kind === 'illustrative'))
+  const isIllustrativeSourced = (q) =>
+    Array.isArray(q.sources) &&
+    q.sources.some((s) => String(s?.kind ?? '').trim().toLowerCase() === 'illustrative')
+
+  const unmarkedInStem = questions
+    .filter(isIllustrativeSourced)
     .filter((q) => !String(q.prompt ?? '').includes(ILUSTRATIVE_MARKER))
     .map((q) => q.id)
 
+  // Only an item that actually renders a payload can be marked in one, so an
+  // illustrative-sourced item with no preambleText is not asked for a marker
+  // that has nowhere to go.
+  const unmarkedInPayload = questions
+    .filter(isIllustrativeSourced)
+    .filter((q) => String(q.preambleText ?? '').trim() !== '')
+    .filter((q) => !String(q.preambleText).includes(ILUSTRATIVE_MARKER))
+    .map((q) => q.id)
+
+  const unmarked = [...new Set([...unmarkedInStem, ...unmarkedInPayload])]
+
+  // One record() call, so this adds a checked location without adding a
+  // criterion. check-anti-rot Gate 7 reads the count.
   record(
-    `Every [illustrative] item carries the ${ILUSTRATIVE_MARKER} marker in its stem`,
+    `Every [illustrative] item carries the ${ILUSTRATIVE_MARKER} marker in its stem and in its preambleText`,
     unmarked.length === 0,
     unmarked.length
-      ? `${unmarked.length} item(s) missing the marker: ${unmarked.slice(0, 6).join(', ')}`
+      ? `${unmarked.length} item(s) missing the marker ` +
+        `(stem: ${unmarkedInStem.length}, preambleText: ${unmarkedInPayload.length}): ` +
+        `${unmarked.slice(0, 6).join(', ')}`
       : `${questions.filter((q) => Array.isArray(q.sources)).length} sourced item(s) checked`
   )
 

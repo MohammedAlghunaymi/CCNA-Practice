@@ -142,6 +142,68 @@ describe('validateQuestionShape: drag-drop', () => {
     delete q.answer
     expect(validateQuestionShape(q).join(' ')).toMatch(/non-empty pairs array/)
   })
+
+  // Every other drag-drop test above deletes `answer`, because nothing validated
+  // it: validateAnswerAndOptions returns at the drag-drop branch before it ever
+  // looks there. These four are the ones that now have an owner.
+  it('accepts a key whose token matches its own slot', () => {
+    const q = baseQuestion({
+      type: 'drag-drop',
+      objectiveId: '2.5',
+      domain: 'NA',
+      pairs: [
+        { left: 'STP', right: 'prevents loops' },
+        { left: 'BPDU guard', right: 'redundant topology' },
+      ],
+      answer: ['prevents loops', 'redundant topology'],
+    })
+    delete q.options
+    expect(validateQuestionShape(q)).toEqual([])
+  })
+
+  it('rejects a key naming a token that is not in its own slot', () => {
+    const q = baseQuestion({
+      type: 'drag-drop',
+      objectiveId: '2.5',
+      domain: 'NA',
+      pairs: [
+        { left: 'STP', right: 'prevents loops' },
+        { left: 'BPDU guard', right: 'redundant topology' },
+      ],
+      // 'redundant topology' is declared, but in slot 1, not slot 0. A
+      // membership check would pass this; a positional one must not.
+      answer: ['redundant topology', 'prevents loops'],
+    })
+    delete q.options
+    expect(validateQuestionShape(q).join(' ')).toMatch(/answer\[0\] is "redundant topology" but slot 0 holds "prevents loops"/)
+  })
+
+  it('rejects a key longer than the slots it claims to fill', () => {
+    const q = baseQuestion({
+      type: 'drag-drop',
+      objectiveId: '2.5',
+      domain: 'NA',
+      pairs: [{ left: 'STP', right: 'prevents loops' }],
+      answer: ['prevents loops', 'invents a second slot'],
+    })
+    delete q.options
+    expect(validateQuestionShape(q).join(' ')).toMatch(/only 1 slot/)
+  })
+
+  it('allows a short key, which means those slots were never filled', () => {
+    const q = baseQuestion({
+      type: 'drag-drop',
+      objectiveId: '2.5',
+      domain: 'NA',
+      pairs: [
+        { left: 'STP', right: 'prevents loops' },
+        { left: 'BPDU guard', right: 'redundant topology' },
+      ],
+      answer: ['prevents loops'],
+    })
+    delete q.options
+    expect(validateQuestionShape(q)).toEqual([])
+  })
 })
 
 describe('validateQuestionShape: hands-on', () => {
