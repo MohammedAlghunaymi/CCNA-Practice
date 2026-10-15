@@ -1,0 +1,35 @@
+{
+  "localPasswords": {},
+  "acls": {
+    "15": {
+      "name": "15",
+      "entries": {
+        "10": {
+          "sequence": 10,
+          "action": "deny",
+          "protocol": "tcp",
+          "source": "any",
+          "destination": "any",
+          "options": "eq 23"
+        }
+      }
+    },
+    "101": {
+      "name": "101",
+      "entries": {
+        "10": {
+          "sequence": 10,
+          "action": "permit",
+          "protocol": "ip",
+          "source": "any",
+          "destination": "any",
+          "options": null
+        }
+      }
+    }
+  },
+  "ssh": {
+    "version": 0,
+    "keys": []
+  }
+}

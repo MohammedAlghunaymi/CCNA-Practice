@@ -1,0 +1,29 @@
+{
+  "ntp": {
+    "peers": {
+      "192.168.1.1": {
+        "address": "192.168.1.1",
+        "minimumVersion": 4
+      },
+      "192.168.1.10": {
+        "address": "192.168.1.10",
+        "minimumVersion": 4
+      }
+    }
+  },
+  "dhcp": {
+    "pools": {}
+  },
+  "nat": {
+    "pools": {
+      "MGMT": {
+        "name": "MGMT",
+        "netmask": "255.255.255.0"
+      }
+    },
+    "inside": [
+      "1"
+    ],
+    "outside": []
+  }
+}
