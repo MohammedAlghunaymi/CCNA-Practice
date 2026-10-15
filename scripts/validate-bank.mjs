@@ -64,9 +64,14 @@ for (const result of results) {
 }
 console.log('='.repeat(72))
 console.log(`${results.length - failures}/${results.length} criteria pass`)
+// stats.floors is the per-domain floor record (validateBank.js:342), not a
+// scalar — print it as the "NF 1, NA 1, ..." summary it actually is.
+const floorSummary = Object.entries(stats.floors)
+  .map(([domain, minimum]) => `${domain} ${minimum}`)
+  .join(', ')
 console.log(
   `Milestone "${milestone}": ${stats.total}/${stats.target} questions, ` +
-    `floor ${stats.floor} across ${stats.inScope} in-scope sub-objectives, ` +
+    `floors ${floorSummary}, ${stats.inScope} in-scope sub-objectives, ` +
     `${files.length} domain file(s)`
 )
 

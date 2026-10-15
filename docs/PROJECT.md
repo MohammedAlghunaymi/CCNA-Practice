@@ -20,7 +20,7 @@ Candidates practise on material differing from the exam where it matters: no tim
 | **G3** Hands-on tasks where the student configures a device via CLI or GUI | All 15 shipped tasks run end-to-end and grade via machine-checkable `expectedState` |
 | **G4** Every question maps to an official sub-objective ID | `validate:bank` fails on any unmapped ID; `validate:docs` fails unless this file enumerates all 97 |
 | **G5** Every shipped question passed all gates and its batch's review record | `validate:review` fails if any merged batch lacks `status: "signed-off"` |
-| **G6** MIT, no third-party content | `license:check` fails on any non-MIT direct dependency or missing provenance header |
+| **G6** MIT, and nothing unattributed | `license:check` fails on any non-MIT direct dependency, missing provenance header, or adopted question absent from `docs/ADOPTED.md` |
 
 ## 4. Non-goals
 
@@ -28,7 +28,13 @@ Reproducing Cisco's actual exam questions · certifying anyone · v2.0 · Packet
 
 ## 5. Legal position
 
-Code and questions original, MIT. Objective **descriptions paraphrased in our own words**; we reproduce only the objective IDs, the six domain names and the domain weights — short factual labels rather than expression. Cisco's blueprint wording is quoted in §6 with citation; IOS syntax is factual interface notation. Blueprint source: `learningcontent.cisco.com/documents/marketing/exam-topics/200-301-CCNA-v1.1.pdf`. "CCNA" is Cisco's trademark, used descriptively; non-affiliation notice, no Cisco logos. No dumps, no scraped questions, no copied assets.
+Code original, MIT. **The question bank is not original work** — see §5a. Objective **descriptions paraphrased in our own words**; we reproduce only the objective IDs, the six domain names and the domain weights — short factual labels rather than expression. Cisco's blueprint wording is quoted in §6 with citation; IOS syntax is factual interface notation. Blueprint source: `learningcontent.cisco.com/documents/marketing/exam-topics/200-301-CCNA-v1.1.pdf`. "CCNA" is Cisco's trademark, used descriptively; non-affiliation notice, no Cisco logos. No dumps, nothing scraped from a paid or leaked source, no copied assets.
+
+### 5a. The adopted bank — what it is and where it came from
+
+All 169 shipped questions were adopted from [`Onesayi/ccna-simulator`](https://github.com/Onesayi/ccna-simulator), an MIT-licensed project, at pinned commit `6efca4f`, authored by Alistair Nhiwatiwa. Each carries an `upstream` block naming the source project, the exact commit, the upstream id and the licence; `docs/ADOPTED.md` holds the per-question mapping, including the five items dropped and why. `validateBank` check 13 fails if any adopted question is missing from that registry, and `review/batches/upstream.json` records the review state as `pending` rather than `signed-off`, because no human has yet checked these items' technical accuracy.
+
+Re-keying each adopted item to this project's v1.1 blueprint objective ids and writing an explanation for its correct answer is our work; the questions themselves are not. The long-term intent is to author the remaining questions here from the public blueprint. **Any future statement that the bank is original is false until that has happened**, and `license:check` scopes its provenance checks to `src/`, so it will not catch the claim — it is on the reader of this document.
 
 ## 6. The exam we're mirroring
 
@@ -206,23 +212,25 @@ Every wrong option carries a `rationale`; if one cannot be articulated the quest
 
 ## 10. Quality gates
 
-`npm run lint` · `npm run test` · `npm run build` · `npm run validate:bank` · `npm run validate:review` · `npm run validate:docs` · `npm run license:check` — **all seven must pass before push, on every pull request.**
+`npm run lint` · `npm run test` · `npm run build` · `npm run validate:bank` · `npm run validate:review` · `npm run validate:docs` · `npm run validate:anti-rot` · `npm run license:check` — **all eight must pass before push, on every pull request.** CI runs a ninth step, `npm run docs:generate -- --check`, ahead of them; `npm run validate` does not, so the two are not the same sequence.
 
-`validate:bank` is **milestone-aware**, reading the current milestone from `config/bank.config.json`. It fails on:
+`validate:bank` is **milestone-aware**, reading the current milestone from `config/bank.config.json`. Numbered as `src/lib/validateBank.js` numbers them. It emits **14** criteria per run, plus a 15th at milestone close:
 
-1. duplicate IDs or stems
-2. schema violations
-3. unmapped objective IDs
-4. a domain that disagrees with its objective
-5. failed `verify` assertions
-6. hands-on tasks lacking a valid `expectedState`
-7. an in-scope topic below the milestone's per-topic minimum, read from `floorsByMilestone` — never a global constant
-8. a per-domain format count below its matrix cell
-9. **proportional drift** `|count_d − target_d × (current_total / milestone_target)| > ±2`
-10. **supply failing to cover the exam draw** — any domain holding fewer questions than its quota for that milestone's exam length
-11. **declared topic counts drifting** from the counted `isLeaf` entries
-12. **an `[illustrative]`-sourced item whose stem lacks the marker**
-13. at milestone close only: **the exact total**, and **the `show-output`/`show-json` floors per domain**
+1. duplicate ids (`:52`)
+2. duplicate stems (`:59`)
+3. **shape** — schema violations, including a hands-on task lacking a valid `expectedState` (`:69`)
+4. **objective mapping** — an unmapped ID, or a domain that disagrees with its objective (`:77`)
+5. failed `verify` assertions (`:85`)
+6. an in-scope topic below the milestone's per-topic minimum, read from `floorsByMilestone` — never a global constant (`:97`)
+7. a per-domain format count below its matrix cell, scaled to current bank size (`:143`)
+8. **proportional drift** `|count_d − target_d × (current_total / milestone_target)| > ±2` (`:163`)
+9. **declared topic counts drifting** from the counted `isLeaf` entries (`:201`)
+10. **supply failing to cover the exam draw** — any domain holding fewer questions than its quota for that milestone's exam length (`:213`)
+11. **`show-output`/`show-json` floors per domain**, at milestone close (`:237`)
+12. **an `[illustrative]`-sourced item whose stem lacks the marker** (`:268`)
+13. **an adopted question missing from `docs/ADOPTED.md`** (`:283`)
+14. **a wrong option still carrying the placeholder rationale** (`:308`)
+15. at milestone close only: **the exact total** (`:329`)
 
 Three deliberate carve-outs, all stated so they cannot be abused to ship a bad bank:
 
@@ -250,12 +258,12 @@ An empty bank passes the coverage check rather than reporting 32 phantom violati
 |---|---|---|---|
 | 0 | Toolchain + CI + nine artifacts: Node 22 LTS, Vite, React 19, Tailwind v4, Vitest, ESLint; GitHub Actions; **this document**, incl. the appendix below generated from `objectives.json`; `not-emulated.json`; `bank.config.json`; `allocate-bank.mjs`; four validators; README with `git clone && npm ci && npm run dev` | **14** | CI green on empty bank; all four validators exercised |
 | 1 | Exam-day shell over the real bank: session store with `SCHEMA_VERSION` and clock tolerance 1 · exam shell with paired assertions 1 · result screen 1 · full-length walk and auto-submit proof 1 | **4** | Owner walks a 100-item exam drawn from the real bank end-to-end; `tests/exam.test.jsx` green |
-| 2 | Pilot bank: 60 questions over the 32-topic subset, all three authored formats. 60 × 13–19 min, in batches of ≤40. **Absorbs the Phase 1 deferrals** — see §14 | **24–30** | `validate:bank` green at pilot target with all 13 checks; pilot exams in practice mode |
+| 2 | Pilot bank: 60 questions over the 32-topic subset, all three authored formats. 60 × 13–19 min, in batches of ≤40. **Absorbs the Phase 1 deferrals** — see §14 | **24–30** | `validate:bank` green at pilot target with all 14 checks; pilot exams in practice mode |
 | 3 | Capture/transcribe/verify the 10 `show-output` + 2 `show-json` items with per-item `sources[]` 5 · generated `NOT-EMULATED.md` 1 · scoring verified per authored format 2 · acting on pilot feedback 4 | **12** | all three authored formats render and score correctly |
 | 4 | Emulator core: 5 `DeviceState` sub-reducers, `LabHarness`, `CliEngine`, `expectedState.js`, 16 config families (2.5–3.5 h each), 10 h engine, 8 h renderers, golden fixtures | **58–74** | all 16 families mutate state correctly; 4 renderers byte-match fixtures |
-| 5 | 15 hands-on tasks: 12 CLI × 1.5–2 h + 3 WLC × 3–4 h + `WlcState` 6 h | **33–42** | all 15 tasks run end-to-end and grade via `expectedState` |
+| 5 | 15 hands-on tasks: 12 CLI × 1.5–2 h + 3 WLC × 3–4 h + `WlcState` 6 h + `WlcGui` (the WLAN-creation GUI of §7e, **not estimated** — §12's 33–42 h covers only the three priced items) | **33–42** + `WlcGui` | all 15 tasks run end-to-end and grade via `expectedState`; `WlcGui` creates a WLAN whose fields mutate `WlcState`, with Security a child of the WLAN editor |
 | 6 | Bank growth 60 → 300 in batches of ≤40. 240 × 13–19 min | **52–76** | supply covers the 100-question draw at v1; drift within ±2 |
-| 7 | Ambiguity pass 3 h + 15% sample 4.5 h + rotation 2 h + CONTRIBUTING 2 h + **5 h rework budget** (inclusive of seven-gate re-runs, 2 amendment rounds per batch; a third round escalates to a design change) | **17** | 15% milestone sample re-read |
+| 7 | Ambiguity pass 3 h + 15% sample 4.5 h + rotation 2 h + CONTRIBUTING 2 h + **5 h rework budget** (inclusive of eight-gate re-runs, 2 amendment rounds per batch; a third round escalates to a design change) | **17** | 15% milestone sample re-read |
 | 8 | Bank growth 300 → 450. Parameterised re-run of Phase 6 against the `later` rung. 150 × 13–19 min, mid-block checkpoint at +75 | **32.5–47.5** | supply covers the draw at `later` |
 | 9 | Bank growth 450 → 600. Parameterised re-run against `frontier`. 150 × 13–19 min, mid-block checkpoint at +75 | **32.5–47.5** | supply covers the draw at `frontier` |
 
@@ -263,13 +271,13 @@ An empty bank passes the coverage check rather than reporting 32 phantom violati
 
 ## 13. Non-negotiables
 
-1. No third-party content — `license:check` fails on any non-MIT **direct** dependency or missing provenance header; transitive licences are advisory only, because the Vite/Tailwind trees include ISC packages
+1. No unattributed third-party content — `license:check` fails on any non-MIT **direct** dependency or missing provenance header, and `validate:bank` check 13 fails on an adopted question absent from `docs/ADOPTED.md`; transitive licences are advisory only, because the Vite/Tailwind trees include ISC packages. See §5a: the bank is adopted, not original
 2. No question without an explanation and distractor rationales
-3. No question without passing all seven gates
+3. No question without passing all eight gates
 4. One-way navigation during the exam pass: no back control, no flag-for-review affordance, no pre-submit review screen. Recorded in §6(b) as a graded inference, not a confirmed fact
 5. Timer and auto-submit behave as the real thing; unanswered items grade incorrect; mid-task expiry earns no partial credit and is disclosed
 6. Full-length results are pass/fail plus per-domain proficiency — never a scaled score or percentage; practice-mode results carry no verdict
-7. All seven CI gates green before push
+7. All eight gates green before push
 8. Any fact not published by Cisco is labelled community-reported, observed or inferred, in code and UI — and §6 grades each claim by the scope of the source carrying it, so a blog post's silence is never read as Cisco policy
 
 ## 14. Decisions
@@ -286,9 +294,9 @@ An empty bank passes the coverage check rather than reporting 32 phantom violati
 | **Git identity** | **Open** — user chooses global config vs per-commit |
 | **Bank ladder** | 60 → 300 → 450 → 600, each rung a config-only addition. Further rungs are a procedure, not a redesign — `docs/GROWTH.md` |
 | **IP Services hands-on** | **Deferred** — the blueprint does give domain 4 configure-and-verify objectives; adding it changes the N=100 matrix and cascades through the allocation. Backlog entry in `GROWTH.md` |
-| **Phase 1 scope, reviewed** | **Cut from four steps to four steps' worth of work.** Phase 1 originally built a fixture corpus, a cell-aware draw, non-multiple-choice graders and a frozen `expectedState` evaluator — for formats the bank contains none of: 169 questions, 168 `mcq-single`, 1 `mcq-multi`, 0 drag-drop, 0 hands-on. Council review reduced it to the session store, an injectable paper length, one-way navigation, the result screen and a full-length walk. Phase 2 absorbs the deferrals and its hours rise to match, so **every §12 total is unchanged**: the work moved, it did not disappear. `scripts/check-anti-rot.mjs` fails the build if this row is reverted |
+| **Phase 1 scope, reviewed** | **Cut from four steps to four steps' worth of work.** Phase 1 originally built a fixture corpus, a cell-aware draw, non-multiple-choice graders and a frozen `expectedState` evaluator — for formats the bank contains none of: 169 questions, 168 `mcq-single`, 1 `mcq-multi`, 0 drag-drop, 0 hands-on. Council review reduced it to the session store, an injectable paper length, one-way navigation, the result screen and a full-length walk. Phase 2 absorbs the deferrals and its hours rise to match, so **every §12 total is unchanged**: the work moved, it did not disappear. |
 | **Deferred to Phase 2 with the Phase 1 cut** | Non-multiple-choice schema, graders and renderers; the frozen `expectedState` evaluator (its nine operators stay frozen in `questionSchema.js:19-29`); cell-aware draw and the G2 matrix assertion; cross-tab coordination; the abandoned-record sweep; the §13 #6 no-percentage rule, which binds a shipped full-length mode that does not exist. The domain-proportion drift at n=100 (NF 19 against the matrix's 20) is the coverage floor at `selectQuestions.js:111`, not a missing dimension, and is carried forward unfixed |
-| **Home tile overstates the paper length** | `Home.jsx:73-74` renders `config.exam.defaultLength` — 100 — while the runner defaults to 20. Known and left: aligning them means re-labelling the tile or defaulting the runner to 100, and the latter would break the eleven `of 20` assertions for no Phase 1 benefit |
+| **Home tile overstates the paper length** | `Home.jsx:73-74` renders `config.exam.defaultLength` — 100 — while the runner defaults to 20. Known and left: aligning them means re-labelling the tile or defaulting the runner to 100, and the latter would break the fifteen `of 20` assertions in `tests/exam.test.jsx` for no Phase 1 benefit |
 
 <!-- BEGIN GENERATED OBJECTIVE APPENDIX -->
 

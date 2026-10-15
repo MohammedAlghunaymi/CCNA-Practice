@@ -169,13 +169,3 @@ export function selectQuestions(bank, n, seed) {
 
   return paper
 }
-
-/** How many questions of each drawable type the bank holds, for setup screens. */
-export function drawableSupply(bank) {
-  const counts = {}
-  for (const question of bank) {
-    if (!DRAWABLE_TYPES.includes(question.type)) continue
-    counts[question.domain] = (counts[question.domain] ?? 0) + 1
-  }
-  return { byDomain: counts, total: Object.values(counts).reduce((sum, n) => sum + n, 0) }
-}

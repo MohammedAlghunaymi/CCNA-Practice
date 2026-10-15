@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "license": "MIT",
-  "description": "CCNA 200-301 v1.1 practice and exam simulator. Original question bank mapped to official blueprint objectives, with blueprint-weighted exam simulation.",
+  "description": "CCNA 200-301 v1.1 practice and exam simulator. Blueprint-mapped question bank with blueprint-weighted exam simulation. The 169 shipped questions are adopted from an MIT project and attributed, not original work - see docs/PROJECT.md 5a.",
   "engines": {
     "node": ">=22"
   },

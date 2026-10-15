@@ -6,7 +6,7 @@ one-way navigation, auto-submit, all four of Cisco's published item types, and
 hands-on tasks where you configure a device yourself.
 
 > **Status: early build.** The scaffold, blueprint dataset, allocation engine and
-> all seven CI gates are in place, along with a **169-question bank** and a
+> all eight blocking gates are in place, along with a **169-question bank** and a
 > working **20-question practice exam**. The full exam-day experience — timing,
 > reload-safe progress, drag-drop and hands-on grading — is not built yet. See
 > [`docs/PROJECT.md`](docs/PROJECT.md) for the full plan and current phase, and
@@ -68,11 +68,11 @@ Then open <http://localhost:5173>.
 | `npm test` | Unit tests (Vitest) |
 | `npm run lint` | ESLint |
 | `npm run docs:generate` | Regenerate `docs/NOT-EMULATED.md` and the PROJECT.md objective appendix from source data |
-| `npm run validate` | Run every gate in sequence — same as CI |
+| `npm run validate` | Run the eight blocking gates in sequence. CI runs a ninth step first, `npm run docs:generate -- --check`, which this does not include |
 
-## The seven gates
+## The eight gates
 
-Nothing merges unless all seven pass, locally and in CI.
+Nothing merges unless all eight pass, locally and in CI.
 
 | Gate | Enforces |
 |---|---|
@@ -82,6 +82,7 @@ Nothing merges unless all seven pass, locally and in CI.
 | `npm run validate:bank` | No duplicate ids or stems, every answer resolves, every wrong option justifies itself, every objective exists, arithmetic agrees with real IPv4 maths, coverage floors and blueprint proportions |
 | `npm run validate:review` | No question batch merges without a signed-off review record |
 | `npm run validate:docs` | This README's sibling `docs/PROJECT.md` enumerates all 97 sub-objectives, and generated docs match their source data |
+| `npm run validate:anti-rot` | The Phase 1 scope cut recorded in `docs/PROJECT.md` §14 is not silently reverted, and the generated allocation numbers still match the formula |
 | `npm run license:check` | Every direct dependency is MIT, every question file carries a provenance header, no exam-dump references in `src/` |
 
 ## How the question bank is organised

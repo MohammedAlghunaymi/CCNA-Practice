@@ -55,8 +55,11 @@ jobs:
   milestone:
     name: Question bank milestone (${{ matrix.milestone }})
     runs-on: ubuntu-latest
-    # Only meaningful while the bank is being authored; the milestone target is
-    # enforced with --close-total so an in-progress milestone cannot go red.
+    # Only meaningful while the bank is being authored. This runs the chosen
+    # milestone's gate set but does NOT pass --close-total, so the two checks
+    # that flag reads are both off: the show-output/show-json floors
+    # (validateBank.js:237) and the exact-total check (validateBank.js:329).
+    # An in-progress milestone therefore cannot go red here.
     if: github.event_name == 'workflow_dispatch'
     timeout-minutes: 10
     strategy:
