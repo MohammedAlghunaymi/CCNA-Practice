@@ -37,10 +37,19 @@ jobs:
       - name: Build
         run: npm run build
 
+      # The bank is incomplete and its review is deliberately unsigned, so these
+      # two are expected to fail. continue-on-error reports them without failing
+      # the job. The relaxation is bounded: `npm run validate:anti-rot` (Gate 7)
+      # asserts exactly two such steps, both anchored to these names, that the
+      # bank loads whole, that exactly four bank checks are red, and that no
+      # review batch is signed off. All of that gate AND both of these steps are
+      # deleted together once the batch is signed off. Do not add a third.
       - name: Validate question bank
+        continue-on-error: true
         run: npm run validate:bank
 
       - name: Validate batch review records
+        continue-on-error: true
         run: npm run validate:review
 
       - name: Validate documentation

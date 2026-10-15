@@ -8,12 +8,18 @@
  * this file on purpose — a gate whose logic cannot be grepped out of its own
  * source is not checkable, and `validate:anti-rot` asserts they are present.
  *
+ * One gate below (Gate 7) is the documented exception: it cannot be written as
+ * literals, because it asserts the *failing set* of another gate rather than a
+ * string's presence. It says so at its own definition.
+ *
  * Run: `npm run validate:anti-rot`
  */
 
-import { readFileSync, readdirSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { indexObjectives } from '../src/lib/questionSchema.js'
+import { validateBank } from '../src/lib/validateBank.js'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -122,6 +128,117 @@ check(
   'the Phase 1 exit-criteria cell carries the rewritten text',
   phase1CellAnchored.test(projectMd),
   'steps past the Deliverable and Hours cells before looking for the filename'
+)
+
+// -- Gate 7: the CI relaxation is bounded, and bounds itself ---------------------
+// Two CI steps carry `continue-on-error` while the bank is incomplete. A
+// relaxation nobody bounds is just a red gate that got muted, so this gate
+// asserts three things at once and is deleted in the same edit as the relaxation
+// it bounds (Track 2 Task 2b, once every review batch is signed off).
+//
+// This is the one gate whose patterns cannot be literals: conjunct 1 greps
+// .github/workflows/ci.yml, and conjuncts 2-3 need the real failing set out of
+// validateBank, which is a function rather than a string.
+
+const ciYml = readFileSync(join(root, '.github/workflows/ci.yml'), 'utf8')
+
+// A ceiling of "at most two" would be satisfied by today's zero and could not
+// tell relaxed from un-relaxed. Exactly two, each anchored to its step name,
+// can: moving the flag onto some other step leaves the count at two but breaks
+// an anchor, and dropping it from one drops the count.
+const RELAXED_STEPS = ['Validate question bank', 'Validate batch review records']
+const relaxCount = (ciYml.match(/continue-on-error: true/g) ?? []).length
+const relaxAnchors = RELAXED_STEPS.map(
+  (step) => new RegExp(`- name: ${step}\\r?\\n\\s+continue-on-error: true`)
+)
+const relaxAnchored = relaxAnchors.filter((re) => re.test(ciYml)).length
+const relaxationBounded = relaxCount === 2 && relaxAnchored === RELAXED_STEPS.length
+
+// Rebuild validateBank's inputs the way scripts/validate-bank.mjs does. It
+// cannot be imported: it calls process.exit.
+const loadBank = () => {
+  const config = JSON.parse(readFileSync(join(root, 'src/config/bank.config.json'), 'utf8'))
+  const objectives = indexObjectives(
+    JSON.parse(readFileSync(join(root, 'src/data/objectives.json'), 'utf8'))
+  )
+  const questionsDir = join(root, 'src/data/questions')
+  const questions = []
+  for (const file of existsSync(questionsDir)
+    ? readdirSync(questionsDir).filter((f) => f.endsWith('.json')).sort()
+    : []) {
+    const parsed = JSON.parse(readFileSync(join(questionsDir, file), 'utf8'))
+    questions.push(...(Array.isArray(parsed) ? parsed : (parsed.questions ?? [])))
+  }
+  const adoptedPath = join(root, 'docs/ADOPTED.md')
+  const adoptionRegistry = existsSync(adoptedPath)
+    ? [...readFileSync(adoptedPath, 'utf8').matchAll(/^\| `([a-z0-9-]+)` \| \d+\.\d+\/\d+\.\d/gm)]
+        .map((m) => ({ upstreamId: m[1] }))
+    : null
+  return validateBank({
+    questions, objectives, config, milestone: 'pilot', checkTotal: false, adoptionRegistry,
+  })
+}
+
+// Conjunct 2, and it is load-bearing: the four red criteria are all *deficit*
+// checks, so a loader that silently drops a domain file, globs the wrong
+// directory, or loads a third of the bank produces the very same four failures
+// and the expiry below would read green. Measured: dropping any one of the six
+// files leaves the failing set unchanged. Pinning the count is the only thing
+// that separates "the bank is as expected and four checks are red" from "the
+// loader is broken and everything is red".
+//
+// Conjunct 3, matched by name and never by position: record() appends in call
+// order, so any change to the number of criteria shifts the positions. The four
+// names are what actually identify the state we are in.
+const EXPECTED_RED = [
+  'Every in-scope sub-objective has',
+  'Per-domain format counts can fill the exam matrix',
+  'Per-domain allocation drift within',
+  'Every wrong option carries a real rationale',
+]
+
+let loaded = null
+let loadError = null
+try {
+  loaded = loadBank()
+} catch (err) {
+  loadError = err instanceof Error ? err.message : String(err)
+}
+
+const bankLoaded =
+  loaded !== null && loaded.results.length === 14 && loaded.stats.total === 169
+
+const failingNames = loaded ? loaded.results.filter((r) => !r.pass).map((r) => r.name) : []
+const redSetMatches =
+  failingNames.length === EXPECTED_RED.length &&
+  EXPECTED_RED.every((prefix) => failingNames.some((name) => name.startsWith(prefix)))
+
+// Directory-wide, not one file: validate-review.mjs derives its batch list from
+// the `batch` field of every merged question, so signing off `upstream` while a
+// later batch is still pending would un-relax CI one gate too early.
+const batchesDir = join(root, 'review/batches')
+const anySignedOff = existsSync(batchesDir)
+  ? readdirSync(batchesDir).some((f) => {
+      if (!f.endsWith('.json')) return false
+      const rec = JSON.parse(readFileSync(join(batchesDir, f), 'utf8'))
+      return rec?.status === 'signed-off'
+    })
+  : false
+
+check(
+  'the CI relaxation is bounded, and its bound expires on its own',
+  relaxationBounded && bankLoaded && redSetMatches && !anySignedOff,
+  loadError
+    ? `could not load the bank: ${loadError}`
+    : !relaxationBounded
+      ? `found ${relaxCount} continue-on-error, ${relaxAnchored}/${RELAXED_STEPS.length} anchored to a named step`
+      : !bankLoaded
+        ? `loaded ${loaded?.results.length ?? 0} criteria over ${loaded?.stats.total ?? 0} questions, expected 14 over 169`
+        : !redSetMatches
+          ? `failing: ${failingNames.join(' | ') || '(none)'}`
+          : anySignedOff
+            ? 'a review batch is signed off, so the relaxation is no longer needed'
+            : 'relaxation anchored, bank fully loaded, exactly the four expected checks red, no batch signed off'
 )
 
 // -- Report ------------------------------------------------------------------
