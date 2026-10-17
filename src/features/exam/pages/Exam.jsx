@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import config from '../../../config/bank.config.json' with { type: 'json' }
 import { selectQuestions, isUint32, DrawError } from '../../../lib/selectQuestions.js'
 import { scoreExam } from '../../../lib/score.js'
-import { isPlaceholderRationale } from '../../../lib/rationale.js'
+import { rationaleToShow } from '../../../lib/rationale.js'
 import { BANK, BY_ID } from '../../../lib/bank.js'
 import { Link } from 'react-router'
 
@@ -538,14 +538,12 @@ export function Result({ result, questions }) {
               // Same guard as the runner: a non-MCQ item has no `options` and no
               // `answer`, and both dereferences below would throw on undefined.
               const reviewable = Boolean(question.options) && Array.isArray(question.answer)
+              // Shared with the practice pager, so the two reveal surfaces
+              // cannot drift. `rationaleToShow` carries what used to be the
+              // inline four-conjunct filter, including the `option.correct` and
+              // non-empty-after-trim guards.
               const rationales = reviewable
-                ? Object.entries(question.options).filter(
-                    ([key, o]) =>
-                      !question.answer.includes(key) &&
-                      typeof o.rationale === 'string' &&
-                      o.rationale.trim() !== '' &&
-                      !isPlaceholderRationale(o.rationale)
-                  )
+                ? Object.entries(question.options).filter(([, o]) => rationaleToShow(o))
                 : []
               return (
                 <li

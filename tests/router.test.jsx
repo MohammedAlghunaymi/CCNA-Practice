@@ -40,7 +40,9 @@ describe('AppRouter routes', () => {
   it.each([
     ['/', /CCNA 200-301/i],
     ['/practice', /practice by domain/i],
-    ['/practice/NF', /practice:\s*NF/i],
+    // LearnMode is addressed by its route path here; the heading it renders is the
+// category's display name, which is what the reader actually sees.
+['/practice/NF', /network fundamentals/i],
   ])('renders %s', (entry, heading) => {
     const router = createMemoryRouter(routes, { initialEntries: [entry] })
     render(<RouterProvider router={router} />)
