@@ -1,13 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { PLACEHOLDER_RATIONALE, isPlaceholderRationale } from '../src/lib/rationale.js'
-import nf from '../src/data/questions/nf.json' with { type: 'json' }
-import na from '../src/data/questions/na.json' with { type: 'json' }
-import ipc from '../src/data/questions/ipc.json' with { type: 'json' }
-import ips from '../src/data/questions/ips.json' with { type: 'json' }
-import sec from '../src/data/questions/sec.json' with { type: 'json' }
-import auto from '../src/data/questions/auto.json' with { type: 'json' }
-
-const BANK = Object.values({ nf, na, ipc, ips, sec, auto }).flatMap((file) => file.questions)
+import { BANK } from '../src/lib/bank.js'
 
 describe('isPlaceholderRationale', () => {
   it('matches the exact placeholder', () => {

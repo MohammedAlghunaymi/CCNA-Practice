@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router'
-import Exam, { Result, PreambleBlock } from '../src/pages/Exam.jsx'
+import Exam, { Result, PreambleBlock } from '../src/features/exam/pages/Exam.jsx'
 import { scoreExam } from '../src/lib/score.js'
 
 /**

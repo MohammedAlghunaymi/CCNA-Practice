@@ -144,18 +144,26 @@ src/
   data/objectives.json, not-emulated.json
   data/questions/<domain>.json
   config/bank.config.json          # milestone, frozen allocation, named pilot subset
-  lib/{blueprint,drawExam,score,validateQuestion,expectedState,allocation,ipv4,verify,sessionStore}.js
-  device/harness/LabHarness.js
+  lib/{allocation,bank,expectedState,ipv4,questionSchema,rationale,score,selectQuestions,validateBank,verify}.js
   device/state/{interfaces,vlan,routing,services,security}.js
-  device/cli/{parser,commands/config,commands/render}.js
-  device/wlc/wlcState.js
-  features/{practice,exam}/
-  pages/, router/
+  device/cli/{parser,commands/config}.js
+  features/home/pages/Home.jsx
+  features/practice/pages/{PracticeHome,LearnMode}.jsx
+  features/exam/pages/Exam.jsx
+  router/AppRouter.jsx
 tests/
-scripts/{allocate-bank,validate-bank,validate-review,validate-docs,license-check,generate-docs}.mjs
+scripts/{allocate-bank,check-anti-rot,generate-docs,license-check,validate-bank,validate-docs,validate-review}.mjs
 review/batches/<batch-id>.json
-docs/{PROJECT,NOT-EMULATED,GROWTH}.md   # NOT-EMULATED generated from not-emulated.json
+docs/{PROJECT,ADOPTED,ENGINE-VERIFICATION,GROWTH,NOT-EMULATED}.md   # NOT-EMULATED generated from not-emulated.json
 ```
+
+`src/lib/bank.js` is the single bank index. `BANK` and `byDomain()` are consumed
+by `Exam.jsx`, `PracticeHome`, `LearnMode` and `tests/rationale.test.js`; do not
+re-concatenate the six question files anywhere. `BANK`'s order is a contract,
+not cosmetics — practice progress persists an integer index into `byDomain()`.
+
+Pages live under the feature that owns them, not in a top-level `src/pages/`.
+That directory is empty and unreferenced.
 
 ## 8. Question bank
 

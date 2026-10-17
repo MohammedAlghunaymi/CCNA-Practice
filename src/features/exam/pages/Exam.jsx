@@ -1,18 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import nf from '../data/questions/nf.json' with { type: 'json' }
-import na from '../data/questions/na.json' with { type: 'json' }
-import ipc from '../data/questions/ipc.json' with { type: 'json' }
-import ips from '../data/questions/ips.json' with { type: 'json' }
-import sec from '../data/questions/sec.json' with { type: 'json' }
-import auto from '../data/questions/auto.json' with { type: 'json' }
-import config from '../config/bank.config.json' with { type: 'json' }
-import { selectQuestions, isUint32, DrawError } from '../lib/selectQuestions.js'
-import { scoreExam } from '../lib/score.js'
-import { isPlaceholderRationale } from '../lib/rationale.js'
+import config from '../../../config/bank.config.json' with { type: 'json' }
+import { selectQuestions, isUint32, DrawError } from '../../../lib/selectQuestions.js'
+import { scoreExam } from '../../../lib/score.js'
+import { isPlaceholderRationale } from '../../../lib/rationale.js'
+import { BANK, BY_ID } from '../../../lib/bank.js'
 import { Link } from 'react-router'
-
-const BANK = Object.values({ nf, na, ipc, ips, sec, auto }).flatMap((file) => file.questions)
-const BY_ID = new Map(BANK.map((q) => [q.id, q]))
 
 /**
  * The shipped default paper length.

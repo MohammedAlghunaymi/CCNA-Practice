@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
-import objectives from '../data/objectives.json'
-import config from '../config/bank.config.json'
+import objectives from '../../../data/objectives.json'
+import config from '../../../config/bank.config.json'
+import { counts } from '../../../lib/bank.js'
 
 /**
  * Phase 0 shell. It renders the blueprint itself, which makes the data pipeline
@@ -12,6 +13,7 @@ export default function Home() {
   const v1 = frozen?.perDomain ?? {}
   const totalTarget = config.milestones.v1.target
   const allocated = Object.values(v1).reduce((sum, n) => sum + n, 0)
+  const bankTotal = Object.values(counts).reduce((sum, n) => sum + n, 0)
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
@@ -20,18 +22,44 @@ export default function Home() {
         <p className="mt-2 text-sm text-text-muted">
           {objectives.meta.exam} &middot; {objectives.meta.examTitle}
         </p>
-        <Link
-          className="mt-6 inline-block rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black"
-          to="/exam"
-        >
-          Start a practice exam
-        </Link>
+        {/* Both modes are doors on one page. Practice has no other entry point:
+            all three <Link>s that existed before this one point at `/` or
+            `/exam`, and there is no layout or shell component to carry a nav, so
+            without this button the whole practice feature would be unreachable
+            behind a fully green test suite. */}
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link
+            className="inline-block rounded-md bg-accent px-5 py-2 text-sm font-semibold text-black"
+            to="/practice"
+          >
+            Practice by domain
+          </Link>
+          <Link
+            className="inline-block rounded-md border border-border px-5 py-2 text-sm font-semibold"
+            to="/exam"
+          >
+            Start a practice exam
+          </Link>
+        </div>
       </header>
 
       <section aria-labelledby="domains-heading">
         <h2 id="domains-heading" className="mb-4 text-lg font-semibold">
           Blueprint coverage
         </h2>
+        {/* Two numbers, two labels, never interchangeable.
+
+            This row used to render `v1[domain.id]` — the frozen allocation
+            *target* — under the words "in bank". The targets are NF 61, NA 58,
+            IPC 71, IPS 31, SEC 50, AUTO 29 = 300; the bank holds 169. The
+            mismatch runs in both directions: IPS is allocated 31 and holds 32.
+            So neither figure can stand in for the other, and the two are
+            rendered with distinct suffixes — "33 in bank" and "61 target" — so
+            that no number can be read as the other kind.
+
+            The suffixes are load-bearing, not cosmetic. IPS's target (31) equals
+            IPC's live count (31), so any assertion or label that shares one
+            suffix across both columns is unsatisfiable for exactly that pair. */}
         <ul className="space-y-2">
           {objectives.domains.map((domain) => (
             <li
@@ -47,7 +75,10 @@ export default function Home() {
               <span className="flex items-center gap-4 text-sm">
                 <span className="text-text-muted">{domain.weight}% of exam</span>
                 <span className="font-mono text-accent">
-                  {v1[domain.id] ?? 0} in bank
+                  {counts[domain.id] ?? 0} in bank
+                </span>
+                <span className="font-mono text-text-faint">
+                  {v1[domain.id] ?? 0} target
                 </span>
               </span>
             </li>
@@ -56,18 +87,28 @@ export default function Home() {
       </section>
 
       <section className="mt-8 rounded-lg border border-border bg-surface px-4 py-4">
-        <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-5">
           <div>
             <dt className="text-text-faint">Sub-objectives</dt>
             <dd className="font-mono text-lg">{objectives.meta.leafCount}</dd>
           </div>
           <div>
-            <dt className="text-text-faint">v1 bank target</dt>
+            {/* Renamed from "v1 bank target". `totalTarget` is
+                `config.milestones.v1.target`, a milestone target, not an
+                allocation and certainly not a count of questions held — the
+                "bank" in the old label was the whole falsehood. `Allocated`
+                beside it already carries the same 300 from a second source, so
+                the two are deliberately worded differently. */}
+            <dt className="text-text-faint">v1 target</dt>
             <dd className="font-mono text-lg">{totalTarget}</dd>
           </div>
           <div>
             <dt className="text-text-faint">Allocated</dt>
             <dd className="font-mono text-lg">{allocated}</dd>
+          </div>
+          <div>
+            <dt className="text-text-faint">In bank now</dt>
+            <dd className="font-mono text-lg">{bankTotal}</dd>
           </div>
           <div>
             <dt className="text-text-faint">Exam length</dt>

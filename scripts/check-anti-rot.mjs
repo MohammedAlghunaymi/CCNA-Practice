@@ -29,8 +29,14 @@ function check(name, pass, detail) {
   results.push({ name, pass, detail })
 }
 
-/** Every .js/.jsx file under src/, so a `go(-1)` in a new file is still caught. */
-function sourceFiles(dir = join(root, 'src')) {
+/**
+ * Every .js/.jsx file under `dir`.
+ *
+ * Callers pass the directory explicitly. A default of `src/` would let a future
+ * gate silently widen its own scan scope, and the scan scope is part of what
+ * each gate asserts — see Gate 2.
+ */
+function sourceFiles(dir) {
   const out = []
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = join(dir, entry.name)
@@ -40,10 +46,23 @@ function sourceFiles(dir = join(root, 'src')) {
   return out
 }
 
-const examJsx = readFileSync(join(root, 'src/pages/Exam.jsx'), 'utf8')
+// Fail closed, and loudly.
+//
+// The tempting guard here is `existsSync(p) ? readFileSync(p, 'utf8') : ''`, and
+// it is wrong: Gate 1 is a pure absence test, so an empty string satisfies it
+// vacuously — the gate would keep reporting PASS on a file it never read, and
+// only Gate 3's presence half would notice. Half a gate is not a gate. The path
+// is repointed at the moved runner and a stale path now stops the run outright,
+// so the next move cannot quietly disarm two criteria.
+const examPath = join(root, 'src/features/exam/pages/Exam.jsx')
+if (!existsSync(examPath)) {
+  console.error('FAIL  the anti-rot gates cannot read the exam runner')
+  console.error(`      expected ${examPath}`)
+  console.error('      the runner moved without repointing this script')
+  process.exit(1)
+}
+const examJsx = readFileSync(examPath, 'utf8')
 const projectMd = readFileSync(join(root, 'docs/PROJECT.md'), 'utf8')
-const sources = sourceFiles()
-const allSource = sources.map((f) => readFileSync(f, 'utf8')).join('\n')
 
 // -- Gate 1: the attempt record must not fall back to per-tab storage ----------
 check(
@@ -53,13 +72,26 @@ check(
 )
 
 // -- Gate 2: forward-only navigation has no decrement path ---------------------
+// Scoped to the exam runner, and deliberately so.
+//
+// This gate used to scan all of `src/`. Practice is not a forward-only surface:
+// it has a Prev button, and adding one would have left this gate printing
+// `PASS  no call site navigates backwards` forever while a call site did
+// exactly that — a shipped artifact asserting something false, which is the
+// failure this gate exists to prevent. The one-way rule is a property of the
+// *exam*, where a decrement rewinds an already-scored paper. It is not a
+// property of the repository, so the gate's own name and scan have to agree.
+//
 // The minus is required. Optional, it also matches the Next button's `go(1)`.
 // `[^)]*` catches a multi-arg `go(-1, true)`.
 const backNav = /go\(\s*-\s*1\b[^)]*\)/
+const examSource = sourceFiles(join(root, 'src/features/exam'))
+  .map((f) => readFileSync(f, 'utf8'))
+  .join('\n')
 check(
   'no call site navigates backwards',
-  !backNav.test(allSource),
-  'matches go(-1) across all of src/, including a new file'
+  !backNav.test(examSource),
+  'matches go(-1) anywhere under src/features/exam/, including a new file added there'
 )
 
 // -- Gate 3: the footer must not claim progress dies with the page -------------

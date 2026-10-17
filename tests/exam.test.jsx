@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, within, cleanup, act, fireEvent } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Routes, Route } from 'react-router'
-import Exam, { Result } from '../src/pages/Exam.jsx'
+import Exam, { Result } from '../src/features/exam/pages/Exam.jsx'
 import { selectQuestions } from '../src/lib/selectQuestions.js'
 import { scoreExam } from '../src/lib/score.js'
 import { PLACEHOLDER_RATIONALE } from '../src/lib/rationale.js'
@@ -326,7 +326,7 @@ describe('Exam storage', () => {
     cleanup()
 
     vi.resetModules()
-    const { default: FreshExam } = await import('../src/pages/Exam.jsx')
+    const { default: FreshExam } = await import('../src/features/exam/pages/Exam.jsx')
     render(
       <MemoryRouter initialEntries={[`/exam?seed=${SEED}`]}>
         <Routes>
