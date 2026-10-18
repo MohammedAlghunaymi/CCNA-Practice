@@ -37,6 +37,13 @@ function blankInterface(name) {
   return {
     name,
     description: '',
+    // `false` is what a router Layer-3 interface really does: it is
+    // administratively down until `no shutdown`, which is why that is the answer
+    // to `show ip interface brief` reporting one down. Physical switchports
+    // default up, but none is modelled — `switchport` throws at :81-83 — so this
+    // default is never exercised on one. Pinned by
+    // tests/expectedState.test.js "defaults an interface to administratively
+    // down until told otherwise"; do not "fix" it to true without that.
     adminUp: false,
     ipv4: { address: null, netmask: null },
   }
