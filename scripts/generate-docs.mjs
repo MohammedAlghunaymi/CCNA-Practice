@@ -6,138 +6,65 @@
  *   PROJECT.md objective appendix <- src/data/objectives.json
  *
  * Run with --check in CI to fail if either file is stale.
+ *
+ * This file is a shell. The logic is in `src/lib/docs.js`, because everything
+ * below runs at module scope and calls `process.exit`, which makes this file
+ * impossible to import from a test — `check-anti-rot.mjs:189-190` records the
+ * same constraint for every other script here, and `src/lib/validateBank.js` is
+ * the pattern this follows.
+ *
+ * `DOCS_ROOT` overrides the repository root. The default is derived from this
+ * file's location, as it always was; the override exists so a test can point the
+ * real shell at a fixture tree.
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
+import { assessDocs, writeDocs } from '../src/lib/docs.js'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+const root = process.env.DOCS_ROOT
+  ? join(process.env.DOCS_ROOT)
+  : join(dirname(fileURLToPath(import.meta.url)), '..')
 const check = process.argv.includes('--check')
 
 const notEmulated = JSON.parse(readFileSync(join(root, 'src/data/not-emulated.json'), 'utf8'))
 const objectives = JSON.parse(readFileSync(join(root, 'src/data/objectives.json'), 'utf8'))
 
-const stale = []
+const findings = assessDocs({ root, objectives, notEmulated })
 
-// ---- NOT-EMULATED.md ----------------------------------------------------
-function renderNotEmulated() {
-  const lines = []
-  lines.push('# Emulator gaps')
-  lines.push('')
-  lines.push('<!-- GENERATED FILE - do not edit. Source: src/data/not-emulated.json -->')
-  lines.push('<!-- Regenerate: npm run docs:generate -->')
-  lines.push('')
-  lines.push(notEmulated.meta.principle)
-  lines.push('')
-  lines.push(`**Why build rather than adopt:** ${notEmulated.meta.adoptVsBuild}`)
-  lines.push('')
-
-  lines.push('## Gaps by feature')
-  lines.push('')
-  lines.push('| Feature | Objective | Assessed via | Partial |')
-  lines.push('|---|---|---|---|')
-  for (const gap of notEmulated.gaps) {
-    lines.push(`| ${gap.feature} | ${gap.objectiveId} | \`${gap.assessedVia}\` | ${gap.partial ? 'yes' : 'no'} |`)
-  }
-  lines.push('')
-
-  lines.push('## Rendered show commands')
-  lines.push('')
-  for (const command of notEmulated.renderedShowCommands) lines.push(`- \`${command}\``)
-  lines.push('')
-  lines.push(
-    'These exist for student feedback only. Grading reads device state directly through the ' +
-      '`expectedState` DSL, so no grading path parses show output.'
-  )
-  lines.push('')
-
-  lines.push('## WLC scope')
-  lines.push('')
-  lines.push(`Navigation: ${notEmulated.wlcScope.navigation}`)
-  lines.push('')
-  lines.push(`**Interface note:** ${notEmulated.wlcScope.interfaceNote}`)
-  lines.push('')
-  lines.push('In scope:')
-  for (const item of notEmulated.wlcScope.inScope) lines.push(`- ${item}`)
-  lines.push('')
-  lines.push('Out of scope:')
-  for (const item of notEmulated.wlcScope.outOfScope) lines.push(`- ${item}`)
-  lines.push('')
-
-  return lines.join('\n')
-}
-
-const notEmulatedPath = join(root, 'docs/NOT-EMULATED.md')
-const notEmulatedContent = renderNotEmulated()
-
-if (!existsSync(notEmulatedPath)) {
-  stale.push('docs/NOT-EMULATED.md is missing')
-} else if (readFileSync(notEmulatedPath, 'utf8').trimEnd() !== notEmulatedContent.trimEnd()) {
-  stale.push('docs/NOT-EMULATED.md is stale relative to src/data/not-emulated.json')
-}
-
-// ---- PROJECT.md objective appendix --------------------------------------
-const BEGIN = '<!-- BEGIN GENERATED OBJECTIVE APPENDIX -->'
-const END = '<!-- END GENERATED OBJECTIVE APPENDIX -->'
-
-function renderAppendix() {
-  const lines = [BEGIN, '', '## Appendix: all 97 sub-objectives', '',
-    '<!-- GENERATED - source: src/data/objectives.json -->', '']
-  for (const domain of objectives.domains) {
-    lines.push(`### ${domain.name} — ${domain.weight}% (${domain.leafCount} sub-objectives)`)
-    lines.push('')
-    lines.push('| ID | Description |')
-    lines.push('|---|---|')
-    for (const objective of domain.objectives) {
-      if (!objective.isLeaf) continue
-      lines.push(`| \`${objective.id}\` | ${objective.description} |`)
-    }
-    lines.push('')
-  }
-  lines.push(END)
-  return lines.join('\n')
-}
-
-const projectPath = join(root, 'docs/PROJECT.md')
-if (!existsSync(projectPath)) {
-  stale.push('docs/PROJECT.md is missing')
-} else {
-  const project = readFileSync(projectPath, 'utf8')
-  const start = project.indexOf(BEGIN)
-  const end = project.indexOf(END)
-  if (start === -1 || end === -1) {
-    stale.push('docs/PROJECT.md is missing the generated appendix markers')
-  } else {
-    const current = project.slice(start, end + END.length).trimEnd()
-    const next = renderAppendix().trimEnd()
-    if (current !== next) stale.push('docs/PROJECT.md objective appendix is stale')
-    const updated = project.slice(0, start) + next + project.slice(end + END.length)
-    if (!check && updated !== project) writeFileSync(projectPath, updated, 'utf8')
-  }
-}
-
-if (!check && stale.some((s) => s.includes('missing'))) {
-  writeFileSync(notEmulatedPath, notEmulatedContent, 'utf8')
-  const remaining = stale.filter((s) => !s.includes('NOT-EMULATED'))
-  if (remaining.length === 0) {
-    console.log('Wrote docs/NOT-EMULATED.md')
+// --check never calls writeDocs.
+//
+// It used to share the path with write mode and print one blanket remedy for
+// every finding, which is how a manual finding ended up advertising
+// `npm run docs:generate` — a command that cannot restore a deleted
+// `docs/PROJECT.md`. It also repairs what it checks if given the chance: a stale
+// tree would exit 1 and rewrite the file, so the next run reported clean and the
+// gate passed on its second invocation. CI runs this first, with no `git diff`
+// behind it.
+if (check) {
+  if (findings.length === 0) {
+    console.log('OK    Generated documentation matches its source data')
     process.exit(0)
   }
-}
-
-if (check) {
-  if (stale.length) {
-    console.error('FAIL  Generated documentation is stale')
-    for (const issue of stale) console.error(`      - ${issue}`)
-    console.error('      Fix with: npm run docs:generate')
-    process.exit(1)
+  console.error('FAIL  Generated documentation is stale')
+  for (const finding of findings) {
+    console.error(`      - ${finding.file} ${finding.reason}`)
+    console.error(
+      finding.kind === 'manual'
+        ? `        MANUAL FIX: ${finding.remedy}`
+        : '        Fix with: npm run docs:generate'
+    )
   }
-  console.log('OK    Generated documentation matches its source data')
-  process.exit(0)
+  process.exit(1)
 }
 
-if (stale.length) {
-  for (const issue of stale) console.log(`updated: ${issue.replace(' is stale relative to', ' from')}`)
-} else {
-  console.log('Generated documentation already up to date')
+const written = writeDocs(findings, { root })
+
+// Report what was written, and what was not. The old code reported from `stale`,
+// which is how a file nothing had written came back as `updated:`.
+for (const finding of written) console.log(`updated: ${finding.file}`)
+for (const finding of findings) {
+  if (finding.kind === 'manual') console.log(`MANUAL FIX: ${finding.file} - ${finding.remedy}`)
 }
+
+if (findings.length === 0) console.log('Generated documentation already up to date')
