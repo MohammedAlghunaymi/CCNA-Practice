@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="CCNA Practice">
+  <!--
+    Three nodes on a triangle. Generic topology iconography, chosen because the
+    subject matter is networks - deliberately not a vendor mark: no bridge bars,
+    no chevrons. PROJECT.md 31 records the posture this has to respect.
+    Colours are the app theme: --color-bg and --color-accent.
+  -->
+  <rect width="32" height="32" rx="7" fill="#0a0a0f" />
+  <g stroke="#3b82f6" stroke-width="1.6" stroke-linecap="round" opacity="0.55">
+    <path d="M16 9.5 8.5 21.5" />
+    <path d="M16 9.5 23.5 21.5" />
+    <path d="M8.5 21.5 23.5 21.5" />
+  </g>
+  <g fill="#3b82f6">
+    <circle cx="16" cy="9.5" r="3.4" />
+    <circle cx="8.5" cy="21.5" r="3.4" />
+    <circle cx="23.5" cy="21.5" r="3.4" />
+  </g>
+  <circle cx="16" cy="9.5" r="1.4" fill="#0a0a0f" />
+  <circle cx="8.5" cy="21.5" r="1.4" fill="#0a0a0f" />
+  <circle cx="23.5" cy="21.5" r="1.4" fill="#0a0a0f" />
+</svg>
