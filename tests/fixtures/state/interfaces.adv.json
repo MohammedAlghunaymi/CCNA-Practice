@@ -5,6 +5,7 @@
       "name": "GigabitEthernet0/0",
       "description": "",
       "adminUp": true,
+      "shutdownCommand": "no shutdown",
       "ipv4": {
         "address": "1.0.0.1",
         "netmask": "255.255.255.0"
@@ -14,6 +15,7 @@
       "name": "GigabitEthernet0/1",
       "description": "",
       "adminUp": true,
+      "shutdownCommand": "no shutdown",
       "ipv4": {
         "address": "1.0.0.10",
         "netmask": "255.255.255.0"

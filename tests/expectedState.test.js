@@ -355,6 +355,22 @@ describe('the interfaces reducer, against its own golden fixture', () => {
     expect(state.interfaces['GigabitEthernet0/1'].ipv4.address).toBe(null)
   })
 
+  it('records which administrative-state command was typed, so "nothing" and "shutdown" differ', () => {
+    const untouched = reduce([{ if: 'GigabitEthernet0/1', lines: [] }])
+    const shut = reduce([{ if: 'GigabitEthernet0/1', lines: ['shutdown'] }])
+    const brought = reduce([{ if: 'GigabitEthernet0/1', lines: ['no shutdown'] }])
+
+    // `adminUp` cannot separate the first two: both leave the interface down,
+    // and a `show running-config` line derived from the boolean would print
+    // `shutdown` for a student who typed nothing at all.
+    expect(untouched.interfaces['GigabitEthernet0/1'].adminUp).toBe(false)
+    expect(shut.interfaces['GigabitEthernet0/1'].adminUp).toBe(false)
+
+    expect(untouched.interfaces['GigabitEthernet0/1'].shutdownCommand).toBe('none')
+    expect(shut.interfaces['GigabitEthernet0/1'].shutdownCommand).toBe('shutdown')
+    expect(brought.interfaces['GigabitEthernet0/1'].shutdownCommand).toBe('no shutdown')
+  })
+
   it('refuses switchport and spanning-tree rather than silently ignoring them', () => {
     for (const line of ['switchport mode access', 'spanning-tree portfast']) {
       expect(() => reduce([{ if: 'Gi0/0', lines: [line] }])).toThrow(/2b batch 1/)

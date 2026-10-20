@@ -40,11 +40,18 @@ function blankInterface(name) {
     // `false` is what a router Layer-3 interface really does: it is
     // administratively down until `no shutdown`, which is why that is the answer
     // to `show ip interface brief` reporting one down. Physical switchports
-    // default up, but none is modelled — `switchport` throws at :81-83 — so this
+    // default up, but none is modelled — `switchport` throws at :88-90 — so this
     // default is never exercised on one. Pinned by
     // tests/expectedState.test.js "defaults an interface to administratively
     // down until told otherwise"; do not "fix" it to true without that.
     adminUp: false,
+    // `adminUp` collapses two states a student can be in — typed nothing, and
+    // typed `shutdown` — because both leave the interface down. `show
+    // running-config` has to print the line the student actually entered, and a
+    // line derived from the boolean would print `shutdown` for someone who
+    // typed nothing. So the typed command is recorded here instead. `'none'`
+    // means no administrative-state command has been seen.
+    shutdownCommand: 'none',
     ipv4: { address: null, netmask: null },
   }
 }
@@ -78,10 +85,12 @@ function applyInterfaceLines(state, name, lines) {
 
     if (SHUTDOWN.test(text)) {
       interfaceState.adminUp = false
+      interfaceState.shutdownCommand = 'shutdown'
       continue
     }
     if (NO_SHUTDOWN.test(text)) {
       interfaceState.adminUp = true
+      interfaceState.shutdownCommand = 'no shutdown'
       continue
     }
 
