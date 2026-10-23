@@ -26,11 +26,28 @@ export function initialState() {
   return { kind: 'router', interfaces: {} }
 }
 
-/** Split an interface name into its type prefix and its numeric slots. */
+/**
+ * Split an interface name into its type prefix, its slots, and its subinterface
+ * suffix.
+ *
+ * The suffix is captured separately because `GigabitEthernet0/0.100` is one
+ * interface on a subinterface of another: folding `.100` into the slot list or
+ * into the type prefix loses the only key that orders `0/0.2` before `0/0.100`.
+ * A name with no suffix reports `null`, not `0` — `0` is a legal suffix
+ * (`.0`) and would sort ahead of every named subinterface.
+ *
+ * The parse normalises rather than rejects: `Gi0/00` and `Gi0/0` both report
+ * `slots: [0, 0]`. Nothing rebuilds a name from this, so the loss is recorded
+ * rather than repaired.
+ */
 function parseInterfaceName(name) {
-  const match = /^(.+?)(\d+(?:\/\d+)*)$/.exec(name)
-  if (!match) return { type: name, slots: [] }
-  return { type: match[1], slots: match[2].split('/').map(Number) }
+  const match = /^(.+?)(\d+(?:\/\d+)*)(?:\.(\d+))?$/.exec(name)
+  if (!match) return { type: name, slots: [], suffix: null }
+  return {
+    type: match[1],
+    slots: match[2].split('/').map(Number),
+    suffix: match[3] === undefined ? null : Number(match[3]),
+  }
 }
 
 function blankInterface(name) {
