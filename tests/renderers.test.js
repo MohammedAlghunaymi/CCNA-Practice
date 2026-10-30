@@ -15,6 +15,7 @@ import { reduceConfig } from '../src/device/cli/commands/config.js'
 import {
   RENDERED_COMMANDS,
   compareInterfaces,
+  compareRoutes,
   render,
 } from '../src/device/cli/commands/render.js'
 
@@ -152,10 +153,18 @@ describe('the renderer registry', () => {
 
   it('implements exactly the commands this step claims, both directions', () => {
     // Checked against a hardcoded list as well as the JSON, because a registry
-    // compared only against the JSON is self-referential.
+    // compared only against the JSON is self-referential — and against the JSON
+    // in the other direction, because a command in the registry that the data
+    // file does not name is a claim the project never made.
     expect([...RENDERED_COMMANDS].sort()).toEqual(
-      ['show ip interface brief', 'show vlan brief'].sort()
+      [
+        'show ip interface brief',
+        'show ip route',
+        'show running-config',
+        'show vlan brief',
+      ].sort()
     )
+    expect([...RENDERED_COMMANDS].sort()).toEqual([...notEmulated.renderedShowCommands].sort())
   })
 
   it('throws on a command it cannot render', () => {
@@ -225,5 +234,215 @@ describe('show ip interface brief', () => {
         '\n'
       )
     )
+  })
+})
+
+describe('show ip route', () => {
+  // Inserted in the reverse of the expected order at every level the sort
+  // distinguishes: the /24-with-distance-5 last, the two /16s reversed against
+  // each other, the /8 ahead of them, and the IPv6 route first of all.
+  const state = reduceConfig(
+    [
+      'ip route 2001:db8::/32 2001:db8::1 10',
+      'ip route 10.0.0.0/8 10.1.1.1 10',
+      'ip route 172.17.0.0/16 10.1.1.1 10',
+      'ip route 172.16.0.0/16 10.1.1.2 10',
+      'ip route 192.168.0.0/24 10.1.1.1 5',
+    ].join('\n')
+  )
+
+  it('prints distance, then prefix length, then network — and no IPv6 route at all', () => {
+    // The IPv6 route is the row a naive renderer would print: it is first in
+    // state, and `show ipv6 route` is not one of the four commands claimed.
+    expect(render('show ip route', state)).toBe(
+      [
+        'Codes  Network         NextHop   Distance',
+        'S      192.168.0.0/24  10.1.1.1  5',
+        'S      172.16.0.0/16   10.1.1.2  10',
+        'S      172.17.0.0/16   10.1.1.1  10',
+        'S      10.0.0.0/8      10.1.1.1  10',
+      ].join('\n')
+    )
+  })
+
+  it('never mentions an IPv6 prefix', () => {
+    expect(render('show ip route', state)).not.toContain(':')
+  })
+
+  const route = (prefix, distance) => ({ prefix, nextHop: '10.1.1.1', distance })
+  const prefixes = (routes) => [...routes].sort(compareRoutes).map((each) => each.prefix)
+
+  it('orders a distance tie by prefix length, longest first', () => {
+    expect(prefixes([route('10.0.0.0/8', 10), route('172.16.0.0/16', 10)])).toEqual([
+      '172.16.0.0/16',
+      '10.0.0.0/8',
+    ])
+  })
+
+  it('orders a prefix-length tie by network value, lowest first', () => {
+    expect(prefixes([route('172.17.0.0/16', 10), route('172.16.0.0/16', 10)])).toEqual([
+      '172.16.0.0/16',
+      '172.17.0.0/16',
+    ])
+  })
+
+  it('keeps IPv6 behind IPv4 at equal distance instead of throwing on it', () => {
+    // Dropping this level hands `2001:db8::` to `ipToInt`, which throws on
+    // anything that is not a dotted quad — the sort itself would fail.
+    expect(prefixes([route('2001:db8::/32', 10), route('10.0.0.0/8', 10)])).toEqual([
+      '10.0.0.0/8',
+      '2001:db8::/32',
+    ])
+  })
+
+  it('puts the lower distance first, ahead of every other level', () => {
+    expect(prefixes([route('10.0.0.0/8', 10), route('192.168.0.0/24', 5)])).toEqual([
+      '192.168.0.0/24',
+      '10.0.0.0/8',
+    ])
+  })
+})
+
+describe('show running-config', () => {
+  const state = reduceConfig(
+    [
+      'interface Loopback0',
+      ' ip address 10.255.255.1 255.255.255.255',
+      '!',
+      'interface GigabitEthernet0/1',
+      ' shutdown',
+      '!',
+      'interface GigabitEthernet0/0',
+      ' description uplink to core',
+      ' ip address 10.0.0.1 255.255.255.0',
+      ' no shutdown',
+      '!',
+      'vlan 20',
+      ' name users',
+      '!',
+      'vlan 2',
+      '!',
+      'vlan 10',
+      ' name mgmt',
+      '!',
+      'router ospf 10',
+      'router ospf 1',
+      'ip route 172.17.0.0/16 10.1.1.1 10',
+      'ip route 172.16.0.0/16 10.1.1.2 10',
+      'ip route 10.0.0.0/8 10.1.1.1 10',
+      'ip route 192.168.0.0/24 10.1.1.1 5',
+      'ip route 2001:db8::/32 2001:db8::1 10',
+      'access-list 101 deny ip any any',
+      'access-list 1 permit ip any any',
+      'access-list 9 permit ip any host 10.0.0.9',
+      'access-list 01 permit ip any any',
+      'ip access-list extended 1a',
+      ' permit ip host 1.1.1.1 any',
+      'ip access-list extended WEB',
+      ' 20 permit tcp any any',
+      ' 10 permit tcp any host 10.0.0.5 eq 443',
+      '!',
+      'ntp server 10.0.0.10',
+      'ntp server 10.0.0.9',
+      'ntp server ntp.example.org',
+      'ntp server clock.example.com',
+      'ntp min-version 3',
+      'ip nat pool MGMT netmask 255.255.255.0',
+      'ip nat pool AAA netmask 255.255.0.0',
+      'ip nat inside global 10',
+      'ip nat outside global 2',
+      'ip ssh version 2',
+      'username backup privilege 5',
+      'username admin privilege 15',
+    ].join('\n')
+  )
+
+  it('emits every section in its declared order, each block closed by a bare !', () => {
+    expect(render('show running-config', state)).toBe(
+      [
+        'interface GigabitEthernet0/0',
+        'description uplink to core',
+        'ip address 10.0.0.1 255.255.255.0',
+        'no shutdown',
+        '!',
+        'interface GigabitEthernet0/1',
+        'shutdown',
+        '!',
+        'interface Loopback0',
+        'ip address 10.255.255.1 255.255.255.255',
+        '!',
+        'vlan 2',
+        '!',
+        'vlan 10',
+        'name mgmt',
+        '!',
+        'vlan 20',
+        'name users',
+        '!',
+        'router ospf 1',
+        'router ospf 10',
+        'ip route 192.168.0.0/24 10.1.1.1 5',
+        'ip route 172.16.0.0/16 10.1.1.2 10',
+        'ip route 172.17.0.0/16 10.1.1.1 10',
+        'ip route 10.0.0.0/8 10.1.1.1 10',
+        'ip route 2001:db8::/32 2001:db8::1 10',
+        'access-list 01 permit ip any any',
+        'access-list 1 permit ip any any',
+        'access-list 9 permit ip any host 10.0.0.9',
+        'access-list 101 deny ip any any',
+        'ip access-list extended 1a',
+        '10 permit ip host 1.1.1.1 any',
+        '!',
+        'ip access-list extended WEB',
+        '10 permit tcp any host 10.0.0.5 eq 443',
+        '20 permit tcp any any',
+        '!',
+        'ip nat inside global 10',
+        'ip nat outside global 2',
+        'ip nat pool AAA netmask 255.255.0.0',
+        'ip nat pool MGMT netmask 255.255.255.0',
+        'ip ssh version 2',
+        'ntp server 10.0.0.9',
+        'ntp server 10.0.0.10',
+        // Hostname peers tie with each other on the sort key (both fall to the
+        // non-IPv4 sentinel), so their order comes from the line tiebreak.
+        'ntp server clock.example.com',
+        'ntp server ntp.example.org',
+        'ntp min-version 3',
+        'username admin privilege 15',
+        'username backup privilege 5',
+      ].join('\n')
+    )
+  })
+
+  it('round-trips through the parser and the reducers, byte for byte', () => {
+    // Every shape here survives: the digit ACLs are entered as `access-list`
+    // globals, so their implied sequences re-imply identically; the named one
+    // carries explicit sequences, so it re-emits them. The case that does NOT
+    // round-trip — a digit list opened as a block with explicit sequences — is
+    // deliberately absent, along with a mixed `ntp min-version`.
+    expect(reduceConfig(render('show running-config', state))).toEqual(state)
+  })
+
+  it('prints the typed administrative-state command, and no line derived from adminUp', () => {
+    const untouched = reduceConfig(['interface GigabitEthernet0/2'].join('\n'))
+    // Deriving this line from `adminUp` would print `shutdown` for an interface
+    // nobody ever touched — the whole reason `shutdownCommand` exists.
+    expect(render('show running-config', untouched)).toBe(
+      ['interface GigabitEthernet0/2', '!'].join('\n')
+    )
+  })
+
+  it('omits ntp min-version when every peer is at the seed', () => {
+    const serversOnly = reduceConfig(['ntp server 10.0.0.1', 'ntp server 10.0.0.2'].join('\n'))
+    const screen = render('show running-config', serversOnly)
+    expect(screen).not.toContain('ntp min-version')
+    // Absence re-parses to the seed, which is what makes the omission safe.
+    expect(reduceConfig(screen)).toEqual(serversOnly)
+  })
+
+  it('renders an unnamed VLAN with no name line rather than a placeholder', () => {
+    const unnamed = reduceConfig(['vlan 3'].join('\n'))
+    expect(render('show running-config', unnamed)).toBe(['vlan 3', '!'].join('\n'))
   })
 })
